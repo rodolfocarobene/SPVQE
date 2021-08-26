@@ -1,7 +1,4 @@
 import numpy as np
-import json
-import git
-import os
 import logging
 
 from datetime import datetime
@@ -291,27 +288,9 @@ def convertListFermOpToQubitOp(old_aux_ops, converter, num_particles):
 
     return new_aux_ops
 
-
-#---------------------------------------------------------
-def writeJson(JsonOptions):
-    myLogger.info('Inizio writeJson')
-
-    filename = "data/exp_"+getDateTimeString()
-    repo = git.Repo(search_parent_directories=True)
-    commit = repo.head.object.hexsha
-    JsonOptions['commit'] = commit
-
-    description = input("Inserisci una minima descrizione: ")
-    JsonOptions['description'] = description
-
-    json_obj = json.dumps(JsonOptions, indent = 4)
-
-    while os.path.exists(filename):
-        print('Esiste già un file con questo nome!!')
-        filename = input('Inserisci un nuovo nome: ')
-
-    with open(filename, "w") as out:
-        out.write(json_obj)
-
-    myLogger.info('Fine writeJson')
+def solveVQE(options):
+    if options['lagrange']['active'] == True:
+        return solveLagrangianVQE(options)
+    else:
+        return solveHamiltonianVQE(options)
 
