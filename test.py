@@ -1,11 +1,12 @@
 import numpy as np
+import sys
 
 from subroutineVQE import solveVQE
 from subroutineGUI import retriveVQEOptions
 from subroutineJSON import retriveJSONOptions, writeJson
 
 if __name__ == '__main__':
-    options = retriveVQEOptions()
+    options = retriveVQEOptions(sys.argv)
     energies = {}
     for var in options['varforms']:
         energies[var] = []

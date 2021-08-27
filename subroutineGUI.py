@@ -13,8 +13,29 @@ from qiskit.utils import QuantumInstance
 from qiskit import Aer
 from qiskit import IBMQ
 
-def retriveVQEOptions():
-    layout=[[psg.Text('Molecola', size=(20,1),font='Lucida',justification='left')],
+def getDefaultOpt():
+    print('Loading default values')
+    values = {
+        'spin' : 0,
+        'charge' : 1,
+        'basis' : 'sto-6g',
+        'varforms' : ['TwoLocal'],
+        'backend' : 'statevector_simulator',
+        'noise' : 'None',
+        'shots' : 1024,
+        'optimizer' : 'CG',
+        'dist_min' : 0.3,
+        'dist_max' : 3.5,
+        'dist_delta' : 0.1,
+        'lagrangiana' : 'False',
+        'lag_op' : 'number',
+        'lag_value' : 2,
+        'lag_mult' : 0.2
+    }
+    return values
+
+def retriveVQEOptions(argv):
+    layout=[[psg.Text('Molecola')],#, size=(20,1),font='Lucida',justification='left')],
             [psg.Text('Spin', font='Lucida', justification='left'), psg.Input(default_text=0,size=(4,10),key='spin'),
              psg.Text('Charge', font='Lucida', justification='left'), psg.Input(default_text=1,size=(4,10),key='charge'),
              psg.Text('Basis', font='Lucida', justification='left'),
@@ -40,9 +61,13 @@ def retriveVQEOptions():
              psg.Text('Multiplier',font='Lucida',justification='left'), psg.Input(default_text=0.2,size=(4,10),key='lag_mult')],
             [psg.Button('Inizia calcolo', font=('Times New Roman',12))]]
 
-    win =psg.Window('Definisci opzioni per VQE',layout,resizable=True)
-    e,values=win.read()
-    win.close()
+    if len(argv) > 1:
+        if argv[1] == 'fast':
+            values = getDefaultOpt()
+    else:
+        win =psg.Window('Definisci opzioni per VQE',layout,resizable=True)
+        e,values=win.read()
+        win.close()
 
     if values['optimizer'] == 'CG':
         optimizer = CG()
