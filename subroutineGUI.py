@@ -10,6 +10,7 @@ from qiskit_nature.converters.second_quantization import QubitConverter
 from qiskit.providers.aer.noise import NoiseModel
 from qiskit_nature.mappers.second_quantization import ParityMapper
 from qiskit.utils import QuantumInstance
+from qiskit.ignis.mitigation import CompleteMeasFitter
 from qiskit import Aer
 from qiskit import IBMQ
 
@@ -23,6 +24,7 @@ def getDefaultOpt():
         'backend' : 'statevector_simulator',
         'noise' : 'None',
         'shots' : 1024,
+        'correction' : 'False',
         'optimizer' : 'CG',
         'dist_min' : 0.3,
         'dist_max' : 3.5,
@@ -47,6 +49,8 @@ def retriveVQEOptions(argv):
              psg.Text('shots'), psg.Input(default_text=1024,size=(4,10),key='shots')],
             [psg.Text('Scegli l\'eventuale rumore'),
              psg.Combo(['None', 'ibmq_santiago'],default_value='None', key='noise')],
+            [psg.Text('Correction'),
+             psg.Combo(['False','True'], default_value='False',key='correction')],
             [psg.Text('Optimizer'),
              psg.Combo(['CG','COBYLA'], default_value='CG',key='optimizer')],
             [psg.Text('Distanze')],
@@ -133,6 +137,9 @@ def setBackendAndNoise(values):
         quantum_instance.coupling_map = coupling_map
         quantum_instance.noise_model = noise_model
 
+    if values['correction'] == 'True':
+        quantum_instance.measurement_error_mitigation_cls = CompleteMeasFitter
+        quantum_instance.measurement_error_mitigation_shots = 1000
     return quantum_instance
 
 def setDistAndGeometry(options):
