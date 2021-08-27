@@ -35,37 +35,41 @@ def getDefaultOpt():
     return values
 
 def retriveVQEOptions(argv):
-    layout=[[psg.Text('Molecola')],#, size=(20,1),font='Lucida',justification='left')],
-            [psg.Text('Spin', font='Lucida', justification='left'), psg.Input(default_text=0,size=(4,10),key='spin'),
-             psg.Text('Charge', font='Lucida', justification='left'), psg.Input(default_text=1,size=(4,10),key='charge'),
-             psg.Text('Basis', font='Lucida', justification='left'),
+    layout=[[psg.Text('Molecola')],
+            [psg.Text('Spin'), psg.Input(default_text=0,size=(4,10),key='spin'),
+             psg.Text('Charge'), psg.Input(default_text=1,size=(4,10),key='charge'),
+             psg.Text('Basis'),
              psg.Combo(['sto-3g','sto-6g'],default_value='sto-6g', key='basis')],
-            [psg.Text('Scegli forma variazionale',size=(20, 1), font='Lucida',justification='left')],
+            [psg.Text('Scegli forma variazionale')],
             [psg.Listbox(values=['TwoLocal', 'SO(4)', 'UCCSD'],default_values=['TwoLocal'],select_mode='extended',key='varforms',size=(10, 5))],
-            [psg.Text('Scegli il tipo di backend',size=(30, 1), font='Lucida',justification='left')],
+            [psg.Text('Scegli il tipo di backend')],
             [psg.Combo(['statevector_simulator','qasm_simulator','hardware'],default_value='statevector_simulator',key='backend'),
-             psg.Text('shots',font='Lucida',justification='left'), psg.Input(default_text=1024,size=(4,10),key='shots')],
-            [psg.Text('Scegli l\'eventuale rumore',size=(30, 1), font='Lucida',justification='left')],
-            [psg.Combo(['None', 'ibmq_santiago'],default_value='None', key='noise')],
-            [psg.Text('Optimizer', font='Lucida',justification='left'),
+             psg.Text('shots'), psg.Input(default_text=1024,size=(4,10),key='shots')],
+            [psg.Text('Scegli l\'eventuale rumore'),
+             psg.Combo(['None', 'ibmq_santiago'],default_value='None', key='noise')],
+            [psg.Text('Optimizer'),
              psg.Combo(['CG','COBYLA'], default_value='CG',key='optimizer')],
-            [psg.Text('Distanze', font='Lucida', justification='left')],
-            [psg.Text('Min', font='Lucida', justification='left'), psg.Input(default_text=0.3,size=(4,10),key='dist_min'),
-             psg.Text('Max', font='Lucida', justification='left'), psg.Input(default_text=3.5,size=(4,10),key='dist_max'),
-             psg.Text('Delta', font='Lucida', justification='left'), psg.Input(default_text=0.1,size=(4,10),key='dist_delta')],
-            [psg.Text('Lagrangiana',font='Lucida',justification='left'),
+            [psg.Text('Distanze')],
+            [psg.Text('Min'), psg.Input(default_text=0.3,size=(4,10),key='dist_min'),
+             psg.Text('Max'), psg.Input(default_text=3.5,size=(4,10),key='dist_max'),
+             psg.Text('Delta'), psg.Input(default_text=0.1,size=(4,10),key='dist_delta')],
+            [psg.Text('Lagrangiana'),
              psg.Combo(['True','False'],default_value='False',key='lagrangiana')],
-            [psg.Text('Operatore',font='Lucida',justification='left'),
+            [psg.Text('Operatore'),
              psg.Combo(['number','spin_squared','spin_z'],default_value='number',key='lag_op'),
-             psg.Text('Value',font='Lucida',justification='left'), psg.Input(default_text=2,size=(4,10),key='lag_value'),
-             psg.Text('Multiplier',font='Lucida',justification='left'), psg.Input(default_text=0.2,size=(4,10),key='lag_mult')],
+             psg.Text('Value'), psg.Input(default_text=2,size=(4,10),key='lag_value'),
+             psg.Text('Multiplier'), psg.Input(default_text=0.2,size=(4,10),key='lag_mult')],
             [psg.Button('Inizia calcolo', font=('Times New Roman',12))]]
 
     if len(argv) > 1:
         if argv[1] == 'fast':
             values = getDefaultOpt()
     else:
-        win =psg.Window('Definisci opzioni per VQE',layout,resizable=True)
+        win =psg.Window('Definisci opzioni per VQE',
+                        layout,
+                        resizable=True,
+                        font='Lucida',
+                        text_justification='left')
         e,values=win.read()
         win.close()
 
