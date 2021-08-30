@@ -215,7 +215,7 @@ def checkOptions(options):
     if not options['var_form_type'] in acceptedVars:
         myLogger.error('Questa forma variazionale non è contemplata')
 
-    acceptedLagOps = ['number', 'spin_squared', 'spin_z']
+    acceptedLagOps = ['number', 'spin-squared', 'spin-z']
     if not options['lagrange']['operator'] in acceptedLagOps:
         myLogger.error('Questo operatore lagrangiano non è contemplato')
 

@@ -33,8 +33,12 @@ def getDefaultOpt():
         'dist_delta' : 0.1,
         'lagrangiana' : ['False'],
         'lag_op' : ['number'],
-        'lag_value' : 2,
-        'lag_mult' : 0.2
+        'lag_value_num' : 2,
+        'lag_mult_num' : 0.2,
+        'lag_value_spin2' : 0,
+        'lag_mult_spin2' : 0.2,
+        'lag_value_spinz' : 0,
+        'lag_mult_spinz' : 0.2
     }
     return values
 
@@ -44,7 +48,7 @@ def retriveVQEOptions(argv):
     possibleNoise = ['None', 'ibmq_santiago']
     possibleBool  = ['True', 'False']
     possibleOptim = ['CG', 'COBYLA']
-    possibleLagop = ['number','spin_squared','spin_z']
+    possibleLagop = ['number','spin-squared','spin-z']
     possibleBack  = ['statevector_simulator','qasm_simulator','hardware']
 
     layout=[[psg.Text('Molecola')],
@@ -68,11 +72,15 @@ def retriveVQEOptions(argv):
              psg.Text('Max'), psg.Input(default_text=3.5,size=(4,10),                                               key='dist_max'),
              psg.Text('Delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='dist_delta')],
             [psg.Text('Lagrangiana'),
-             psg.Listbox(possibleBool,default_values=['False'], select_mode='extended',size=(5,2),                  key='lagrangiana')],
-            [psg.Text('Operatore'),
-             psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(14,3),               key='lag_op'),
-             psg.Text('Value'), psg.Input(default_text=2,size=(4,10),                                               key='lag_value'),
-             psg.Text('Multiplier'), psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult')],
+             psg.Listbox(possibleBool,default_values=['False'], select_mode='extended',size=(5,2),                  key='lagrangiana'),
+             psg.Text('Operatore'),
+             psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(14,3),               key='lag_op')],
+            [psg.Text('NUMBER: Value'), psg.Input(default_text=2,size=(4,10),                                       key='lag_value_num'),
+             psg.Text('Multiplier'), psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult_num')],
+            [psg.Text('SPIN-2: Value'), psg.Input(default_text=0,size=(4,10),                                       key='lag_value_spin2'),
+             psg.Text('Multiplier'), psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult_spin2')],
+            [psg.Text('SPIN-Z: Value'), psg.Input(default_text=0,size=(4,10),                                       key='lag_value_spinz'),
+             psg.Text('Multiplier'), psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult_spinz')],
             [psg.Button('Inizia calcolo', font=('Times New Roman',12))]]
 
     if len(argv) > 1:
@@ -90,6 +98,7 @@ def retriveVQEOptions(argv):
     setOptimizers(values)
     setLagrangian(values)
     setBackendAndNoise(values)
+    lagops = setLagrangeOps(values)
 
     options = {
         'dist' : {
@@ -100,7 +109,7 @@ def retriveVQEOptions(argv):
         'molecule' : {
             'spin' : int(values['spin']),
             'charge' : int(values['charge']),
-            'basis' : values['basis'],
+            'basis' : values['basis']
         },
         'varforms' : values['varforms'],
         'quantum_instance' : values['backend'],
@@ -109,23 +118,45 @@ def retriveVQEOptions(argv):
                                    two_qubit_reduction = True),
         'lagrange' : {
             'active' : values['lagrangiana'],
-            'operator' : values['lag_op'],
-            'value' : int(values['lag_value']),
-            'multiplier': float(values['lag_mult'])
+            'operators' : lagops,
         }
     }
 
     options = setDistAndGeometry(options)
 
+    printChoseOption(options)
+
     return options
+
+def setLagrangeOps(values):
+    lagops_list = []
+    for op in values['lag_op']:
+        if op == 'number':
+            lagops_list.append((op, values['lag_value_num'], values['lag_mult_num']))
+        if op == 'spin-squared':
+            lagops_list.append((op, values['lag_value_spin2'], values['lag_mult_spin2']))
+        if op == 'spin-z':
+            lagops_list.append((op, values['lag_value_spinz'], values['lag_value_spinz']))
+    return lagops_list
+
+def printChoseOption(options):
+    print('OPZIONI SCELTE')
+    print('dist: ', options['dists'])
+    print('basis: ', options['molecule']['basis'])
+    print('varforms: ', options['varforms'])
+    print('instances: ', options['quantum_instance'])
+    print('optimizer: ', options['optimizer'])
+    print('lagrange: ',
+          '\n\tactive: ', options['lagrange']['active'],
+          '\n\toperator: ', options['lagrange']['operators'])
 
 def setOptimizers(values):
     optimizers = []
     for opt in values['optimizer']:
         if opt == 'CG':
-            optimizers.append(CG())
+            optimizers.append((CG(), 'CG'))
         if opt == 'COBYLA':
-            optimizers.append(COBYLA())
+            optimizers.append((COBYLA(), 'COBYLA'))
     values['optimizer'] = optimizers
 
 def setLagrangian(values):
@@ -146,6 +177,8 @@ def setBackendAndNoise(values):
 
     for backend,noise,corr in iteratore:
 
+        name = backend + '_' + noise
+
         if backend == 'statevector_simulator':
             quantum_instance = QuantumInstance(Aer.get_backend('statevector_simulator'))
         elif backend == 'qasm_simulator':
@@ -162,11 +195,12 @@ def setBackendAndNoise(values):
             quantum_instance.coupling_map = coupling_map
             quantum_instance.noise_model = noise_model
 
-        if corr == 'True':
+        if noise != 'None' and corr == 'True':
             quantum_instance.measurement_error_mitigation_cls = CompleteMeasFitter
             quantum_instance.measurement_error_mitigation_shots = 1000
+            name += '_corrected'
 
-        quantum_instance_list.append(quantum_instance)
+        quantum_instance_list.append((quantum_instance,name))
 
     values['backend'] = quantum_instance_list
 
