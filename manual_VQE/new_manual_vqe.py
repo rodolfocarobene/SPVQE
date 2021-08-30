@@ -125,15 +125,15 @@ class manualVQE:
             #if(not oper.is_empty()):
             if True: #TODO: solve shinanigan (should not be empty?? taperedPauliSumOp
                 for idx,wfn_circuit in enumerate(wfn_circuits):
-                    '''
+                    
                     circuit = construct_evaluation_circuit(
                                op = oper,
                                wave_function               = wfn_circuit,
                                statevector_mode            = self.instance.is_statevector,
                                 circuit_name_prefix         = 'oper_'+str(jdx)+'_wfn_'+str(idx))
-                    '''
+                    
                     #TODO is this ok?
-                    circuit = wfn_circuit.eval(oper).to_circuit()
+                    #circuit = oper.eval(wfn_circuit).to_circuit_op()
                     circuits.append(circuit)
           # ---
         if circuits:
@@ -319,7 +319,7 @@ def construct_evaluation_circuit(op,wave_function,statevector_mode,
     circuits = []
     if statevector_mode:
         circuits.append(wave_function.copy(name=circuit_name_prefix+'psi'))
-        for _, pauli in op._paulis:
+        for _, pauli in op.to_pauli_op():
             inst = instructions.get(pauli.to_label(),None)
             if inst is not None:
                 circuit = wave_function.copy(name=circuit_name_prefix+pauli.to_label)
