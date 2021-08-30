@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import itertools
 
 from subroutineVQE import solveVQE
 from subroutineGUI import retriveVQEOptions
@@ -7,6 +8,15 @@ from subroutineJSON import retriveJSONOptions, writeJson
 
 if __name__ == '__main__':
     options = retriveVQEOptions(sys.argv)
+
+    iteratore = list(itertools.product(options['basis'],
+                                       options['varforms'],
+                                       options['quantum_instance'],
+                                       options['optimizer'],
+                                       options['lagrange']['active'],
+                                       options['lagrange']['operator']))
+
+    #TODO: nome energie... è fondamentale
     energies = {}
     for var in options['varforms']:
         energies[var] = []
@@ -19,6 +29,7 @@ if __name__ == '__main__':
             result_tot = solveVQE(options)
             result = result_tot.total_energies[0]
             energies[form].append(result)
+
             print("D = ", np.round(options['dists'][i], 2),
                   "\tVar = ", form,
                   "\tE = ", result)

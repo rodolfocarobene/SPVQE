@@ -1,3 +1,5 @@
+import itertools
+
 import numpy as np
 import PySimpleGUI as psg
 
@@ -5,7 +7,7 @@ import warnings
 #warnings.filterwarnings('ignore', category=SystemTimeWarning)
 warnings.simplefilter("ignore")
 
-from qiskit.algorithms.optimizers import CG
+from qiskit.algorithms.optimizers import CG, COBYLA
 from qiskit_nature.converters.second_quantization import QubitConverter
 from qiskit.providers.aer.noise import NoiseModel
 from qiskit_nature.mappers.second_quantization import ParityMapper
@@ -19,50 +21,58 @@ def getDefaultOpt():
     values = {
         'spin' : 0,
         'charge' : 1,
-        'basis' : 'sto-6g',
+        'basis' : ['sto-6g'],
         'varforms' : ['TwoLocal'],
-        'backend' : 'statevector_simulator',
-        'noise' : 'None',
+        'backend' : ['statevector_simulator'],
+        'noise' : ['None'],
         'shots' : 1024,
-        'correction' : 'False',
-        'optimizer' : 'CG',
+        'correction' : ['False'],
+        'optimizer' : ['CG'],
         'dist_min' : 0.3,
         'dist_max' : 3.5,
         'dist_delta' : 0.1,
-        'lagrangiana' : 'False',
-        'lag_op' : 'number',
+        'lagrangiana' : ['False'],
+        'lag_op' : ['number'],
         'lag_value' : 2,
         'lag_mult' : 0.2
     }
     return values
 
 def retriveVQEOptions(argv):
+    possibleForms = ['TwoLocal', 'SO(4)', 'UCCSD']
+    possibleBasis = ['sto-3g', 'sto-6g']
+    possibleNoise = ['None', 'ibmq_santiago']
+    possibleBool  = ['True', 'False']
+    possibleOptim = ['CG', 'COBYLA']
+    possibleLagop = ['number','spin_squared','spin_z']
+    possibleBack  = ['statevector_simulator','qasm_simulator','hardware']
+
     layout=[[psg.Text('Molecola')],
-            [psg.Text('Spin'), psg.Input(default_text=0,size=(4,10),key='spin'),
-             psg.Text('Charge'), psg.Input(default_text=1,size=(4,10),key='charge'),
+            [psg.Text('Spin'), psg.Input(default_text=0,size=(4,10),                                                key='spin'),
+             psg.Text('Charge'), psg.Input(default_text=1,size=(4,10),                                              key='charge'),
              psg.Text('Basis'),
-             psg.Combo(['sto-3g','sto-6g'],default_value='sto-6g', key='basis')],
+             psg.Listbox(possibleBasis, default_values=['sto-6g'],select_mode='extended',size=(7,2),                key='basis')],
             [psg.Text('Scegli forma variazionale')],
-            [psg.Listbox(values=['TwoLocal', 'SO(4)', 'UCCSD'],default_values=['TwoLocal'],select_mode='extended',key='varforms',size=(10, 5))],
+            [psg.Listbox(possibleForms, default_values=['TwoLocal'],select_mode='extended',size=(10,3),             key='varforms')],
             [psg.Text('Scegli il tipo di backend')],
-            [psg.Combo(['statevector_simulator','qasm_simulator','hardware'],default_value='statevector_simulator',key='backend'),
-             psg.Text('shots'), psg.Input(default_text=1024,size=(4,10),key='shots')],
+            [psg.Listbox(possibleBack,default_values=['statevector_simulator'], select_mode='extended',size=(17,3), key='backend'),
+             psg.Text('shots'), psg.Input(default_text=1024,size=(4,10),                                            key='shots')],
             [psg.Text('Scegli l\'eventuale rumore'),
-             psg.Combo(['None', 'ibmq_santiago'],default_value='None', key='noise')],
+             psg.Listbox(possibleNoise, default_values=['None'], select_mode='extended',size=(14,2),                key='noise')],
             [psg.Text('Correction'),
-             psg.Combo(['False','True'], default_value='False',key='correction')],
+             psg.Listbox(possibleBool, default_values=['False'], select_mode='extended',size=(5,2),                 key='correction')],
             [psg.Text('Optimizer'),
-             psg.Combo(['CG','COBYLA'], default_value='CG',key='optimizer')],
+             psg.Listbox(possibleOptim, default_values=['CG'], select_mode='extended',size=(8,2),                   key='optimizer')],
             [psg.Text('Distanze')],
-            [psg.Text('Min'), psg.Input(default_text=0.3,size=(4,10),key='dist_min'),
-             psg.Text('Max'), psg.Input(default_text=3.5,size=(4,10),key='dist_max'),
-             psg.Text('Delta'), psg.Input(default_text=0.1,size=(4,10),key='dist_delta')],
+            [psg.Text('Min'), psg.Input(default_text=0.3,size=(4,10),                                               key='dist_min'),
+             psg.Text('Max'), psg.Input(default_text=3.5,size=(4,10),                                               key='dist_max'),
+             psg.Text('Delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='dist_delta')],
             [psg.Text('Lagrangiana'),
-             psg.Combo(['True','False'],default_value='False',key='lagrangiana')],
+             psg.Listbox(possibleBool,default_values=['False'], select_mode='extended',size=(5,2),                  key='lagrangiana')],
             [psg.Text('Operatore'),
-             psg.Combo(['number','spin_squared','spin_z'],default_value='number',key='lag_op'),
-             psg.Text('Value'), psg.Input(default_text=2,size=(4,10),key='lag_value'),
-             psg.Text('Multiplier'), psg.Input(default_text=0.2,size=(4,10),key='lag_mult')],
+             psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(14,3),               key='lag_op'),
+             psg.Text('Value'), psg.Input(default_text=2,size=(4,10),                                               key='lag_value'),
+             psg.Text('Multiplier'), psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult')],
             [psg.Button('Inizia calcolo', font=('Times New Roman',12))]]
 
     if len(argv) > 1:
@@ -77,17 +87,9 @@ def retriveVQEOptions(argv):
         e,values=win.read()
         win.close()
 
-    if values['optimizer'] == 'CG':
-        optimizer = CG()
-    elif values['optimizer'] == 'COBYLA':
-        optimizer = COBYLA()
-
-    if values['lagrangiana'] == 'True':
-        lagrangianActivity = True
-    elif values['lagrangiana'] == 'False':
-        lagrangianActivity = False
-
-    quantum_instance = setBackendAndNoise(values)
+    setOptimizers(values)
+    setLagrangian(values)
+    setBackendAndNoise(values)
 
     options = {
         'dist' : {
@@ -98,15 +100,15 @@ def retriveVQEOptions(argv):
         'molecule' : {
             'spin' : int(values['spin']),
             'charge' : int(values['charge']),
-            'basis' : str(values['basis']),
+            'basis' : values['basis'],
         },
         'varforms' : values['varforms'],
-        'quantum_instance' : quantum_instance,
-        'optimizer' : optimizer,
+        'quantum_instance' : values['backend'],
+        'optimizer' : values['optimizer'],
         'converter' : QubitConverter(mapper = ParityMapper(),
                                    two_qubit_reduction = True),
         'lagrange' : {
-            'active' : lagrangianActivity,
+            'active' : values['lagrangiana'],
             'operator' : values['lag_op'],
             'value' : int(values['lag_value']),
             'multiplier': float(values['lag_mult'])
@@ -117,30 +119,56 @@ def retriveVQEOptions(argv):
 
     return options
 
+def setOptimizers(values):
+    optimizers = []
+    for opt in values['optimizer']:
+        if opt == 'CG':
+            optimizers.append(CG())
+        if opt == 'COBYLA':
+            optimizers.append(COBYLA())
+    values['optimizer'] = optimizers
+
+def setLagrangian(values):
+    lagrangian_list = []
+    for lag in values['lagrangiana']:
+        if lag == 'True':
+            lagrangian_list.append(True)
+        else:
+            lagrangian_list.append(False)
+    values['lagrangiana'] = lagrangian_list
+
 def setBackendAndNoise(values):
+    quantum_instance_list = []
+
     provider = IBMQ.load_account()
 
-    if values['backend'] == 'statevector_simulator':
-        quantum_instance = QuantumInstance(Aer.get_backend('statevector_simulator'))
-    elif values['backend'] == 'qasm_simulator':
-        quantum_instance = QuantumInstance(Aer.get_backend('qasm_simulator'),
+    iteratore = list(itertools.product(values['backend'],values['noise'],values['correction']))
+
+    for backend,noise,corr in iteratore:
+
+        if backend == 'statevector_simulator':
+            quantum_instance = QuantumInstance(Aer.get_backend('statevector_simulator'))
+        elif backend == 'qasm_simulator':
+            quantum_instance = QuantumInstance(Aer.get_backend('qasm_simulator'),
                                            shots=int(values['shots']))
+        if backend == 'qasm_simulator' and noise != 'None':
+            device = provider.get_backend(noise)
+            coupling_map = device.configuration().coupling_map
+            noise_model = NoiseModel.from_backend(device)
+            basis_gates = noise_model.basis_gates
+            seed = 150
+            quantum_instance.seed_simulator = seed
+            quantum_instance.seed_transpiler = seed
+            quantum_instance.coupling_map = coupling_map
+            quantum_instance.noise_model = noise_model
 
-    if values['backend'] == 'qasm_simulator' and values['noise'] != 'None':
-        device = provider.get_backend(values['noise'])
-        coupling_map = device.configuration().coupling_map
-        noise_model = NoiseModel.from_backend(device)
-        basis_gates = noise_model.basis_gates
-        seed = 150
-        quantum_instance.seed_simulator = seed
-        quantum_instance.seed_transpiler = seed
-        quantum_instance.coupling_map = coupling_map
-        quantum_instance.noise_model = noise_model
+        if corr == 'True':
+            quantum_instance.measurement_error_mitigation_cls = CompleteMeasFitter
+            quantum_instance.measurement_error_mitigation_shots = 1000
 
-    if values['correction'] == 'True':
-        quantum_instance.measurement_error_mitigation_cls = CompleteMeasFitter
-        quantum_instance.measurement_error_mitigation_shots = 1000
-    return quantum_instance
+        quantum_instance_list.append(quantum_instance)
+
+    values['backend'] = quantum_instance_list
 
 def setDistAndGeometry(options):
     minimo = float(options['dist']['min'])
