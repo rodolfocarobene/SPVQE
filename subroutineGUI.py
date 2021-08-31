@@ -43,7 +43,7 @@ def getDefaultOpt():
     return values
 
 def retriveVQEOptions(argv):
-    possibleForms = ['TwoLocal', 'SO(4)', 'UCCSD']
+    possibleForms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
     possibleBasis = ['sto-3g', 'sto-6g']
     possibleNoise = ['None', 'ibmq_santiago']
     possibleBool  = ['True', 'False']
@@ -57,7 +57,7 @@ def retriveVQEOptions(argv):
              psg.Text('Basis'),
              psg.Listbox(possibleBasis, default_values=['sto-6g'],select_mode='extended',size=(7,2),                key='basis')],
             [psg.Text('Scegli forma variazionale')],
-            [psg.Listbox(possibleForms, default_values=['TwoLocal'],select_mode='extended',size=(10,3),             key='varforms')],
+            [psg.Listbox(possibleForms, default_values=['TwoLocal'],select_mode='extended',size=(12,4),             key='varforms')],
             [psg.Text('Scegli il tipo di backend')],
             [psg.Listbox(possibleBack,default_values=['statevector_simulator'], select_mode='extended',size=(17,3), key='backend'),
              psg.Text('shots'), psg.Input(default_text=1024,size=(4,10),                                            key='shots')],

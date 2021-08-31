@@ -18,7 +18,7 @@ from qiskit_nature.results import EigenstateResult
 from qiskit.algorithms.optimizers import L_BFGS_B, CG
 from qiskit.algorithms import VQE
 from qiskit.circuit import QuantumRegister, Parameter
-from qiskit.circuit.library import TwoLocal
+from qiskit.circuit.library import TwoLocal, EfficientSU2
 from qiskit.utils import QuantumInstance
 from qiskit.opflow.primitive_ops import PauliOp
 from qiskit.quantum_info import Pauli
@@ -179,6 +179,15 @@ def createVQEFromAnsatzType(var_form_type,
                           entanglement_blocks = 'cx',
                           initial_state = init_state,
                           entanglement = 'linear')
+        initial_point = np.random.rand(ansatz.num_parameters)
+        vqe_solver = VQE(ansatz = ansatz,
+                         optimizer = optimizer,
+                         initial_point = initial_point,
+                         quantum_instance = quantum_instance)
+    elif var_form_type == 'EfficientSU(2)':
+        ansatz = EfficientSU2(num_qubits = num_qubits,
+                              entanglement = 'linear',
+                              initial_state = init_state)
         initial_point = np.random.rand(ansatz.num_parameters)
         vqe_solver = VQE(ansatz = ansatz,
                          optimizer = optimizer,
