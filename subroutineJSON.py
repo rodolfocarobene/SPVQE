@@ -8,22 +8,32 @@ def getDateTimeString():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
 
-
-def retriveJSONOptions(filename,dist,energies):
+def retriveJSONOptions(filename,options,results):
     JsonOptions = {
+        'commit': None,
         'file': filename,
-        'algo': {
-            'name': 'vqe',
-            'type': 'lagrangianvqe'
-        },
-        'backend': {
-            'type': 'statevector_simulator',
-            'noisy': 'None'
-        },
-        'dist': dist,
-        'energies' : energies
+        'options': options,
+        'results_tot': results,
+        'description': None,
+        'varianti': checkVarianti(options)
     }
     return JsonOptions
+
+def checkVarianti(opt):
+    varianti = []
+    if len(opt['molecule']['basis']) > 1:
+        varianti.append('base')
+    if len(opt['varforms']) > 1:
+        varianti.append('varform')
+    if len(opt['quantum_instance']) > 1:
+        varianti.append('quantum_instance')
+    if len(opt['optimizer']) > 1:
+        varianti.append('optimizer')
+    if len(opt['lagrange']['active']) > 1:
+        varianti.append('lagrange activity')
+    if len(opt['lagrange']['operators']) > 1:
+        varianti.append('lagrange operator')
+    return varianti
 
 def writeJson(JsonOptions):
     filename = "data/exp_"+getDateTimeString()
