@@ -18,9 +18,15 @@ if __name__ == '__main__':
                                        options['lagrange']['operators']))
 
     results = {}
-    for item in iteratore:
+    names = []
+
+    for idx, item in enumerate(iteratore):
         name = iteratorItemToString(item)
-        results[name] = []
+        if name not in names:
+            names.append(name)
+            results[name] = []
+        else:
+            del iteratore[idx]
 
     for i, geometry in enumerate(options['geometries']):
         options['molecule']['geometry'] = geometry
