@@ -27,7 +27,6 @@ if __name__ == '__main__':
         print("D = ", np.round(options['dists'][i], 2))
         for item in iteratore:
             name = iteratorItemToString(item)
-
             option = fromItemIterToOption(options, item)
 
             result_tot = solveVQE(option)
@@ -36,6 +35,7 @@ if __name__ == '__main__':
             energy = result_tot.total_energies[0]
             print("\t", name, "\tE = ", energy)
 
+    print('\n',options['lagrange']['active'])
 
     JsonOptions = retriveJSONOptions(__file__,
                                      options,

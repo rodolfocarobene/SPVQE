@@ -1,3 +1,5 @@
+import copy
+
 def iteratorItemToString(item):
     name = item[0]
     name += '_' + item[1]
@@ -9,7 +11,7 @@ def iteratorItemToString(item):
     return name
 
 def fromItemIterToOption(options, item):
-    option = options.copy()
+    option = copy.deepcopy(options)
     option['molecule']['basis'] = item[0]
     option['var_form_type'] = item[1]
     option['quantum_instance'] = item[2][0]
@@ -18,6 +20,7 @@ def fromItemIterToOption(options, item):
     option['lagrange']['operator'] = item[5][0]
     option['lagrange']['value'] = int(item[5][1])
     option['lagrange']['multiplier'] = float(item[5][2])
+
     return option
 
 

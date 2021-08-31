@@ -17,9 +17,44 @@ def retriveJSONOptions(filename,options,results):
         'description': None,
         'varianti': checkVarianti(options)
     }
+
+    instances = []
+    optimizers = []
+    for item in JsonOptions['options']['quantum_instance']:
+        instances.append(item[1])
+    for item in JsonOptions['options']['optimizer']:
+        optimizers.append(item[1])
+    JsonOptions['options']['quantum_instance'] = instances
+    JsonOptions['options']['optimizer'] = optimizers
+    del JsonOptions['options']['converter']
+    JsonOptions['options']['dists'] = JsonOptions['options']['dists'].tolist()
+
+    #TODO what have I done
+    total_results = {}
+    for resultTot in JsonOptions['results_tot']:
+        results = []
+        for idx in range(len(JsonOptions['results_tot'][resultTot])):
+            singleResult = fromElectronicResultToDict(JsonOptions['results_tot'][resultTot][idx])
+            results.append(singleResult)
+        total_results[resultTot] = results
+
+    JsonOptions['results_tot'] = total_results
+
     return JsonOptions
 
+def fromElectronicResultToDict(resultOld):
+    resultNew = {
+        'energy': resultOld.total_energies[0],
+        'auxiliary': {
+            'particles': resultOld.num_particles,
+            'spin-z': resultOld.spin,
+            'spin-sq': resultOld.total_angular_momentum
+        }
+    }
+    return resultNew
+
 def checkVarianti(opt):
+
     varianti = []
     if len(opt['molecule']['basis']) > 1:
         varianti.append('base')
