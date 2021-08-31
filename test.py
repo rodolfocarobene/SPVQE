@@ -35,8 +35,6 @@ if __name__ == '__main__':
             energy = result_tot.total_energies[0]
             print("\t", name, "\tE = ", energy)
 
-    print('\n',options['lagrange']['active'])
-
     JsonOptions = retriveJSONOptions(__file__,
                                      options,
                                      results)
