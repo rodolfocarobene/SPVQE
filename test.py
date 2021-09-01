@@ -19,14 +19,15 @@ if __name__ == '__main__':
 
     results = {}
     names = []
+    newiteratore = []
 
     for idx, item in enumerate(iteratore):
         name = iteratorItemToString(item)
         if name not in names:
             names.append(name)
             results[name] = []
-        else:
-            del iteratore[idx]
+            newiteratore.append(item)
+    iteratore = newiteratore
 
     for i, geometry in enumerate(options['geometries']):
         options['molecule']['geometry'] = geometry

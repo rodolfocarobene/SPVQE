@@ -14,6 +14,7 @@ from qiskit_nature.mappers.second_quantization import ParityMapper
 from qiskit.utils import QuantumInstance
 from qiskit.ignis.mitigation import CompleteMeasFitter
 from qiskit import Aer
+from qiskit.providers.aer import QasmSimulator
 from qiskit import IBMQ
 
 def getDefaultOpt():
@@ -177,13 +178,13 @@ def setBackendAndNoise(values):
 
     for backend,noise,corr in iteratore:
 
-        name = backend + '_' + noise
-
         if backend == 'statevector_simulator':
             quantum_instance = QuantumInstance(Aer.get_backend('statevector_simulator'))
+            noise = 'None'
         elif backend == 'qasm_simulator':
-            quantum_instance = QuantumInstance(Aer.get_backend('qasm_simulator'),
-                                           shots=int(values['shots']))
+            quantum_instance = QuantumInstance(backend=QasmSimulator(method='statevector'),
+                                               skip_qobj_validation=True,
+                                               shots=int(values['shots']))
         if backend == 'qasm_simulator' and noise != 'None':
             device = provider.get_backend(noise)
             coupling_map = device.configuration().coupling_map
@@ -195,7 +196,9 @@ def setBackendAndNoise(values):
             quantum_instance.coupling_map = coupling_map
             quantum_instance.noise_model = noise_model
 
-        if noise != 'None' and corr == 'True':
+        name = backend + '_' + noise
+
+        if backend == 'qasm_simulator' and noise != 'None' and corr == 'True':
             quantum_instance.measurement_error_mitigation_cls = CompleteMeasFitter
             quantum_instance.measurement_error_mitigation_shots = 1000
             name += '_corrected'

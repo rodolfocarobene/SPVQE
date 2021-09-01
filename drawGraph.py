@@ -17,6 +17,8 @@ if __name__ == '__main__':
     fig = plt.figure(figsize=(8,5))
     ax = plt.subplot(111)
 
+    myLegend = []
+
     for  item in results:
         y = []
 
@@ -34,13 +36,22 @@ if __name__ == '__main__':
             markerstyle = 'o'
 
         ax.plot(x,y,label=item, linestyle=linestyle, marker=markerstyle)
+        myLegend.append(item)
 
     fig.subplots_adjust(right=0.936, top=0.8)
 
     plt.xlabel(r"$d$ $[\AA]$", fontsize = 'x-large')
     plt.ylabel(r"Energia $[E_H]$", fontsize = 'x-large')
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.3),
-              ncol = 1, fancybox = True, shadow = True)
+
+    if len(sys.argv) > 2:
+        if sys.argv[2] == 'nolegend':
+            print(myLegend)
+        else:
+            ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.3),
+                      ncol = 1, fancybox = True, shadow = True)
+    else:
+        ax.legend(loc='upper center', bbox_to_anchor=(0.5,1.3),
+                  ncol = 1, fancybox = True, shadow = True)
 
 
 
