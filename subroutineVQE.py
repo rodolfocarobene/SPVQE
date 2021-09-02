@@ -109,7 +109,8 @@ def createLagrangeOperator(h_op,
 
     o_opt = PauliOp(Pauli((z,x)), -value)
 
-    mult = a_op[idx].add(o_opt).mul(multiplier)
+    mult = a_op[idx].add(o_opt) ** 2
+    mult = mult.mul(multiplier)
     L_op  =  h_op.add(mult)
 
     myLogger.info('Fine di createLagrangeOperator')
