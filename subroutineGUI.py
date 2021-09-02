@@ -32,7 +32,7 @@ def getDefaultOpt():
         'dist_min' : 0.3,
         'dist_max' : 3.5,
         'dist_delta' : 11,
-        'lagrangiana' : ['True','False'],
+        'lagrangiana' : ['False'],
         'lag_op' : ['number'],
         'lag_value_num' : 2,
         'lag_mult_num_min' : 0.2,
@@ -146,7 +146,7 @@ def retriveVQEOptions(argv):
     return options
 
 def setLagrangeOps(values):
-    lagops_list = []
+    lagops_list = [('dummy', 0, 0)]
     for op in values['lag_op']:
         if op == 'number':
             mults = np.arange(float(values['lag_mult_num_min']), float(values['lag_mult_num_max']), float(values['lag_mult_num_delta']))
