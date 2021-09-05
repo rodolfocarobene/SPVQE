@@ -268,15 +268,16 @@ def solveLagrangianVQE(options):
                                          converter,
                                          problem.num_particles)
 
-    multiplier = options['lagrange']['multiplier']
-    operator = options['lagrange']['operator']
-    value = options['lagrange']['value']
+    for operatore in options['lagrange']['operators']:
+        multiplier = operatore[2]
+        operator = operatore[0]
+        value = operatore[1]
 
-    lagrange_op = createLagrangeOperator(qubit_op,
-                                         aux_ops,
-                                         multiplier = multiplier,
-                                         operator = operator,
-                                         value = value)
+        lagrange_op = createLagrangeOperator(lagrange_op,
+                                             aux_ops,
+                                             multiplier = multiplier,
+                                             operator = operator,
+                                             value = value)
 
     oldResult = vqe_solver.compute_minimum_eigenvalue(operator=lagrange_op,
                                                  aux_operators=aux_ops)

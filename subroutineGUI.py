@@ -55,7 +55,7 @@ def retriveVQEOptions(argv):
     possibleNoise = ['None', 'ibmq_santiago']
     possibleBool  = ['True', 'False']
     possibleOptim = ['CG', 'COBYLA']
-    possibleLagop = ['number','spin-squared','spin-z']
+    possibleLagop = ['number','spin-squared','spin-z', 'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
     possibleBack  = ['statevector_simulator','qasm_simulator','hardware']
 
     layout=[[psg.Text('Molecola')],
@@ -79,9 +79,9 @@ def retriveVQEOptions(argv):
              psg.Text('Max'), psg.Input(default_text=3.5,size=(4,10),                                               key='dist_max'),
              psg.Text('Delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='dist_delta')],
             [psg.Text('Lagrangiana'),
-             psg.Listbox(possibleBool,default_values=['False'], select_mode='extended',size=(5,2),                  key='lagrangiana'),
-             psg.Text('Operatore'),
-             psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(14,3),               key='lag_op')],
+             psg.Listbox(possibleBool,default_values=['False'], select_mode='extended',size=(5,2),                  key='lagrangiana')],
+            [psg.Text('Operatore'),
+             psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(14,7),               key='lag_op')],
 
             [psg.Text('NUMBER: Value'), psg.Input(default_text=2,size=(4,10),                                       key='lag_value_num'),
              psg.Text('Mult: min'),  psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult_num_min'),
@@ -146,20 +146,67 @@ def retriveVQEOptions(argv):
     return options
 
 def setLagrangeOps(values):
-    lagops_list = [('dummy', 0, 0)]
+    lagops_list = [[('dummy', 0, 0)]]
     for op in values['lag_op']:
         if op == 'number':
             mults = np.arange(float(values['lag_mult_num_min']), float(values['lag_mult_num_max']), float(values['lag_mult_num_delta']))
             for mult in mults:
-                lagops_list.append((op, values['lag_value_num'], mult))
+                lagops_list.append([(op, values['lag_value_num'], mult)])
         if op == 'spin-squared':
             mults = np.arange(float(values['lag_mult_spin2_min']), float(values['lag_mult_spin2_max']), float(values['lag_mult_spin2_delta']))
             for mult in mults:
-                lagops_list.append((op, values['lag_value_spin2'], mult))
+                lagops_list.append([(op, values['lag_value_spin2'], mult)])
         if op == 'spin-z':
             mults = np.arange(float(values['lag_mult_spinz_min']), float(values['lag_mult_spinz_max']), float(values['lag_mult_spinz_delta']))
             for mult in mults:
-                lagops_list.append((op, values['lag_value_spinz'], mult))
+                lagops_list.append([(op, values['lag_value_spinz'], mult)])
+        #-----
+        if op == 'num+spin2':
+            mults_num = np.arange(float(values['lag_mult_num_min']), float(values['lag_mult_num_max']), float(values['lag_mult_num_delta']))
+            mults_spin2 = np.arange(float(values['lag_mult_spin2_min']), float(values['lag_mult_spin2_max']), float(values['lag_mult_spin2_delta']))
+            for mult_num in mults_num:
+                for mult_spin2 in mults_spin2:
+                    templist = []
+                    templist.append(('number', values['lag_value_num'], mult_num))
+                    templist.append(('spin-squared', values['lag_value_spin2'], mult_spin2))
+                    lagops_list.append(templist)
+
+        #-----
+        if op == 'num+spinz':
+            mults_num = np.arange(float(values['lag_mult_num_min']), float(values['lag_mult_num_max']), float(values['lag_mult_num_delta']))
+            mults_spinz = np.arange(float(values['lag_mult_spinz_min']), float(values['lag_mult_spinz_max']), float(values['lag_mult_spinz_delta']))
+            for mult_num in mults_num:
+                for mult_spinz in mults_spinz:
+                    templist = []
+                    templist.append(('number', values['lag_value_num'], mult_num))
+                    templist.append(('spin-z', values['lag_value_spinz'], mult_spinz))
+                    lagops_list.append(templist)
+
+        #-----
+        if op == 'spin2+spinz':
+            mults_spin2 = np.arange(float(values['lag_mult_spin2_min']), float(values['lag_mult_spin2_max']), float(values['lag_mult_spin2_delta']))
+            mults_spinz = np.arange(float(values['lag_mult_spinz_min']), float(values['lag_mult_spinz_max']), float(values['lag_mult_spinz_delta']))
+            for mult_spin2 in mults_spin2:
+                for mult_spinz in mults_spinz:
+                    templist = []
+                    templist.append(('spin-squared', values['lag_value_spin2'], mult_spin2))
+                    templist.append(('spin-z', values['lag_value_spinz'], mult_spinz))
+                    lagops_list.append(templist)
+
+        #-----
+        if op == 'num+spin2+spinz':
+            mults_spin2 = np.arange(float(values['lag_mult_spin2_min']), float(values['lag_mult_spin2_max']), float(values['lag_mult_spin2_delta']))
+            mults_num = np.arange(float(values['lag_mult_num_min']), float(values['lag_mult_num_max']), float(values['lag_mult_num_delta']))
+            mults_spinz = np.arange(float(values['lag_mult_spinz_min']), float(values['lag_mult_spinz_max']), float(values['lag_mult_spinz_delta']))
+            for mult_spin2 in mults_spin2:
+                for mult_spinz in mults_spinz:
+                    for mult_num in mults_num:
+                        templist = []
+                        templist.append(('spin-squared', values['lag_value_spin2'], mult_spin2))
+                        templist.append(('spin-z', values['lag_value_spinz'], mult_spinz))
+                        templist.append(('number', values['lag_value_num'], mult_num))
+                        lagops_list.append(templist)
+
     return lagops_list
 
 def printChoseOption(options):

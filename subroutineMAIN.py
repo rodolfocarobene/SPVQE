@@ -7,8 +7,10 @@ def iteratorItemToString(item):
     name += '_' + item[2][1]
     name += '_' + item[3][1]
     if item[4] == True:
-        if item[5][0] != 'dummy':
-            name += '_Lag_' + item[5][0] + '(' + str(np.round(item[5][2],2)) + ')'
+        if item[5][0][0] != 'dummy':
+            name += '_Lag_' 
+            for operator in item[5]:
+                name += operator[0]+'('+str(np.round(operator[2],2))+')'
 
     return name
 
@@ -19,11 +21,9 @@ def fromItemIterToOption(options, item):
     option['quantum_instance'] = item[2][0]
     option['optimizer'] = item[3][0]
     option['lagrange']['active'] = item[4]
-    option['lagrange']['operator'] = item[5][0]
-    option['lagrange']['value'] = int(item[5][1])
-    option['lagrange']['multiplier'] = float(item[5][2])
+    option['lagrange']['operators'] = item[5]
 
-    if item[5][0] == 'dummy':
+    if item[5][0][0] == 'dummy':
         option['lagrange']['active'] = False
 
     return option
