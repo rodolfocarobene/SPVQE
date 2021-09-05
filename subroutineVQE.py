@@ -217,27 +217,8 @@ def createVQEFromAnsatzType(var_form_type,
 
     return vqe_solver
 
-def checkOptions(options):
-    myLogger.info('Inizio checkOptions')
-
-    acceptedBasis = ['sto-3g', 'sto-6g'] # TODO:: aggiungere le altre
-    if not options['molecule']['basis'] in acceptedBasis:
-        myLogger.error('Questa base non è contemplata')
-
-    acceptedVars = ['TwoLocal', 'SO(4)', 'UCCSD']
-    if not options['var_form_type'] in acceptedVars:
-        myLogger.error('Questa forma variazionale non è contemplata')
-
-    acceptedLagOps = ['number', 'spin-squared', 'spin-z']
-    if not options['lagrange']['operator'] in acceptedLagOps:
-        myLogger.error('Questo operatore lagrangiano non è contemplato')
-
-    myLogger.info('Fine checkOptions')
-
-
 def solveHamiltonianVQE(options):
     myLogger.info('Inizio solveHamiltonianVQE')
-    checkOptions(options)
     myLogger.info('OPTIONS')
     myLogger.info(options)
 
@@ -254,7 +235,6 @@ def solveHamiltonianVQE(options):
 
 def solveLagrangianVQE(options):
     myLogger.info('Inizio solveLagrangianVQE')
-    checkOptions(options)
     myLogger.info('OPTIONS')
     myLogger.info(options)
 
@@ -268,11 +248,12 @@ def solveLagrangianVQE(options):
                                          converter,
                                          problem.num_particles)
 
+    lagrange_op = qubit_op
     for operatore in options['lagrange']['operators']:
-        multiplier = operatore[2]
         operator = operatore[0]
         value = operatore[1]
-
+        multiplier = operatore[2]
+        print(operator, ' ', value, ' ', multiplier)
         lagrange_op = createLagrangeOperator(lagrange_op,
                                              aux_ops,
                                              multiplier = multiplier,
