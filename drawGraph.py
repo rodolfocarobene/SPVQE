@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
         if 'statevector_simulator' in item:
             linestyle = 'dashed'
-            markerstyle = 'None'
+            markerstyle = 'o'
         elif 'qasm_simulator' in item:
             linestyle = 'dashdot'
             markerstyle = 'None'

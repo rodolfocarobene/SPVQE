@@ -7,7 +7,8 @@ def iteratorItemToString(item):
     name += '_' + item[2][1]
     name += '_' + item[3][1]
     if item[4] == True:
-        name += '_Lag_' + item[5][0] + '(' + str(np.round(item[5][2],2)) + ')'
+        if item[5][0] != 'dummy':
+            name += '_Lag_' + item[5][0] + '(' + str(np.round(item[5][2],2)) + ')'
 
     return name
 
@@ -21,6 +22,9 @@ def fromItemIterToOption(options, item):
     option['lagrange']['operator'] = item[5][0]
     option['lagrange']['value'] = int(item[5][1])
     option['lagrange']['multiplier'] = float(item[5][2])
+
+    if item[5][0] == 'dummy':
+        option['lagrange']['active'] = False
 
     return option
 
