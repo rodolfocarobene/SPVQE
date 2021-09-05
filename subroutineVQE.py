@@ -253,7 +253,6 @@ def solveLagrangianVQE(options):
         operator = operatore[0]
         value = operatore[1]
         multiplier = operatore[2]
-        print(operator, ' ', value, ' ', multiplier)
         lagrange_op = createLagrangeOperator(lagrange_op,
                                              aux_ops,
                                              multiplier = multiplier,
