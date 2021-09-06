@@ -2,19 +2,20 @@
 import numpy as np
 
 from qiskit_nature.drivers import UnitsType, Molecule
-from qiskit_nature.drivers.second_quantization import VibrationalStructureMoleculeDriver, PySCFDriver
-from qiskit_nature.drivers.second_quantization.electronic_structure_driver import MethodType
+from qiskit_nature.drivers.second_quantization import VibrationalStructureMoleculeDriver
 from qiskit_nature.problems.second_quantization import VibrationalStructureProblem
 from qiskit_nature.mappers.second_quantization import DirectMapper
 from qiskit_nature.converters.second_quantization import QubitConverter
 
-from qiskit_nature.algorithms import VQEUCCFactory, GroundStateEigensolver
+from qiskit_nature.algorithms import GroundStateEigensolver
 
 from qiskit.algorithms.optimizers import L_BFGS_B, CG
 from qiskit.algorithms import VQE
 
 from qiskit.circuit import QuantumRegister, Parameter
 from qiskit.circuit.library import TwoLocal
+
+from qiskit_nature.circuit.library import VSCF, UVCCSD
 
 from qiskit.utils import QuantumInstance
 
@@ -32,45 +33,56 @@ def vqe_function(geometry,
                  optimizer = CG(),
                  converter = QubitConverter(mapper = DirectMapper())
                  ):
-    #setting up molecule driver
 
-    electronicDriver = PySCFDriver(atom = geometry,
-                         unit = UnitsType.ANGSTROM,
-                         basis = basis,
-                         spin = spin,
-                         charge = charge,
-                         method = MethodType.RHF)
+    print("inizializzo problema")
+    molecule = Molecule(geometry = geometry,
+                        multiplicity = 2*spin+1,
+                        charge = charge)
 
-    molecule = electronicDriver.run()
     vibrationalDriver = VibrationalStructureMoleculeDriver(molecule)
 
-    problem = VibrationalStructureProblem(vibrationalDriver,num_modals=2, truncation_order=2)
+    num_modals = [2,2,1]
+    problem = VibrationalStructureProblem(vibrationalDriver,
+                                          num_modals=num_modals,
+                                          truncation_order=2)
 
-    ansatz = TwoLocal(num_qubits = 7,
+    print("inizializzo ansatz")
+    init_state = VSCF(num_modals = num_modals)
+                      #qubit_converter = converter)
+
+    '''
+    ansatz = UVCCSD(qubit_converter = converter,
+                    num_modals=num_modals,
+                    reps = 1,
+                    initial_state = init_state)
+    '''
+    ansatz = TwoLocal(num_qubits = sum(num_modals),
                       rotation_blocks = 'ry',
                       entanglement_blocks = 'cx',
-                      entanglement = 'linear')
+                      initial_state = init_state)
+
+    def salvaTemp(count, pars, mean, std):
+        print(count, ' ', pars)
 
     vqe_solver = VQE(ansatz = ansatz,
                      optimizer = optimizer,
-                     quantum_instance = quantum_instance)
+                     initial_point = np.random.rand(ansatz.num_parameters),
+                     quantum_instance = quantum_instance,
+                     callback = salvaTemp)
 
+    print("creo groundStateSolver")
     calc = GroundStateEigensolver(converter, vqe_solver)
+    print("solve")
     elec = calc.solve(problem)
     print(elec)
-'''
-    print("RISULTATO: ",
-          "\n\tEnergia calcolata: ", elec.computed_energies[0],
-          "\n\tEnergia ioni: ", elec.nuclear_repulsion_energy,
-          "\n\tTotale: ", elec.total_energies[0],
-          "\n\tNum particelle: ", elec.num_particles,
-          "\n\tSpin: ", elec.spin)
-'''
-#main
 
+
+#main
 dist = 1.0
 alt=np.sqrt(dist**2 - (dist/2)**2)
-geometry = "H .0 .0 .0; H .0 .0 " + str(dist) + "; H .0 " + str(alt) + " " + str(dist/2) 
+geometry = [('H', [0., 0., 0.]),
+            ('H', [dist, 0., 0.]),
+            ('H', [dist/2, alt, 0.])]
 
 
 vqe_function(geometry, var_form_type='TwoLocal')
