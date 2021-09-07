@@ -9,7 +9,7 @@ from qiskit_nature.converters.second_quantization import QubitConverter
 
 from qiskit_nature.algorithms import GroundStateEigensolver
 
-from qiskit.algorithms.optimizers import L_BFGS_B, CG
+from qiskit.algorithms.optimizers import L_BFGS_B, CG, COBYLA
 from qiskit.algorithms import VQE
 
 from qiskit.circuit import QuantumRegister, Parameter
@@ -27,11 +27,10 @@ from qiskit import QuantumCircuit
 def vqe_function(geometry,
                  spin = 0,
                  charge = 1,
-                 basis = 'sto6g',
-                 var_form_type = 'TwoLocal',
                  quantum_instance = QuantumInstance(Aer.get_backend('statevector_simulator')),
-                 optimizer = CG(),
-                 converter = QubitConverter(mapper = DirectMapper())
+                 optimizer = COBYLA(maxiter=2000000, disp=True),
+                 converter = QubitConverter(mapper = DirectMapper()),
+                 num_modals = [2,2,1]
                  ):
 
     print("inizializzo problema")
@@ -41,7 +40,6 @@ def vqe_function(geometry,
 
     vibrationalDriver = VibrationalStructureMoleculeDriver(molecule)
 
-    num_modals = [2,2,1]
     problem = VibrationalStructureProblem(vibrationalDriver,
                                           num_modals=num_modals,
                                           truncation_order=2)
@@ -62,11 +60,12 @@ def vqe_function(geometry,
                       initial_state = init_state)
 
     def salvaTemp(count, pars, mean, std):
-        print(count, ' ', pars)
+        if count % 100 == 0:
+            print(count, ' ', pars)
 
     vqe_solver = VQE(ansatz = ansatz,
                      optimizer = optimizer,
-                     initial_point = np.random.rand(ansatz.num_parameters),
+                     initial_point = np.zeros(ansatz.num_parameters),
                      quantum_instance = quantum_instance,
                      callback = salvaTemp)
 
@@ -78,11 +77,31 @@ def vqe_function(geometry,
 
 
 #main
+'''
 dist = 1.0
 alt=np.sqrt(dist**2 - (dist/2)**2)
 geometry = [('H', [0., 0., 0.]),
             ('H', [dist, 0., 0.]),
             ('H', [dist/2, alt, 0.])]
+num_modals = [2,2,1]
+
+geometry = [('O', [-1.1621, 0., 0.]),
+            ('C', [0., 0., 0.]),
+            ('O', [+1.1621, 0., 0.])]
+
+num_modals = [2,2,2,2]
+'''
+dist = 0.9584
+ang = 104.45/2
+theta = np.pi * ang / 180.
+geometry = [('H', [-dist*np.sin(theta), dist*np.cos(theta), 0.]),
+            ('O', [0., 0., 0.]),
+            ('H', [+dist*np.sin(theta), dist*np.cos(theta), 0.])]
+num_modals = [2,2,2,2]
 
 
-vqe_function(geometry, var_form_type='TwoLocal')
+
+vqe_function(geometry,
+             num_modals = num_modals,
+             spin = 0,
+             charge = 0)
