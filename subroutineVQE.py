@@ -13,7 +13,7 @@ from qiskit_nature.drivers.second_quantization.electronic_structure_driver impor
 from qiskit_nature.problems.second_quantization.electronic import ElectronicStructureProblem
 from qiskit_nature.mappers.second_quantization import ParityMapper, BravyiKitaevMapper
 from qiskit_nature.converters.second_quantization import QubitConverter
-from qiskit_nature.circuit.library import HartreeFock
+from qiskit_nature.circuit.library import HartreeFock, UCCSD
 from qiskit_nature.algorithms import VQEUCCFactory, GroundStateEigensolver
 from qiskit_nature.results import EigenstateResult
 
@@ -164,7 +164,10 @@ def prepareBaseVQE(options):
                                          num_qubits,
                                          init_state,
                                          quantum_instance,
-                                         optimizer)
+                                         optimizer,
+                                         converter,
+                                         num_particles,
+                                         num_spin_orbitals)
 
     myLogger.info('Fine di prepareBaseVQE')
 
@@ -174,7 +177,10 @@ def createVQEFromAnsatzType(var_form_type,
                             num_qubits,
                             init_state,
                             quantum_instance,
-                            optimizer):
+                            optimizer,
+                            converter,
+                            num_particles,
+                            num_spin_orbitals):
     myLogger.info('Inizio createVQEFromAnsatzType')
 
     if var_form_type == 'TwoLocal':
@@ -198,8 +204,21 @@ def createVQEFromAnsatzType(var_form_type,
                          initial_point = initial_point,
                          quantum_instance = quantum_instance)
     elif var_form_type == 'UCCSD':
-        vqe_solver = VQEUCCFactory(quantum_instance,
-                                   initial_state = init_state)
+        ansatz = UCCSD(qubit_converter = converter,
+                       initial_state = init_state,
+                       num_particles = num_particles,
+                       num_spin_orbitals = num_spin_orbitals)._build()
+
+        print("NUM_PARTICLES = ", num_particles)
+        print("NUM_ORBI = ", num_spin_orbitals)
+        print("NUM_QUBITS = ", ansatz.num_qubits)
+        print("NUM_PAR = ", ansatz.num_parameters)
+        stop()
+
+        vqe_solver = VQE(quantum_instance = quantum_instance,
+                         ansatz = ansatz,
+                         optimizer = optimizer,
+                         initial_point = np.random.rand(ansatz.num_parameters))
 
     elif var_form_type == 'SO(4)':
         ansatz = constructSO4Ansatz(num_qubits,
@@ -213,7 +232,7 @@ def createVQEFromAnsatzType(var_form_type,
     else:
         raise Exception("VAR_FORM_TYPE NOT EXISTS")
 
-    myLogger.info('Inizio createVQEFromAnsatzType')
+    myLogger.info('Fine  createVQEFromAnsatzType')
 
     return vqe_solver
 
