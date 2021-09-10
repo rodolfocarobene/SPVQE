@@ -37,6 +37,7 @@ for dist in dists:
 for method in energies:
     plt.plot(dists,energies[method], label = method)
 
+print(energies['ione'])
 
 plt.xlabel(r"$d$ $[\AA]$")
 plt.ylabel(r"Energy $[Ha]$")
