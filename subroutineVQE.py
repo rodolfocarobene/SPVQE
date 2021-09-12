@@ -340,9 +340,7 @@ def solveLagSeriesVQE(options):
 
     return result
 
-    #TODO: aggiungere global y e callback function
-    #TODO: passare argomenti da options e cambiare gui
-    #TODO: aggiungere opzione per lagrangian series
+    #TODO: supporto di lagseries per più di un operatore
 
 def solveVQE(options):
     lagSeries_TF = options['lagrange']['active']  and not options['lagrange']['series']

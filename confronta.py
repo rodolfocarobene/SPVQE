@@ -60,7 +60,6 @@ if __name__ == '__main__':
 
     vals, dists = valoriDaConfrontare(sys.argv[1])
     riferimento = importValoriVeri(dists)
-    print(riferimento)
     differenze = {}
     for item in vals:
         tmp_difference = []
