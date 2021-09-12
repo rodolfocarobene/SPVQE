@@ -131,6 +131,7 @@ def prepareBaseVQE(options):
     quantum_instance = options['quantum_instance']
     optimizer = options['optimizer']
     converter = options['converter']
+    init_point = options['init_point']
 
 
     #setting up molecule driver
@@ -167,11 +168,16 @@ def prepareBaseVQE(options):
                                          optimizer,
                                          converter,
                                          num_particles,
-                                         num_spin_orbitals)
+                                         num_spin_orbitals,
+                                         init_point)
 
     myLogger.info('Fine di prepareBaseVQE')
 
     return converter, vqe_solver, problem, qubit_op
+
+def store_intermediate_result(count, par, energy, std):
+    global parameters
+    parameters.append(par)
 
 def createVQEFromAnsatzType(var_form_type,
                             num_qubits,
@@ -180,7 +186,8 @@ def createVQEFromAnsatzType(var_form_type,
                             optimizer,
                             converter,
                             num_particles,
-                            num_spin_orbitals):
+                            num_spin_orbitals,
+                            initial_point):
     myLogger.info('Inizio createVQEFromAnsatzType')
 
     if var_form_type == 'TwoLocal':
@@ -189,38 +196,48 @@ def createVQEFromAnsatzType(var_form_type,
                           entanglement_blocks = 'cx',
                           initial_state = init_state,
                           entanglement = 'linear')
-        initial_point = np.random.rand(ansatz.num_parameters)
+        if None in initial_point:
+            initial_point = np.random.rand(ansatz.num_parameters)
         vqe_solver = VQE(ansatz = ansatz,
                          optimizer = optimizer,
                          initial_point = initial_point,
+                         callback = store_intermediate_result,
                          quantum_instance = quantum_instance)
     elif var_form_type == 'EfficientSU(2)':
         ansatz = EfficientSU2(num_qubits = num_qubits,
                               entanglement = 'linear',
                               initial_state = init_state)
-        initial_point = np.random.rand(ansatz.num_parameters)
+        if None in initial_point:
+            initial_point = np.random.rand(ansatz.num_parameters)
         vqe_solver = VQE(ansatz = ansatz,
                          optimizer = optimizer,
                          initial_point = initial_point,
+                         callback = store_intermediate_result,
                          quantum_instance = quantum_instance)
+
     elif var_form_type == 'UCCSD':
         ansatz = UCCSD(qubit_converter = converter,
                        initial_state = init_state,
                        num_particles = num_particles,
                        num_spin_orbitals = num_spin_orbitals)._build()
 
+        if None in initial_point:
+            initial_point = np.random.rand(ansatz.num_parameters)
         vqe_solver = VQE(quantum_instance = quantum_instance,
                          ansatz = ansatz,
                          optimizer = optimizer,
-                         initial_point = np.random.rand(ansatz.num_parameters))
+                         callback = store_intermediate_result,
+                         initial_point = initial_point)
 
     elif var_form_type == 'SO(4)':
         ansatz = constructSO4Ansatz(num_qubits,
                                     init = init_state)
-        initial_point = np.random.rand(6*(num_qubits-1))
+        if None in initial_point:
+            initial_point = np.random.rand(6*(num_qubits-1))
         vqe_solver = VQE(ansatz = ansatz,
                          optimizer = optimizer,
                          initial_point = initial_point,
+                         callback = store_intermediate_result,
                          quantum_instance = quantum_instance)
 
     else:
@@ -295,9 +312,49 @@ def convertListFermOpToQubitOp(old_aux_ops, converter, num_particles):
 
     return new_aux_ops
 
+def solveLagSeriesVQE(options):
+    iter_max = 10
+    par = np.zeros(16)
+    mult = 0.01
+    step = 0.1
+    global parameters
+    parameters = [par]
+    operatore = (options['lagrange']['operators'][0][0],
+                 int(options['lagrange']['operators'][0][1]),
+                 float(mult))
+    for i in range(iter_max):
+        tmp_mult = mult + step * i
+        options['lagrange']['operators'] = [(operatore[0],
+                                             operatore[1],
+                                             float(tmp_mult))]
+        options['init_point'] = par
+        result = solveLagrangianVQE(options)
+        par = parameters[len(parameters) - 1]
+        penalty = tmp_mult*abs(result.num_particles[0] - operatore[1])
+        log_str = "Iter " + str(i)
+        log_str += " mult " + str(np.round(tmp_mult,2))
+        log_str += "\tE = " + str(np.round(result.total_energies[0],7))
+        log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty,7))
+
+        myLogger.info(log_str)
+
+    return result
+
+    #TODO: aggiungere global y e callback function
+    #TODO: passare argomenti da options e cambiare gui
+    #TODO: aggiungere opzione per lagrangian series
+
 def solveVQE(options):
-    if options['lagrange']['active'] == True:
+    lagSeries_TF = options['lagrange']['active']  and not options['lagrange']['series']
+    lagSeries_TT = options['lagrange']['active']  and options['lagrange']['series']
+
+    global parameters
+    parameters = []
+
+    if lagSeries_TF:
         return solveLagrangianVQE(options)
+    elif lagSeries_TT:
+        return solveLagSeriesVQE(options)
     else:
         return solveHamiltonianVQE(options)
 

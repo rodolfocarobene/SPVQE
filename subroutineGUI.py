@@ -54,6 +54,7 @@ def retriveVQEOptions(argv):
     possibleBasis = ['sto-3g', 'sto-6g']
     possibleNoise = ['None', 'ibmq_santiago']
     possibleBool  = ['True', 'False']
+    possibleLag   = ['True', 'False', 'Series']
     possibleOptim = ['CG', 'COBYLA']
     possibleLagop = ['number','spin-squared','spin-z', 'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
     possibleBack  = ['statevector_simulator','qasm_simulator','hardware']
@@ -79,7 +80,7 @@ def retriveVQEOptions(argv):
              psg.Text('Max'), psg.Input(default_text=3.5,size=(4,10),                                               key='dist_max'),
              psg.Text('Delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='dist_delta')],
             [psg.Text('Lagrangiana'),
-             psg.Listbox(possibleBool,default_values=['False'], select_mode='extended',size=(5,2),                  key='lagrangiana')],
+             psg.Listbox(possibleLag,default_values=['False'], select_mode='extended',size=(5,3),                  key='lagrangiana')],
             [psg.Text('Operatore'),
              psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(14,7),               key='lag_op')],
 
@@ -113,7 +114,6 @@ def retriveVQEOptions(argv):
         win.close()
 
     setOptimizers(values)
-    setLagrangian(values)
     setBackendAndNoise(values)
     lagops = setLagrangeOps(values)
 
@@ -146,7 +146,11 @@ def retriveVQEOptions(argv):
     return options
 
 def setLagrangeOps(values):
-    lagops_list = [[('dummy', 0, 0)]]
+    if values['lagrangiana'] == ['False']:
+        lagops_list = [[('dummy', 0, 0)]]
+    else:
+        lagops_list = []
+
     for op in values['lag_op']:
         if op == 'number':
             mults = np.arange(float(values['lag_mult_num_min']), float(values['lag_mult_num_max']), float(values['lag_mult_num_delta']))
@@ -228,15 +232,6 @@ def setOptimizers(values):
         if opt == 'COBYLA':
             optimizers.append((COBYLA(), 'COBYLA'))
     values['optimizer'] = optimizers
-
-def setLagrangian(values):
-    lagrangian_list = []
-    for lag in values['lagrangiana']:
-        if lag == 'True':
-            lagrangian_list.append(True)
-        else:
-            lagrangian_list.append(False)
-    values['lagrangiana'] = lagrangian_list
 
 def setBackendAndNoise(values):
     quantum_instance_list = []
