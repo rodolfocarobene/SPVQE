@@ -295,7 +295,7 @@ def solveVQE(options):
     par = np.zeros(16)
     result = 100
     mult = 0.01
-    step = 0.02
+    step = 0.1
     global y
     y = [par]
     operatore = (options['lagrange']['operators'][0],
@@ -315,12 +315,11 @@ def solveVQE(options):
 
         print("Iter ", i,
               " mult ", np.round(tmp_mult,2),
-              "\tE = ", np.round(result.total_energies[0],5),
-              "\tE-P = ", np.round(result.total_energies[0] - penalty,5))
+              "\tE = ", np.round(result.total_energies[0],7),
+              "\tE-P = ", np.round(result.total_energies[0] - penalty,7))
 
 
-
-
+    return result
 
 
 
