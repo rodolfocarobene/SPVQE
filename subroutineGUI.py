@@ -28,7 +28,7 @@ def getDefaultOpt():
         'noise' : ['None'],
         'shots' : 1024,
         'correction' : ['False'],
-        'optimizer' : ['CG'],
+        'optimizer' : ['COBYLA'],
         'dist_min' : 0.3,
         'dist_max' : 3.5,
         'dist_delta' : 11,
@@ -55,7 +55,7 @@ def retriveVQEOptions(argv):
     possibleNoise = ['None', 'ibmq_santiago']
     possibleBool  = ['True', 'False']
     possibleLag   = ['True', 'False', 'Series']
-    possibleOptim = ['CG', 'COBYLA']
+    possibleOptim = ['COBYLA', 'CG']
     possibleLagop = ['number','spin-squared','spin-z', 'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
     possibleBack  = ['statevector_simulator','qasm_simulator','hardware']
 
@@ -74,7 +74,7 @@ def retriveVQEOptions(argv):
             [psg.Text('Correction'),
              psg.Listbox(possibleBool, default_values=['False'], select_mode='extended',size=(5,2),                 key='correction')],
             [psg.Text('Optimizer'),
-             psg.Listbox(possibleOptim, default_values=['CG'], select_mode='extended',size=(8,2),                   key='optimizer')],
+             psg.Listbox(possibleOptim, default_values=['COBYLA'], select_mode='extended',size=(8,2),                   key='optimizer')],
             [psg.Text('Distanze')],
             [psg.Text('Min'), psg.Input(default_text=0.3,size=(4,10),                                               key='dist_min'),
              psg.Text('Max'), psg.Input(default_text=3.5,size=(4,10),                                               key='dist_max'),
