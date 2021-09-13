@@ -7,7 +7,7 @@ import warnings
 #warnings.filterwarnings('ignore', category=SystemTimeWarning)
 warnings.simplefilter("ignore")
 
-from qiskit.algorithms.optimizers import CG, COBYLA
+from qiskit.algorithms.optimizers import CG, COBYLA, SPSA, L_BFGS_B, ADAM
 from qiskit_nature.converters.second_quantization import QubitConverter
 from qiskit.providers.aer.noise import NoiseModel
 from qiskit_nature.mappers.second_quantization import ParityMapper
@@ -55,7 +55,7 @@ def retriveVQEOptions(argv):
     possibleNoise = ['None', 'ibmq_santiago']
     possibleBool  = ['True', 'False']
     possibleLag   = ['True', 'False', 'Series']
-    possibleOptim = ['COBYLA', 'CG']
+    possibleOptim = ['COBYLA', 'CG', 'SPSA', 'L_BFGS_B', 'ADAM']
     possibleLagop = ['number','spin-squared','spin-z', 'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
     possibleBack  = ['statevector_simulator','qasm_simulator','hardware']
 
@@ -74,13 +74,13 @@ def retriveVQEOptions(argv):
             [psg.Text('Correction'),
              psg.Listbox(possibleBool, default_values=['False'], select_mode='extended',size=(5,2),                 key='correction')],
             [psg.Text('Optimizer'),
-             psg.Listbox(possibleOptim, default_values=['COBYLA'], select_mode='extended',size=(8,2),                   key='optimizer')],
+             psg.Listbox(possibleOptim, default_values=['COBYLA'], select_mode='extended',size=(8,5),               key='optimizer')],
             [psg.Text('Distanze')],
             [psg.Text('Min'), psg.Input(default_text=0.3,size=(4,10),                                               key='dist_min'),
              psg.Text('Max'), psg.Input(default_text=3.5,size=(4,10),                                               key='dist_max'),
              psg.Text('Delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='dist_delta')],
             [psg.Text('Lagrangiana'),
-             psg.Listbox(possibleLag,default_values=['False'], select_mode='extended',size=(5,3),                  key='lagrangiana')],
+             psg.Listbox(possibleLag,default_values=['False'], select_mode='extended',size=(5,3),                   key='lagrangiana')],
             [psg.Text('Operatore'),
              psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(14,7),               key='lag_op')],
 
@@ -228,9 +228,15 @@ def setOptimizers(values):
     optimizers = []
     for opt in values['optimizer']:
         if opt == 'CG':
-            optimizers.append((CG(), 'CG'))
-        if opt == 'COBYLA':
+            optimizers.append((CG(maxiter=1000, eps=1e-5), 'CG'))
+        elif opt == 'COBYLA':
             optimizers.append((COBYLA(), 'COBYLA'))
+        elif opt == 'ADAM':
+            optimizers.append((ADAM(maxiter=1000, eps=1e-5), 'ADAM'))
+        elif opt == 'L_BFGS_B':
+            optimizers.append((L_BFGS_B(maxiter=1000, epsilon=1e-5), 'LBFGSB'))
+        elif opt == 'SPSA':
+            optimizers.append((SPSA(maxiter=2000), 'SPSA'))
     values['optimizer'] = optimizers
 
 def setBackendAndNoise(values):
