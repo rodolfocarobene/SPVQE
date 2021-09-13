@@ -316,7 +316,7 @@ def solveLagSeriesVQE(options):
     iter_max = 10
     par = np.zeros(16)
     mult = 0.01
-    step = 0.1
+    step = 0.2
     global parameters
     parameters = [par]
     for singleOp in options['lagrange']['operators']:
@@ -346,10 +346,9 @@ def solveLagSeriesVQE(options):
         log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty,7))
 
         myLogger.info(log_str)
+        #print("mult : ", np.round(tmp_mult,2), "\tE : ", np.round(result.total_energies[0],7))
 
     return result
-
-    #TODO: supporto di lagseries per più di un operatore
 
 def solveVQE(options):
     lagSeries_TF = options['lagrange']['active']  and not options['lagrange']['series']
