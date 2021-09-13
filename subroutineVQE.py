@@ -319,14 +319,23 @@ def solveLagSeriesVQE(options):
     step = 0.1
     global parameters
     parameters = [par]
-    operatore = (options['lagrange']['operators'][0][0],
-                 int(options['lagrange']['operators'][0][1]),
-                 float(mult))
+    for singleOp in options['lagrange']['operators']:
+        operatore = (options['lagrange']['operators'][0][0],
+                     int(options['lagrange']['operators'][0][1]),
+                     float(mult))
     for i in range(iter_max):
         tmp_mult = mult + step * i
-        options['lagrange']['operators'] = [(operatore[0],
-                                             operatore[1],
-                                             float(tmp_mult))]
+
+        lagOpList = []
+
+        for singleOp in options['lagrange']['operators']:
+            operatore = (singleOp[0],
+                         singleOp[1],
+                         float(tmp_mult))
+            lagOpList.append(operatore)
+
+        options['lagrange']['operators'] = lagOpList
+
         options['init_point'] = par
         result = solveLagrangianVQE(options)
         par = parameters[len(parameters) - 1]

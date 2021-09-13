@@ -12,7 +12,9 @@ basis = 'sto-6g'
 
 energies = {}
 energies['neutra'] = []
-energies['ione'] = []
+energies['ione+'] = []
+energies['ione-'] = []
+energies['weird'] = []
 
 for dist in dists:
 
@@ -23,7 +25,7 @@ for dist in dists:
 
     fci_h3 = fci.FCI(mf)
     e_fci = fci_h3.kernel()[0]
-    energies['ione'].append(e_fci)
+    energies['ione+'].append(e_fci)
 
 
     mol = gto.M(atom=geometry,charge=0,spin=1,basis=basis,symmetry=True,verbose=0)
@@ -34,10 +36,27 @@ for dist in dists:
     e_fci = fci_h3.kernel()[0]
     energies['neutra'].append(e_fci)
 
+
+    mol = gto.M(atom=geometry,charge=-1,spin=0,basis=basis,symmetry=True,verbose=0)
+    mf  = scf.RHF(mol)
+    Ehf = mf.kernel()
+
+    fci_h3 = fci.FCI(mf)
+    e_fci = fci_h3.kernel()[0]
+    energies['ione-'].append(e_fci)
+
+
+    mol = gto.M(atom=geometry,charge=1,spin=2,basis=basis,symmetry=True,verbose=0)
+    mf  = scf.RHF(mol)
+    Ehf = mf.kernel()
+
+    fci_h3 = fci.FCI(mf)
+    e_fci = fci_h3.kernel()[0]
+    energies['weird'].append(e_fci)
+
 for method in energies:
     plt.plot(dists,energies[method], label = method)
 
-print(energies['ione'])
 
 plt.xlabel(r"$d$ $[\AA]$")
 plt.ylabel(r"Energy $[Ha]$")
