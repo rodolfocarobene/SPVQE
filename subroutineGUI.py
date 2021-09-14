@@ -45,7 +45,9 @@ def getDefaultOpt():
         'lag_value_spinz' : 0,
         'lag_mult_spinz_min' : 0.2,
         'lag_mult_spinz_max' : 0.2,
-        'lag_mult_spinz_delta' : 0.1
+        'lag_mult_spinz_delta' : 0.1,
+        'series_itermax' : 10,
+        'series_step' : 0.2
     }
     return values
 
@@ -99,6 +101,9 @@ def retriveVQEOptions(argv):
              psg.Text('max'), psg.Input(default_text=1,size=(4,10),                                                 key='lag_mult_spinz_max'),
              psg.Text('delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='lag_mult_spinz_delta')],
 
+            [psg.Text('LagSeries: itermax'), psg.Input(default_text=10,size=(4,10),                                 key='series_itermax'),
+             psg.Text('step: '), psg.Input(default_text=0.2,size=(4,10),                                            key='series_step')],
+
             [psg.Button('Inizia calcolo', font=('Times New Roman',12))]]
 
     if len(argv) > 1:
@@ -136,6 +141,10 @@ def retriveVQEOptions(argv):
         'lagrange' : {
             'active' : values['lagrangiana'],
             'operators' : lagops,
+        },
+        'series' : {
+            'itermax' : values['series_itermax'],
+            'step' : values['series_step']
         }
     }
 
