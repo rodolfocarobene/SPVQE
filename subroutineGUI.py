@@ -46,8 +46,14 @@ def getDefaultOpt():
         'lag_mult_spinz_min' : 0.2,
         'lag_mult_spinz_max' : 0.2,
         'lag_mult_spinz_delta' : 0.1,
-        'series_itermax' : 10,
-        'series_step' : 0.2
+
+        'series_itermax_min' : 10,
+        'series_itermax_max' : 20,
+        'series_itermax_step' : 15,
+
+        'series_step_min' : 0.2,
+        'series_step_max' : 1,
+        'series_step_step' : 10
     }
     return values
 
@@ -66,29 +72,40 @@ def retriveVQEOptions(argv):
              psg.Text('Charge'), psg.Input(default_text=1,size=(4,10),                                              key='charge'),
              psg.Text('Basis'),
              psg.Listbox(possibleBasis, default_values=['sto-6g'],select_mode='extended',size=(7,2),                key='basis')],
-            [psg.Text('Scegli forma variazionale')],
-            [psg.Listbox(possibleForms, default_values=['TwoLocal'],select_mode='extended',size=(12,4),             key='varforms')],
-            [psg.Text('Scegli il tipo di backend')],
-            [psg.Listbox(possibleBack,default_values=['statevector_simulator'], select_mode='extended',size=(17,3), key='backend'),
+
+            [psg.Text('Scegli forma variazionale'),
+             psg.Listbox(possibleForms, default_values=['TwoLocal'],select_mode='extended',size=(12,4),             key='varforms')],
+
+            [psg.Text('Scegli il tipo di backend'),
+             psg.Listbox(possibleBack,default_values=['statevector_simulator'], select_mode='extended',size=(17,3), key='backend'),
              psg.Text('shots'), psg.Input(default_text=1024,size=(4,10),                                            key='shots')],
+
             [psg.Text('Scegli l\'eventuale rumore'),
              psg.Listbox(possibleNoise, default_values=['None'], select_mode='extended',size=(14,2),                key='noise')],
+
             [psg.Text('Correction'),
              psg.Listbox(possibleBool, default_values=['False'], select_mode='extended',size=(5,2),                 key='correction')],
+
             [psg.Text('Optimizer'),
              psg.Listbox(possibleOptim, default_values=['COBYLA'], select_mode='extended',size=(8,5),               key='optimizer')],
-            [psg.Text('Distanze')],
-            [psg.Text('Min'), psg.Input(default_text=0.3,size=(4,10),                                               key='dist_min'),
-             psg.Text('Max'), psg.Input(default_text=3.5,size=(4,10),                                               key='dist_max'),
-             psg.Text('Delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='dist_delta')],
-            [psg.Text('Lagrangiana'),
-             psg.Listbox(possibleLag,default_values=['False'], select_mode='extended',size=(5,3),                   key='lagrangiana')],
 
-            [psg.Text('LagSeries: itermax'), psg.Input(default_text=10,size=(4,10),                                 key='series_itermax'),
-             psg.Text('step: '), psg.Input(default_text=0.2,size=(4,10),                                            key='series_step')],
+            [psg.Text('Distanze: Min'), psg.Input(default_text=0.3,size=(4,10),                                     key='dist_min'),
+             psg.Text('          Max'), psg.Input(default_text=3.5,size=(4,10),                                     key='dist_max'),
+             psg.Text('          Delta'), psg.Input(default_text=0.1,size=(4,10),                                   key='dist_delta')],
+
+            [psg.Text('Lagrangiana'),
+             psg.Listbox(possibleLag,default_values=['Series'], select_mode='extended',size=(5,3),                   key='lagrangiana')],
+
+            [psg.Text('LagSeries(itermax) MIN:'), psg.Input(default_text=10,size=(4,10),                          key='series_itermax_min'),
+             psg.Text('MAX: '), psg.Input(default_text=20,size=(4,10),                                              key='series_itermax_max'),
+             psg.Text('DELTA: '), psg.Input(default_text=20,size=(4,10),                                            key='series_itermax_step')],
+
+            [psg.Text('LagSeries(step) MIN:'), psg.Input(default_text=0.2,size=(4,10),                            key='series_step_min'),
+             psg.Text('MAX: '), psg.Input(default_text=1,size=(4,10),                                               key='series_step_max'),
+             psg.Text('DELTA: '), psg.Input(default_text=10,size=(4,10),                                            key='series_step_step')],
 
             [psg.Text('Operatore'),
-             psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(14,7),               key='lag_op')],
+             psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(18,7),               key='lag_op')],
 
             [psg.Text('NUMBER: Value'), psg.Input(default_text=2,size=(4,10),                                       key='lag_value_num'),
              psg.Text('Mult: min'),  psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult_num_min'),
@@ -144,8 +161,8 @@ def retriveVQEOptions(argv):
             'operators' : lagops,
         },
         'series' : {
-            'itermax' : int(values['series_itermax']),
-            'step' : float(values['series_step'])
+            'itermax' : np.arange(int(values['series_itermax_min']),int(values['series_itermax_max']),int(values['series_itermax_step'])),
+            'step' : np.arange(float(values['series_step_min']),float(values['series_step_max']),float(values['series_step_step']))
         }
     }
 
