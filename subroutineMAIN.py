@@ -15,7 +15,7 @@ def iteratorItemToString(item):
         if item[5][0][0] != 'dummy':
             name += '_LagSeries_'
             for operator in item[5]:
-                name += operator[0]+'_'+str(item[6])+'x'+str(item[7])+'_'
+                name += operator[0]+'_'+str(item[6])+'x'+str(np.round(item[7],2))+'_'
 
     return name
 
