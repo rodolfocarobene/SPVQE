@@ -182,14 +182,17 @@ def setLagrangeOps(values):
         if op == 'number':
             mults = np.arange(float(values['lag_mult_num_min']), float(values['lag_mult_num_max']), float(values['lag_mult_num_delta']))
             for mult in mults:
+                mult = np.round(mult,2)
                 lagops_list.append([(op, int(values['lag_value_num']), mult)])
         if op == 'spin-squared':
             mults = np.arange(float(values['lag_mult_spin2_min']), float(values['lag_mult_spin2_max']), float(values['lag_mult_spin2_delta']))
             for mult in mults:
+                mult = np.round(mult,2)
                 lagops_list.append([(op, int(values['lag_value_spin2']), mult)])
         if op == 'spin-z':
             mults = np.arange(float(values['lag_mult_spinz_min']), float(values['lag_mult_spinz_max']), float(values['lag_mult_spinz_delta']))
             for mult in mults:
+                mult = np.round(mult,2)
                 lagops_list.append([(op, int(values['lag_value_spinz']), mult)])
         #-----
         if op == 'num+spin2':
@@ -197,6 +200,8 @@ def setLagrangeOps(values):
             mults_spin2 = np.arange(float(values['lag_mult_spin2_min']), float(values['lag_mult_spin2_max']), float(values['lag_mult_spin2_delta']))
             for mult_num in mults_num:
                 for mult_spin2 in mults_spin2:
+                    mult_num = np.round(mult_num,2)
+                    mult_spin2 = np.round(mult_spin2,2)
                     templist = []
                     templist.append(('number', int(values['lag_value_num']), mult_num))
                     templist.append(('spin-squared', int(values['lag_value_spin2']), mult_spin2))
@@ -208,6 +213,8 @@ def setLagrangeOps(values):
             mults_spinz = np.arange(float(values['lag_mult_spinz_min']), float(values['lag_mult_spinz_max']), float(values['lag_mult_spinz_delta']))
             for mult_num in mults_num:
                 for mult_spinz in mults_spinz:
+                    mult_num = np.round(mult_num,2)
+                    mult_spinz = np.round(mult_spinz,2)
                     templist = []
                     templist.append(('number', int(values['lag_value_num']), mult_num))
                     templist.append(('spin-z', int(values['lag_value_spinz']), mult_spinz))
@@ -219,6 +226,8 @@ def setLagrangeOps(values):
             mults_spinz = np.arange(float(values['lag_mult_spinz_min']), float(values['lag_mult_spinz_max']), float(values['lag_mult_spinz_delta']))
             for mult_spin2 in mults_spin2:
                 for mult_spinz in mults_spinz:
+                    mult_spin2 = np.round(mult_spin2,2)
+                    mult_spinz = np.round(mult_spinz,2)
                     templist = []
                     templist.append(('spin-squared', int(values['lag_value_spin2']), mult_spin2))
                     templist.append(('spin-z', int(values['lag_value_spinz']), mult_spinz))
@@ -232,6 +241,9 @@ def setLagrangeOps(values):
             for mult_spin2 in mults_spin2:
                 for mult_spinz in mults_spinz:
                     for mult_num in mults_num:
+                        mult_spin2 = np.round(mult_spin2,2)
+                        mult_spinz = np.round(mult_spinz,2)
+                        mult_num = np.round(mult_num,2)
                         templist = []
                         templist.append(('spin-squared', int(values['lag_value_spin2']), mult_spin2))
                         templist.append(('spin-z', int(values['lag_value_spinz']), mult_spinz))
