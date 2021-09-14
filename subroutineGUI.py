@@ -83,6 +83,10 @@ def retriveVQEOptions(argv):
              psg.Text('Delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='dist_delta')],
             [psg.Text('Lagrangiana'),
              psg.Listbox(possibleLag,default_values=['False'], select_mode='extended',size=(5,3),                   key='lagrangiana')],
+
+            [psg.Text('LagSeries: itermax'), psg.Input(default_text=10,size=(4,10),                                 key='series_itermax'),
+             psg.Text('step: '), psg.Input(default_text=0.2,size=(4,10),                                            key='series_step')],
+
             [psg.Text('Operatore'),
              psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(14,7),               key='lag_op')],
 
@@ -100,9 +104,6 @@ def retriveVQEOptions(argv):
              psg.Text('Mult: min'),  psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult_spinz_min'),
              psg.Text('max'), psg.Input(default_text=1,size=(4,10),                                                 key='lag_mult_spinz_max'),
              psg.Text('delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='lag_mult_spinz_delta')],
-
-            [psg.Text('LagSeries: itermax'), psg.Input(default_text=10,size=(4,10),                                 key='series_itermax'),
-             psg.Text('step: '), psg.Input(default_text=0.2,size=(4,10),                                            key='series_step')],
 
             [psg.Button('Inizia calcolo', font=('Times New Roman',12))]]
 
@@ -143,8 +144,8 @@ def retriveVQEOptions(argv):
             'operators' : lagops,
         },
         'series' : {
-            'itermax' : values['series_itermax'],
-            'step' : values['series_step']
+            'itermax' : int(values['series_itermax']),
+            'step' : float(values['series_step'])
         }
     }
 

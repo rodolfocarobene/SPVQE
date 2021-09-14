@@ -15,7 +15,7 @@ def iteratorItemToString(item):
         if item[5][0][0] != 'dummy':
             name += '_LagSeries_'
             for operator in item[5]:
-                name += operator[0]
+                name += operator[0]+'_'+str(item[6])+'x'+str(item[7])+'_'
 
     return name
 
@@ -38,6 +38,9 @@ def fromItemIterToOption(options, item):
 
     if item[5][0][0] == 'dummy':
         option['lagrange']['active'] = False
+
+    option['series']['itermax'] = item[6]
+    option['series']['step'] = item[7]
 
     return option
 

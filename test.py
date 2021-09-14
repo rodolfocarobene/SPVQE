@@ -15,7 +15,9 @@ if __name__ == '__main__':
                                        options['quantum_instance'],
                                        options['optimizer'],
                                        options['lagrange']['active'],
-                                       options['lagrange']['operators']))
+                                       options['lagrange']['operators'],
+                                       options['series']['itermax'],
+                                       options['series']['step']))
 
     results = {}
     names = []

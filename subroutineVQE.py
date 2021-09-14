@@ -313,10 +313,11 @@ def convertListFermOpToQubitOp(old_aux_ops, converter, num_particles):
     return new_aux_ops
 
 def solveLagSeriesVQE(options):
-    iter_max = 10
+    iter_max = options['series']['itermax']
     par = np.zeros(16)
     mult = 0.01
-    step = 0.2
+    step = options['series']['step']
+
     global parameters
     parameters = [par]
     for i in range(iter_max):
