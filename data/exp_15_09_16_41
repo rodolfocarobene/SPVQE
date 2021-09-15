@@ -1,0 +1,79 @@
+{
+    "commit": "37e445224f8aa964cc0eb1a1f50f44bca5fb3f03",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "0.3",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "spin": 0,
+            "charge": 1,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; H .0 .0 0.3; H .0 0.2598076211353316 0.15"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "COBYLA"
+        ],
+        "lagrange": {
+            "active": [
+                "AUGSeries"
+            ],
+            "operators": [
+                [
+                    [
+                        "number",
+                        2,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                20
+            ],
+            "step": [
+                0.1
+            ],
+            "lamb": [
+                5.0
+            ]
+        },
+        "dists": [
+            0.3
+        ],
+        "geometries": [
+            "H .0 .0 .0; H .0 .0 0.3; H .0 0.2598076211353316 0.15"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagAUGSeries_number_20x0.1_lamb5.0_": [
+            {
+                "energy": 0.7930736531850462,
+                "auxiliary": {
+                    "particles": [
+                        2.0000034598824357
+                    ],
+                    "spin-z": [
+                        2.0587111759562404e-05
+                    ],
+                    "spin-sq": [
+                        2.0587535588675e-05
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "cancellare",
+    "varianti": []
+}
