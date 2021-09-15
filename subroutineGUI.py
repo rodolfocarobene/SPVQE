@@ -55,8 +55,8 @@ def getDefaultOpt():
         'series_step_max' : 1,
         'series_step_step' : 10,
 
-        'series_lamb_min' : -1,
-        'series_lamb_max' : -0.1,
+        'series_lamb_min' : 2,
+        'series_lamb_max' : 6,
         'series_lamb_step' : 10
     }
     return values
@@ -108,9 +108,9 @@ def retriveVQEOptions(argv):
              psg.Text('MAX: '), psg.Input(default_text=1,size=(4,10),                                               key='series_step_max'),
              psg.Text('DELTA: '), psg.Input(default_text=10,size=(4,10),                                            key='series_step_step')],
 
-            [psg.Text('LagSeries(lamb) MIN:'), psg.Input(default_text=-2,size=(5,10),                            key='series_lamb_min'),
-             psg.Text('MAX: '), psg.Input(default_text=-0.1,size=(5,10),                                               key='series_lamb_max'),
-             psg.Text('DELTA: '), psg.Input(default_text=10,size=(5,10),                                            key='series_lamb_step')],
+            [psg.Text('LagSeries(lamb) MIN:'), psg.Input(default_text=2,size=(4,10),                            key='series_lamb_min'),
+             psg.Text('MAX: '), psg.Input(default_text=6,size=(4,10),                                               key='series_lamb_max'),
+             psg.Text('DELTA: '), psg.Input(default_text=10,size=(4,10),                                            key='series_lamb_step')],
 
             [psg.Text('Operatore'),
              psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(18,7),               key='lag_op')],

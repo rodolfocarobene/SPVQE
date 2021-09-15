@@ -450,8 +450,14 @@ def solveLagAUGSeriesVQE(options):
         myLogger.info(log_str)
 
         par = parameters[len(parameters) - 1]
-        #print(lamb)
-        lamb = lamb - tmp_mult*2*(result.num_particles[0] - operatore[1])
+
+        for operatore in lagOpList:
+            if operatore[0] == 'number':
+                lamb = lamb - tmp_mult*2*(result.num_particles[0] - operatore[1])
+            if operatore[0] == 'spin-squared':
+                lamb = lamb - tmp_mult*2*(result.total_angular_momentum[0] - operatore[1])
+            if operatore[0] == 'spin-z':
+                lamb = lamb - tmp_mult*2*(result.spin[0] - operatore[1])
 
         #print(result.total_energies[0] - penalty, " ", penalty)
 
