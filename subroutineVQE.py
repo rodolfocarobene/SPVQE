@@ -441,7 +441,7 @@ def solveLagAUGSeriesVQE(options):
 
         result = solveAUGLagrangianVQE(options, lamb)
 
-        penalty = tmp_mult*abs(result.num_particles[0] - operatore[1])
+        penalty = tmp_mult*((result.num_particles[0] - operatore[1])**2) - lamb * (result.num_particles[0] - operatore[1])
         log_str = "Iter " + str(i)
         log_str += " mult " + str(np.round(tmp_mult,2))
         log_str += " lamb " + str(lamb)
@@ -450,8 +450,10 @@ def solveLagAUGSeriesVQE(options):
         myLogger.info(log_str)
 
         par = parameters[len(parameters) - 1]
-        print(lamb)
-        lamb = lamb + tmp_mult*2*(result.num_particles[0] - operatore[1])
+        #print(lamb)
+        lamb = lamb - tmp_mult*2*(result.num_particles[0] - operatore[1])
+
+        #print(result.total_energies[0] - penalty, " ", penalty)
 
     return result
 
