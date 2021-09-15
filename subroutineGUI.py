@@ -51,7 +51,7 @@ def getDefaultOpt():
         'series_itermax_max' : 20,
         'series_itermax_step' : 15,
 
-        'series_step_min' : 0.2,
+        'series_step_min' : 0.1,
         'series_step_max' : 1,
         'series_step_step' : 10
     }
@@ -62,7 +62,7 @@ def retriveVQEOptions(argv):
     possibleBasis = ['sto-3g', 'sto-6g']
     possibleNoise = ['None', 'ibmq_santiago']
     possibleBool  = ['True', 'False']
-    possibleLag   = ['True', 'False', 'Series']
+    possibleLag   = ['True', 'False', 'Series', 'AUGSeries']
     possibleOptim = ['COBYLA', 'CG', 'SPSA', 'L_BFGS_B', 'ADAM']
     possibleLagop = ['number','spin-squared','spin-z', 'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
     possibleBack  = ['statevector_simulator','qasm_simulator','hardware']
@@ -94,13 +94,13 @@ def retriveVQEOptions(argv):
              psg.Text('          Delta'), psg.Input(default_text=0.1,size=(4,10),                                   key='dist_delta')],
 
             [psg.Text('Lagrangiana'),
-             psg.Listbox(possibleLag,default_values=['Series'], select_mode='extended',size=(5,3),                   key='lagrangiana')],
+             psg.Listbox(possibleLag,default_values=['Series'], select_mode='extended',size=(10,4),                   key='lagrangiana')],
 
             [psg.Text('LagSeries(itermax) MIN:'), psg.Input(default_text=10,size=(4,10),                          key='series_itermax_min'),
              psg.Text('MAX: '), psg.Input(default_text=20,size=(4,10),                                              key='series_itermax_max'),
              psg.Text('DELTA: '), psg.Input(default_text=20,size=(4,10),                                            key='series_itermax_step')],
 
-            [psg.Text('LagSeries(step) MIN:'), psg.Input(default_text=0.2,size=(4,10),                            key='series_step_min'),
+            [psg.Text('LagSeries(step) MIN:'), psg.Input(default_text=0.1,size=(4,10),                            key='series_step_min'),
              psg.Text('MAX: '), psg.Input(default_text=1,size=(4,10),                                               key='series_step_max'),
              psg.Text('DELTA: '), psg.Input(default_text=10,size=(4,10),                                            key='series_step_step')],
 
@@ -110,17 +110,17 @@ def retriveVQEOptions(argv):
             [psg.Text('NUMBER: Value'), psg.Input(default_text=2,size=(4,10),                                       key='lag_value_num'),
              psg.Text('Mult: min'),  psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult_num_min'),
              psg.Text('max'), psg.Input(default_text=1,size=(4,10),                                                 key='lag_mult_num_max'),
-             psg.Text('delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='lag_mult_num_delta')],
+             psg.Text('delta'), psg.Input(default_text=10,size=(4,10),                                             key='lag_mult_num_delta')],
 
             [psg.Text('SPIN-2: Value'), psg.Input(default_text=0,size=(4,10),                                       key='lag_value_spin2'),
              psg.Text('Mult: min'),  psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult_spin2_min'),
              psg.Text('max'), psg.Input(default_text=1,size=(4,10),                                                 key='lag_mult_spin2_max'),
-             psg.Text('delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='lag_mult_spin2_delta')],
+             psg.Text('delta'), psg.Input(default_text=10,size=(4,10),                                             key='lag_mult_spin2_delta')],
 
             [psg.Text('SPIN-Z: Value'), psg.Input(default_text=0,size=(4,10),                                       key='lag_value_spinz'),
              psg.Text('Mult: min'),  psg.Input(default_text=0.2,size=(4,10),                                        key='lag_mult_spinz_min'),
              psg.Text('max'), psg.Input(default_text=1,size=(4,10),                                                 key='lag_mult_spinz_max'),
-             psg.Text('delta'), psg.Input(default_text=0.1,size=(4,10),                                             key='lag_mult_spinz_delta')],
+             psg.Text('delta'), psg.Input(default_text=10,size=(4,10),                                             key='lag_mult_spinz_delta')],
 
             [psg.Button('Inizia calcolo', font=('Times New Roman',12))]]
 

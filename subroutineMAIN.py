@@ -16,6 +16,11 @@ def iteratorItemToString(item):
             name += '_LagSeries_'
             for operator in item[5]:
                 name += operator[0]+'_'+str(item[6])+'x'+str(np.round(item[7],2))+'_'
+    elif item[4] == 'AUGSeries':
+        if item[5][0][0] != 'dummy':
+            name += '_LagAUGSeries_'
+            for operator in item[5]:
+                name += operator[0]+'_'+str(item[6])+'x'+str(np.round(item[7],2))+'_'
 
     return name
 
@@ -29,10 +34,16 @@ def fromItemIterToOption(options, item):
     if item[4] == 'True' or item[4] == 'False':
         option['lagrange']['active'] = item[4]
         option['lagrange']['series'] = False
+        option['lagrange']['augmented'] = False
         option['init_point'] = [None]
-    else:
+    elif item[4] == 'Series':
         option['lagrange']['active'] = True
         option['lagrange']['series'] = True
+        option['lagrange']['augmented'] = False
+    elif item[4] == 'AUGSeries':
+        option['lagrange']['active'] = True
+        option['lagrange']['series'] = True
+        option['lagrange']['augmented'] = True
 
     option['lagrange']['operators'] = item[5]
 
