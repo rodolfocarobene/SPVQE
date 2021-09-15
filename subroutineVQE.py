@@ -91,12 +91,12 @@ def constructSO4Ansatz(numqubits, init = None):
 
     return circ
 
-def createLagrangeOperator(h_op,
-                           a_op,
-                           multiplier,
-                           operator = "number",
-                           value=2):
-    myLogger.info('Inizio di createLagrangeOperator')
+def createLagrangeOperatorPS(hamiltonian,
+                             auxiliary,
+                             multiplier,
+                             operator,
+                             value):
+    myLogger.info('Inizio di createLagrangeOperatorPS')
 
     # TODO: this switch sucks
     if operator == "number":
@@ -106,18 +106,18 @@ def createLagrangeOperator(h_op,
     elif operator == "spin-z":
         idx = 2
 
-    x = np.zeros(h_op.num_qubits)
-    z = np.zeros(h_op.num_qubits)
+    x = np.zeros(hamiltonian.num_qubits)
+    z = np.zeros(hamiltonian.num_qubits)
 
-    o_opt = PauliOp(Pauli((z,x)), -value)
+    equality = auxiliary[idx].add(PauliOp(Pauli((z,x)), -value))
 
-    mult = a_op[idx].add(o_opt) ** 2
-    mult = mult.mul(multiplier)
-    L_op  =  h_op.add(mult)
+    penaltySquared = (equality ** 2).mul(multiplier)
 
-    myLogger.info('Fine di createLagrangeOperator')
+    lagrangian  =  hamiltonian.add(penaltySquared)
 
-    return L_op
+    myLogger.info('Fine di createLagrangeOperatorPS')
+
+    return lagrangian
 
 def prepareBaseVQE(options):
     myLogger.info('Inizio di prepareBaseVQE')
@@ -283,11 +283,11 @@ def solveLagrangianVQE(options):
         operator = operatore[0]
         value = operatore[1]
         multiplier = operatore[2]
-        lagrange_op = createLagrangeOperator(lagrange_op,
-                                             aux_ops,
-                                             multiplier = multiplier,
-                                             operator = operator,
-                                             value = value)
+        lagrange_op = createLagrangeOperatorPS(lagrange_op,
+                                               aux_ops,
+                                               multiplier = multiplier,
+                                               operator = operator,
+                                               value = value)
 
     oldResult = vqe_solver.compute_minimum_eigenvalue(operator=lagrange_op,
                                                  aux_operators=aux_ops)
