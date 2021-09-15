@@ -17,7 +17,10 @@ if __name__ == '__main__':
                                        options['lagrange']['active'],
                                        options['lagrange']['operators'],
                                        options['series']['itermax'],
-                                       options['series']['step']))
+                                       options['series']['step'],
+                                       options['series']['lamb']
+                                       )
+                     )
 
     results = {}
     names = []

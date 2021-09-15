@@ -30,6 +30,7 @@ def retriveJSONOptions(filename,options,results):
     JsonOptions['options']['dists'] = JsonOptions['options']['dists'].tolist()
     JsonOptions['options']['series']['itermax'] = JsonOptions['options']['series']['itermax'].tolist()
     JsonOptions['options']['series']['step'] = JsonOptions['options']['series']['step'].tolist()
+    JsonOptions['options']['series']['lamb'] = JsonOptions['options']['series']['lamb'].tolist()
 
     #TODO what have I done
     total_results = {}

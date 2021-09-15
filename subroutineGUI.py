@@ -53,7 +53,11 @@ def getDefaultOpt():
 
         'series_step_min' : 0.1,
         'series_step_max' : 1,
-        'series_step_step' : 10
+        'series_step_step' : 10,
+
+        'series_lamb_min' : -1,
+        'series_lamb_max' : -0.1,
+        'series_lamb_step' : 10
     }
     return values
 
@@ -103,6 +107,10 @@ def retriveVQEOptions(argv):
             [psg.Text('LagSeries(step) MIN:'), psg.Input(default_text=0.1,size=(4,10),                            key='series_step_min'),
              psg.Text('MAX: '), psg.Input(default_text=1,size=(4,10),                                               key='series_step_max'),
              psg.Text('DELTA: '), psg.Input(default_text=10,size=(4,10),                                            key='series_step_step')],
+
+            [psg.Text('LagSeries(lamb) MIN:'), psg.Input(default_text=-2,size=(5,10),                            key='series_lamb_min'),
+             psg.Text('MAX: '), psg.Input(default_text=-0.1,size=(5,10),                                               key='series_lamb_max'),
+             psg.Text('DELTA: '), psg.Input(default_text=10,size=(5,10),                                            key='series_lamb_step')],
 
             [psg.Text('Operatore'),
              psg.Listbox(possibleLagop,default_values=['number'], select_mode='extended',size=(18,7),               key='lag_op')],
@@ -162,7 +170,8 @@ def retriveVQEOptions(argv):
         },
         'series' : {
             'itermax' : np.arange(int(values['series_itermax_min']),int(values['series_itermax_max']),int(values['series_itermax_step'])),
-            'step' : np.arange(float(values['series_step_min']),float(values['series_step_max']),float(values['series_step_step']))
+            'step' : np.arange(float(values['series_step_min']),float(values['series_step_max']),float(values['series_step_step'])),
+            'lamb' : np.arange(float(values['series_lamb_min']),float(values['series_lamb_max']),float(values['series_lamb_step']))
         }
     }
 

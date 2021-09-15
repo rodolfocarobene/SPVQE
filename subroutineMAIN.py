@@ -20,7 +20,7 @@ def iteratorItemToString(item):
         if item[5][0][0] != 'dummy':
             name += '_LagAUGSeries_'
             for operator in item[5]:
-                name += operator[0]+'_'+str(item[6])+'x'+str(np.round(item[7],2))+'_'
+                name += operator[0]+'_'+str(item[6])+'x'+str(np.round(item[7],2))+'_lamb'+str(np.round(item[8],2))+'_'
 
     return name
 
@@ -52,6 +52,7 @@ def fromItemIterToOption(options, item):
 
     option['series']['itermax'] = item[6]
     option['series']['step'] = item[7]
+    option['series']['lamb'] = item[8]
 
     return option
 

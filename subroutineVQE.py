@@ -420,7 +420,7 @@ def solveLagAUGSeriesVQE(options):
     mult = 0.01
     step = options['series']['step']
 
-    lamb = -1.10
+    lamb = options['series']['lamb']
 
     global parameters
     parameters = [par]
@@ -451,7 +451,7 @@ def solveLagAUGSeriesVQE(options):
 
         par = parameters[len(parameters) - 1]
         print(lamb)
-        lamb = lamb - tmp_mult*(result.num_particles[0] - operatore[1])
+        lamb = lamb + tmp_mult*2*(result.num_particles[0] - operatore[1])
 
     return result
 
