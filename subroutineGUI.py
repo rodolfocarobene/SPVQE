@@ -262,15 +262,26 @@ def setLagrangeOps(values):
     return lagops_list
 
 def printChoseOption(options):
+    quantum_instance_name = []
+    for ist in options['quantum_instance']:
+        quantum_instance_name.append(ist[1])
+    optimizers_name = []
+    for opt in options['optimizer']:
+        optimizers_name.append(opt[1])
+
     print('OPZIONI SCELTE')
     print('dist: ', options['dists'])
     print('basis: ', options['molecule']['basis'])
     print('varforms: ', options['varforms'])
-    print('instances: ', options['quantum_instance'])
-    print('optimizer: ', options['optimizer'])
+    print('instances: ', quantum_instance_name)
+    print('optimizer: ', optimizers_name)
     print('lagrange: ',
           '\n\tactive: ', options['lagrange']['active'],
           '\n\toperator: ', options['lagrange']['operators'])
+    print('series: ',
+          '\n\titermax: ', options['series']['itermax'],
+          '\n\tstep: ', options['series']['step'],
+          '\n\tlamb: ', options['series']['lamb'])
 
 def setOptimizers(values):
     optimizers = []
