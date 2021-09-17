@@ -1,0 +1,79 @@
+{
+    "commit": "43c951e8cce086653a3671968f58fc1b49550534",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "2.5",
+            "max": "3.5",
+            "delta": "66"
+        },
+        "molecule": {
+            "spin": 0,
+            "charge": 1,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; H .0 .0 2.5; H .0 2.165063509461097 1.25"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "qasm_simulator_ibmq_santiago_corrected"
+        ],
+        "optimizer": [
+            "COBYLA"
+        ],
+        "lagrange": {
+            "active": [
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                20
+            ],
+            "step": [
+                0.1
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            2.5
+        ],
+        "geometries": [
+            "H .0 .0 .0; H .0 .0 2.5; H .0 2.165063509461097 1.25"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_qasm_simulator_ibmq_santiago_corrected_COBYLA_LagSeries_spin-squared_20x0.1_": [
+            {
+                "energy": -0.8089590487386474,
+                "auxiliary": {
+                    "particles": [
+                        2.0625006619296493
+                    ],
+                    "spin-z": [
+                        0.07124844041232914
+                    ],
+                    "spin-sq": [
+                        0.0763247806735184
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "prova falita",
+    "varianti": []
+}

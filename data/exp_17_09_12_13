@@ -1,0 +1,215 @@
+{
+    "commit": "43c951e8cce086653a3671968f58fc1b49550534",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "2.5",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "spin": 0,
+            "charge": 1,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; H .0 .0 2.5; H .0 2.165063509461097 1.25"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "COBYLA"
+        ],
+        "lagrange": {
+            "active": [
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+            ],
+            "step": [
+                0.1
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            2.5
+        ],
+        "geometries": [
+            "H .0 .0 .0; H .0 .0 2.5; H .0 2.165063509461097 1.25"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_1x0.1_": [
+            {
+                "energy": -1.1216686259873443,
+                "auxiliary": {
+                    "particles": [
+                        3.9999989502682083
+                    ],
+                    "spin-z": [
+                        0.9999998231433729
+                    ],
+                    "spin-sq": [
+                        1.99999946943015
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_2x0.1_": [
+            {
+                "energy": -0.9908729114207503,
+                "auxiliary": {
+                    "particles": [
+                        2.0000390158919603
+                    ],
+                    "spin-z": [
+                        4.3800567217311404e-05
+                    ],
+                    "spin-sq": [
+                        4.3802485706966e-05
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_3x0.1_": [
+            {
+                "energy": -0.9908819353606534,
+                "auxiliary": {
+                    "particles": [
+                        2.0000002038526676
+                    ],
+                    "spin-z": [
+                        2.995704420083456e-07
+                    ],
+                    "spin-sq": [
+                        2.99570531706e-07
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_4x0.1_": [
+            {
+                "energy": -0.9908820386676552,
+                "auxiliary": {
+                    "particles": [
+                        2.0000000886310914
+                    ],
+                    "spin-z": [
+                        1.3322488112699205e-07
+                    ],
+                    "spin-sq": [
+                        1.33224898832e-07
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_5x0.1_": [
+            {
+                "energy": -0.9908820353412237,
+                "auxiliary": {
+                    "particles": [
+                        2.000000075308365
+                    ],
+                    "spin-z": [
+                        1.1435564173378765e-07
+                    ],
+                    "spin-sq": [
+                        1.14355654792e-07
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_6x0.1_": [
+            {
+                "energy": -0.9908821154956374,
+                "auxiliary": {
+                    "particles": [
+                        2.0000000419876134
+                    ],
+                    "spin-z": [
+                        5.6436000095416716e-08
+                    ],
+                    "spin-sq": [
+                        5.6436003243e-08
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_7x0.1_": [
+            {
+                "energy": -0.9908821199028791,
+                "auxiliary": {
+                    "particles": [
+                        2.000000029754835
+                    ],
+                    "spin-z": [
+                        4.744138970558254e-08
+                    ],
+                    "spin-sq": [
+                        4.7441391986e-08
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_8x0.1_": [
+            {
+                "energy": -0.9908821494465095,
+                "auxiliary": {
+                    "particles": [
+                        2.000000013325
+                    ],
+                    "spin-z": [
+                        2.0590551152999126e-08
+                    ],
+                    "spin-sq": [
+                        2.059055154e-08
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_9x0.1_": [
+            {
+                "energy": -0.9908821513549017,
+                "auxiliary": {
+                    "particles": [
+                        2.0000000144623993
+                    ],
+                    "spin-z": [
+                        2.2699724877561778e-08
+                    ],
+                    "spin-sq": [
+                        2.2699725459e-08
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "various iteration of cobyla statevector",
+    "varianti": []
+}
