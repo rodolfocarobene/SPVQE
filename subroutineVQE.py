@@ -23,8 +23,7 @@ from qiskit.circuit import QuantumRegister, Parameter
 from qiskit.circuit.library import TwoLocal, EfficientSU2
 from qiskit.utils import QuantumInstance
 from qiskit.opflow.primitive_ops import PauliOp
-from qiskit.quantum_info import Pauli
-
+from qiskit.quantum_info import Pauli 
 def getDateTimeString():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
@@ -404,13 +403,24 @@ def solveLagSeriesVQE(options):
         options['init_point'] = par
         result = solveLagrangianVQE(options)
         par = parameters[len(parameters) - 1]
-        penalty = tmp_mult*abs(result.num_particles[0] - operatore[1])
+
+        penalty = 0
+        for operatore in lagOpList:
+            if operatore[0] == 'number':
+                penalty += tmp_mult*((result.num_particles[0] - operatore[1])**2)
+            if operatore[0] == 'spin-squared':
+                penalty += tmp_mult*((result.total_angular_momentum[0] - operatore[1])**2)
+            if operatore[0] == 'spin-z':
+                penalty += tmp_mult*((result.spin[0] - operatore[1])**2)
+
         log_str = "Iter " + str(i)
         log_str += " mult " + str(np.round(tmp_mult,2))
         log_str += "\tE = " + str(np.round(result.total_energies[0],7))
+        log_str += "\tP = " + str(np.round(penalty))
         log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty,7))
 
         myLogger.info(log_str)
+        print('\t\t',result.total_energies[0], '\t', penalty)
 
     return result
 

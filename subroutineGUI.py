@@ -293,7 +293,7 @@ def setOptimizers(values):
         elif opt == 'ADAM':
             optimizers.append((ADAM(maxiter=1000, eps=1e-5), 'ADAM'))
         elif opt == 'L_BFGS_B':
-            optimizers.append((L_BFGS_B(maxiter=1000, epsilon=1e-5), 'LBFGSB'))
+            optimizers.append((L_BFGS_B(maxiter=1000, epsilon=1e-3), 'LBFGSB'))
         elif opt == 'SPSA':
             optimizers.append((SPSA(maxiter=2000), 'SPSA'))
     values['optimizer'] = optimizers
@@ -324,6 +324,7 @@ def setBackendAndNoise(values):
             quantum_instance.seed_transpiler = seed
             quantum_instance.coupling_map = coupling_map
             quantum_instance.noise_model = noise_model
+
 
         name = backend + '_' + noise
 
