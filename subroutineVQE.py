@@ -23,7 +23,8 @@ from qiskit.circuit import QuantumRegister, Parameter
 from qiskit.circuit.library import TwoLocal, EfficientSU2
 from qiskit.utils import QuantumInstance
 from qiskit.opflow.primitive_ops import PauliOp
-from qiskit.quantum_info import Pauli 
+from qiskit.quantum_info import Pauli
+
 def getDateTimeString():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
@@ -46,19 +47,17 @@ def addSingleSO4Gate(circuit,
     circuit.s(qubit1)
     circuit.s(qubit2)
     circuit.h(qubit2)
-    circuit.cx(qubit2,qubit1)
+    circuit.cx(qubit2, qubit1)
     circuit.u(params[p0], params[p0+1], params[p0+2], qubit1)
     p0 += 3
     circuit.u(params[p0], params[p0+1], params[p0+2], qubit2)
     p0 += 3
-    circuit.cx(qubit2,qubit1)
+    circuit.cx(qubit2, qubit1)
     circuit.h(qubit2)
     circuit.sdg(qubit1)
     circuit.sdg(qubit2)
 
     myLogger.info('Fine di addSingleSO4Gate')
-
-#definition of SO(4) variational form for arbitrary nuber of qubits
 
 def constructSO4Ansatz(numqubits, init = None):
     myLogger.info('Inizio di constructSO4Ansatz')
@@ -77,12 +76,12 @@ def constructSO4Ansatz(numqubits, init = None):
     i = 0
     n = 0
     while i + 1 < numqubits:
-        addSingleSO4Gate(circ , i, i+1, parameters , 6*n)
+        addSingleSO4Gate(circ, i, i+1, parameters, 6*n)
         n = n + 1
         i = i + 2
     i = 1
     while i + 1 < numqubits:
-        addSingleSO4Gate(circ , i, i+1, parameters , 6*n)
+        addSingleSO4Gate(circ, i, i+1, parameters, 6*n)
         n = n +1
         i = i + 2
 
@@ -97,7 +96,6 @@ def createLagrangeOperatorPS(hamiltonian,
                              value):
     myLogger.info('Inizio di createLagrangeOperatorPS')
 
-    # TODO: this switch sucks
     if operator == "number":
         idx = 0
     elif operator == "spin-squared":
@@ -112,7 +110,7 @@ def createLagrangeOperatorPS(hamiltonian,
 
     penaltySquared = (equality ** 2).mul(multiplier)
 
-    lagrangian  =  hamiltonian.add(penaltySquared)
+    lagrangian = hamiltonian.add(penaltySquared)
 
     myLogger.info('Fine di createLagrangeOperatorPS')
 
@@ -126,7 +124,6 @@ def createLagrangeOperatorAUG(hamiltonian,
                              value):
     myLogger.info('Inizio di createLagrangeOperatorAUG')
 
-    # TODO: this switch sucks
     if operator == "number":
         idx = 0
     elif operator == "spin-squared":
@@ -142,7 +139,7 @@ def createLagrangeOperatorAUG(hamiltonian,
     penaltySquared = (equality ** 2).mul(multiplierSquare)
     penaltySimple = equality.mul(-multiplierSimple)
 
-    lagrangian  =  hamiltonian.add(penaltySquared).add(penaltySimple)
+    lagrangian = hamiltonian.add(penaltySquared).add(penaltySimple)
 
     myLogger.info('Fine di createLagrangeOperatorAUG')
 
@@ -163,14 +160,12 @@ def prepareBaseVQE(options):
     init_point = options['init_point']
 
 
-    #setting up molecule driver
-
-    driver = PySCFDriver(atom = geometry,
-                         unit = UnitsType.ANGSTROM,
-                         basis = basis,
-                         spin = spin,
-                         charge = charge,
-                         method = MethodType.RHF)
+    driver = PySCFDriver(atom=geometry,
+                         unit=UnitsType.ANGSTROM,
+                         basis=basis,
+                         spin=spin,
+                         charge=charge,
+                         method=MethodType.RHF)
 
     problem = ElectronicStructureProblem(driver)
     main_op = problem.second_q_ops()[0]
@@ -182,7 +177,7 @@ def prepareBaseVQE(options):
     num_particles = (alpha, beta)
     num_spin_orbitals = particleNumber.num_spin_orbitals
 
-    qubit_op = converter.convert(main_op, num_particles = num_particles)
+    qubit_op = converter.convert(main_op, num_particles=num_particles)
 
     init_state = HartreeFock(num_spin_orbitals,
                              num_particles,
@@ -220,54 +215,54 @@ def createVQEFromAnsatzType(var_form_type,
     myLogger.info('Inizio createVQEFromAnsatzType')
 
     if var_form_type == 'TwoLocal':
-        ansatz = TwoLocal(num_qubits = num_qubits,
-                          rotation_blocks = 'ry',
-                          entanglement_blocks = 'cx',
-                          initial_state = init_state,
-                          entanglement = 'linear')
+        ansatz = TwoLocal(num_qubits=num_qubits,
+                          rotation_blocks='ry',
+                          entanglement_blocks='cx',
+                          initial_state=init_state,
+                          entanglement='linear')
         if None in initial_point:
             initial_point = np.random.rand(ansatz.num_parameters)
-        vqe_solver = VQE(ansatz = ansatz,
-                         optimizer = optimizer,
-                         initial_point = initial_point,
-                         callback = store_intermediate_result,
-                         quantum_instance = quantum_instance)
+        vqe_solver = VQE(ansatz=ansatz,
+                         optimizer=optimizer,
+                         initial_point=initial_point,
+                         callback=store_intermediate_result,
+                         quantum_instance=quantum_instance)
     elif var_form_type == 'EfficientSU(2)':
-        ansatz = EfficientSU2(num_qubits = num_qubits,
-                              entanglement = 'linear',
-                              initial_state = init_state)
+        ansatz = EfficientSU2(num_qubits=num_qubits,
+                              entanglement='linear',
+                              initial_state=init_state)
         if None in initial_point:
             initial_point = np.random.rand(ansatz.num_parameters)
-        vqe_solver = VQE(ansatz = ansatz,
-                         optimizer = optimizer,
-                         initial_point = initial_point,
-                         callback = store_intermediate_result,
-                         quantum_instance = quantum_instance)
+        vqe_solver = VQE(ansatz=ansatz,
+                         optimizer=optimizer,
+                         initial_point=initial_point,
+                         callback=store_intermediate_result,
+                         quantum_instance=quantum_instance)
 
     elif var_form_type == 'UCCSD':
-        ansatz = UCCSD(qubit_converter = converter,
-                       initial_state = init_state,
-                       num_particles = num_particles,
-                       num_spin_orbitals = num_spin_orbitals)._build()
+        ansatz = UCCSD(qubit_converter=converter,
+                       initial_state=init_state,
+                       num_particles=num_particles,
+                       num_spin_orbitals=num_spin_orbitals)._build()
 
         if None in initial_point:
             initial_point = np.random.rand(ansatz.num_parameters)
-        vqe_solver = VQE(quantum_instance = quantum_instance,
-                         ansatz = ansatz,
-                         optimizer = optimizer,
-                         callback = store_intermediate_result,
-                         initial_point = initial_point)
+        vqe_solver = VQE(quantum_instance=quantum_instance,
+                         ansatz=ansatz,
+                         optimizer=optimizer,
+                         callback=store_intermediate_result,
+                         initial_point=initial_point)
 
     elif var_form_type == 'SO(4)':
         ansatz = constructSO4Ansatz(num_qubits,
-                                    init = init_state)
+                                    init=init_state)
         if None in initial_point:
             initial_point = np.random.rand(6*(num_qubits-1))
-        vqe_solver = VQE(ansatz = ansatz,
-                         optimizer = optimizer,
-                         initial_point = initial_point,
-                         callback = store_intermediate_result,
-                         quantum_instance = quantum_instance)
+        vqe_solver = VQE(ansatz=ansatz,
+                         optimizer=optimizer,
+                         initial_point=initial_point,
+                         callback=store_intermediate_result,
+                         quantum_instance=quantum_instance)
 
     else:
         raise Exception("VAR_FORM_TYPE NOT EXISTS")
@@ -314,9 +309,9 @@ def solveLagrangianVQE(options):
         multiplier = operatore[2]
         lagrange_op = createLagrangeOperatorPS(lagrange_op,
                                                aux_ops,
-                                               multiplier = multiplier,
-                                               operator = operator,
-                                               value = value)
+                                               multiplier=multiplier,
+                                               operator=operator,
+                                               value=value)
 
     oldResult = vqe_solver.compute_minimum_eigenvalue(operator=lagrange_op,
                                                  aux_operators=aux_ops)
@@ -351,10 +346,10 @@ def solveAUGLagrangianVQE(options, lamb):
         multiplier = operatore[2]
         lagrange_op = createLagrangeOperatorAUG(lagrange_op,
                                                 aux_ops,
-                                                multiplierSquare = multiplier,
-                                                multiplierSimple = lamb,
-                                                operator = operator,
-                                                value = value)
+                                                multiplierSquare=multiplier,
+                                                multiplierSimple=lamb,
+                                                operator=operator,
+                                                value=value)
 
     oldResult = vqe_solver.compute_minimum_eigenvalue(operator=lagrange_op,
                                                       aux_operators=aux_ops)
@@ -379,14 +374,28 @@ def convertListFermOpToQubitOp(old_aux_ops, converter, num_particles):
 
     return new_aux_ops
 
+def findBestResult(partial_results):
+    energyMin = 100
+    tmpResult = partial_results[0]
+    for result in partial_results:
+        if result.total_energies[0] < energyMin:
+            energyMin = result.total_energies[0]
+            tmpResult = result
+
+    return tmpResult
+
 def solveLagSeriesVQE(options):
     iter_max = options['series']['itermax']
+    step = options['series']['step']
     par = np.zeros(16)
     mult = 0.01
-    step = options['series']['step']
+    threshold = 0.5
 
     global parameters
     parameters = [par]
+
+    partial_results = []
+
     for i in range(iter_max):
         tmp_mult = mult + step * i
 
@@ -405,22 +414,35 @@ def solveLagSeriesVQE(options):
         par = parameters[len(parameters) - 1]
 
         penalty = 0
+        accectableResult = True
+
         for operatore in lagOpList:
             if operatore[0] == 'number':
                 penalty += tmp_mult*((result.num_particles[0] - operatore[1])**2)
+                if abs(result.num_particles[0] - operatore[1]) > threshold:
+                    accectableResult = False
             if operatore[0] == 'spin-squared':
                 penalty += tmp_mult*((result.total_angular_momentum[0] - operatore[1])**2)
+                if abs(result.total_angular_momentum[0] - operatore[1]) > threshold:
+                    accectableResult = False
             if operatore[0] == 'spin-z':
                 penalty += tmp_mult*((result.spin[0] - operatore[1])**2)
+                if abs(result.spin[0] - operatore[1]) > threshold:
+                    accectableResult = False
+
+        if accectableResult:
+            partial_results.append(result)
 
         log_str = "Iter " + str(i)
-        log_str += " mult " + str(np.round(tmp_mult,2))
-        log_str += "\tE = " + str(np.round(result.total_energies[0],7))
-        log_str += "\tP = " + str(np.round(penalty))
-        log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty,7))
+        log_str += " mult " + str(np.round(tmp_mult, 2))
+        log_str += "\tE = " + str(np.round(result.total_energies[0], 7))
+        log_str += "\tP = " + str(penalty)
+        log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty, 7))
 
         myLogger.info(log_str)
-        print('\t\t',result.total_energies[0], '\t', penalty)
+        print('\t\t', result.total_energies[0], '\t', penalty)
+
+    result = findBestResult(partial_results)
 
     return result
 
@@ -453,10 +475,10 @@ def solveLagAUGSeriesVQE(options):
 
         penalty = tmp_mult*((result.num_particles[0] - operatore[1])**2) - lamb * (result.num_particles[0] - operatore[1])
         log_str = "Iter " + str(i)
-        log_str += " mult " + str(np.round(tmp_mult,2))
+        log_str += " mult " + str(np.round(tmp_mult, 2))
         log_str += " lamb " + str(lamb)
-        log_str += "\tE = " + str(np.round(result.total_energies[0],7))
-        log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty,7))
+        log_str += "\tE = " + str(np.round(result.total_energies[0], 7))
+        log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty, 7))
         myLogger.info(log_str)
 
         par = parameters[len(parameters) - 1]

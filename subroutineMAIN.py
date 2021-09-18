@@ -1,5 +1,6 @@
-import numpy as np
 import copy
+
+import numpy as np
 
 def iteratorItemToString(item):
     name = item[0]
@@ -10,17 +11,18 @@ def iteratorItemToString(item):
         if item[5][0][0] != 'dummy':
             name += '_Lag_'
             for operator in item[5]:
-                name += operator[0]+'('+str(np.round(operator[2],2))+')'
+                name += operator[0]+'('+str(np.round(operator[2], 2))+')'
     elif item[4] == 'Series':
         if item[5][0][0] != 'dummy':
             name += '_LagSeries_'
             for operator in item[5]:
-                name += operator[0]+'_'+str(item[6])+'x'+str(np.round(item[7],2))+'_'
+                name += operator[0]+'_'+str(item[6])+'x'+str(np.round(item[7], 2))+'_'
     elif item[4] == 'AUGSeries':
         if item[5][0][0] != 'dummy':
             name += '_LagAUGSeries_'
             for operator in item[5]:
-                name += operator[0]+'_'+str(item[6])+'x'+str(np.round(item[7],2))+'_lamb'+str(np.round(item[8],2))+'_'
+                name += operator[0]+'_'+str(item[6])+'x'+str(np.round(item[7], 2))
+                name += '_lamb'+str(np.round(item[8], 2))+'_'
 
     return name
 
@@ -55,5 +57,3 @@ def fromItemIterToOption(options, item):
     option['series']['lamb'] = item[8]
 
     return option
-
-
