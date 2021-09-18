@@ -1,6 +1,7 @@
-import numpy as np
 import sys
 import itertools
+
+import numpy as np
 
 from subroutineVQE import solveVQE
 from subroutineGUI import retriveVQEOptions
@@ -52,9 +53,3 @@ if __name__ == '__main__':
                                      results)
 
     writeJson(JsonOptions)
-
-
-
-
-
-
