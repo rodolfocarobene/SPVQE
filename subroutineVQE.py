@@ -384,6 +384,26 @@ def findBestResult(partial_results):
 
     return tmpResult
 
+def calcPenalty(lagOpList, result, threshold, tmp_mult):
+    penalty = 0
+    accectableResult = True
+
+    for operatore in lagOpList:
+        if operatore[0] == 'number':
+            penalty += tmp_mult*((result.num_particles[0] - operatore[1])**2)
+            if abs(result.num_particles[0] - operatore[1]) > threshold:
+                accectableResult = False
+        if operatore[0] == 'spin-squared':
+            penalty += tmp_mult*((result.total_angular_momentum[0] - operatore[1])**2)
+            if abs(result.total_angular_momentum[0] - operatore[1]) > threshold:
+                accectableResult = False
+        if operatore[0] == 'spin-z':
+            penalty += tmp_mult*((result.spin[0] - operatore[1])**2)
+            if abs(result.spin[0] - operatore[1]) > threshold:
+                    accectableResult = False
+
+    return penalty, accectableResult
+
 def solveLagSeriesVQE(options):
     iter_max = options['series']['itermax']
     step = options['series']['step']
@@ -413,25 +433,10 @@ def solveLagSeriesVQE(options):
         result = solveLagrangianVQE(options)
         par = parameters[len(parameters) - 1]
 
-        penalty = 0
-        accectableResult = True
-
-        for operatore in lagOpList:
-            if operatore[0] == 'number':
-                penalty += tmp_mult*((result.num_particles[0] - operatore[1])**2)
-                if abs(result.num_particles[0] - operatore[1]) > threshold:
-                    accectableResult = False
-            if operatore[0] == 'spin-squared':
-                penalty += tmp_mult*((result.total_angular_momentum[0] - operatore[1])**2)
-                if abs(result.total_angular_momentum[0] - operatore[1]) > threshold:
-                    accectableResult = False
-            if operatore[0] == 'spin-z':
-                penalty += tmp_mult*((result.spin[0] - operatore[1])**2)
-                if abs(result.spin[0] - operatore[1]) > threshold:
-                    accectableResult = False
-
-        if accectableResult:
-            partial_results.append(result)
+        penalty, accectableResult = calcPenalty(lagOpList,
+                                                result,
+                                                threshold,
+                                                tmp_mult)
 
         log_str = "Iter " + str(i)
         log_str += " mult " + str(np.round(tmp_mult, 2))
@@ -441,6 +446,10 @@ def solveLagSeriesVQE(options):
 
         myLogger.info(log_str)
         print('\t\t', result.total_energies[0], '\t', penalty)
+
+        if accectableResult:
+            result.total_energies[0] -= penalty
+            partial_results.append(result)
 
     result = findBestResult(partial_results)
 
