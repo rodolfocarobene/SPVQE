@@ -8,7 +8,7 @@ def getDateTimeString():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
 
-def retriveJSONOptions(filename,options,results):
+def retriveJSONOptions(filename, options, results):
     JsonOptions = {
         'commit': None,
         'file': filename,
@@ -32,7 +32,6 @@ def retriveJSONOptions(filename,options,results):
     JsonOptions['options']['series']['step'] = JsonOptions['options']['series']['step'].tolist()
     JsonOptions['options']['series']['lamb'] = JsonOptions['options']['series']['lamb'].tolist()
 
-    #TODO what have I done
     total_results = {}
     for resultTot in JsonOptions['results_tot']:
         results = []
@@ -82,7 +81,7 @@ def writeJson(JsonOptions):
     description = input("Inserisci una minima descrizione: ")
     JsonOptions['description'] = description
 
-    json_obj = json.dumps(JsonOptions, indent = 4)
+    json_obj = json.dumps(JsonOptions, indent=4)
 
     while os.path.exists(filename):
         print('Esiste già un file con questo nome!!')
