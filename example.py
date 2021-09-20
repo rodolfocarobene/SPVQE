@@ -5,21 +5,17 @@ from qiskit_nature.problems.second_quantization.electronic import ElectronicStru
 from qiskit_nature.mappers.second_quantization import ParityMapper, BravyiKitaevMapper
 from qiskit_nature.converters.second_quantization import QubitConverter
 from qiskit_nature.circuit.library import HartreeFock
-
 from qiskit_nature.algorithms import VQEUCCFactory, GroundStateEigensolver
-
-from qiskit.algorithms.optimizers import L_BFGS_B, CG
-from qiskit.algorithms import VQE
-
-from qiskit.circuit import QuantumRegister, Parameter
-from qiskit.circuit.library import TwoLocal
-
-from qiskit.utils import QuantumInstance
 
 from qiskit import IBMQ
 from qiskit import Aer
 from qiskit import QuantumCircuit
 
+from qiskit.algorithms.optimizers import L_BFGS_B, CG
+from qiskit.algorithms import VQE
+from qiskit.circuit import QuantumRegister, Parameter
+from qiskit.circuit.library import TwoLocal
+from qiskit.utils import QuantumInstance
 
 def add_unitary_gate(circuit,
                      qubit1,
@@ -29,12 +25,12 @@ def add_unitary_gate(circuit,
     circuit.s(qubit1)
     circuit.s(qubit2)
     circuit.h(qubit2)
-    circuit.cx(qubit2,qubit1)
-    circuit.u(params[p0],params[p0+1], params[p0+2],qubit1)
+    circuit.cx(qubit2, qubit1)
+    circuit.u(params[p0], params[p0+1], params[p0+2], qubit1)
     p0 += 3
-    circuit.u(params[p0],params[p0+1], params[p0+2],qubit2)
+    circuit.u(params[p0], params[p0+1], params[p0+2], qubit2)
     p0 += 3
-    circuit.cx(qubit2,qubit1)
+    circuit.cx(qubit2, qubit1)
     circuit.h(qubit2)
     circuit.sdg(qubit1)
     circuit.sdg(qubit2)
@@ -47,11 +43,11 @@ def SO_04(numqubits, init=None):
             name = "par" + str(i)
             new = Parameter(name)
             parameters.append(new)
-        q = QuantumRegister(numqubits, name='q')
-        if init != None:
+        quantum_reg = QuantumRegister(numqubits, name='q')
+        if init is not None:
             circ = init
         else:
-            circ = QuantumCircuit(q)
+            circ = QuantumCircuit(quantum_reg)
 
         if numqubits == 4:
             add_unitary_gate(circ, 0, 1, parameters, 0)
@@ -59,7 +55,6 @@ def SO_04(numqubits, init=None):
             add_unitary_gate(circ, 1, 2, parameters, 12)
 
         return circ
-
 
 def vqe_function(geometry,
                  spin=0,
@@ -127,8 +122,8 @@ def vqe_function(geometry,
 
 
 if __name__ == '__main__':
-    dist = 1.0
-    alt = np.sqrt(dist**2 - (dist/2)**2)
-    geometry = "H .0 .0 .0; H .0 .0 " + str(dist) + "; H .0 " + str(alt) + " " + str(dist/2)
+    DIST = 1.0
+    ALT = np.sqrt(dist**2 - (dist/2)**2)
+    GEOM = "H .0 .0 .0; H .0 .0 " + str(DIST) + "; H .0 " + str(ALT) + " " + str(DIST/2)
 
-    vqe_function(geometry, var_form_type='UCCSD')
+    vqe_function(GEOM, var_form_type='UCCSD')
