@@ -8,7 +8,7 @@ def get_date_time_string():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
 
-def retrive_json_optios(filename, options, results):
+def retrive_json_options(filename, options, results):
     JsonOptions = {
         'commit': None,
         'file': filename,

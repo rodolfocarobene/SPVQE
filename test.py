@@ -28,7 +28,7 @@ if __name__ == '__main__':
     newiteratore = []
 
     for idx, item in enumerate(iteratore):
-        name = iteratorItemToString(item)
+        name = iterator_item_to_string(item)
         if name not in names:
             names.append(name)
             results[name] = []
@@ -39,8 +39,8 @@ if __name__ == '__main__':
         options['molecule']['geometry'] = geometry
         print("D = ", np.round(options['dists'][i], 2))
         for item in iteratore:
-            name = iteratorItemToString(item)
-            option = fromItemIterToOption(options, item)
+            name = iterator_item_to_string(item)
+            option = from_item_iter_to_option(options, item)
 
             result_tot = solve_VQE(option)
             results[name].append(result_tot)
@@ -48,8 +48,8 @@ if __name__ == '__main__':
             energy = result_tot.total_energies[0]
             print("\t", name, "\tE = ", energy)
 
-    JsonOptions = retriveJSONOptions(__file__,
+    JsonOptions = retrive_json_options(__file__,
                                      options,
                                      results)
 
-    writeJson(JsonOptions)
+    write_json(JsonOptions)
