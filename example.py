@@ -123,7 +123,7 @@ def vqe_function(geometry,
 
 if __name__ == '__main__':
     DIST = 1.0
-    ALT = np.sqrt(dist**2 - (dist/2)**2)
+    ALT = np.sqrt(DIST**2 - (DIST/2)**2)
     GEOM = "H .0 .0 .0; H .0 .0 " + str(DIST) + "; H .0 " + str(ALT) + " " + str(DIST/2)
 
     vqe_function(GEOM, var_form_type='UCCSD')
