@@ -448,7 +448,7 @@ def solve_lag_series_VQE(options):
         log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty, 7))
 
         myLogger.info(log_str)
-        print('\t\t', result.total_energies[0], '\t', penalty)
+        #print('\t\t', result.total_energies[0], '\t', penalty)
 
         if accectable_result:
             result.total_energies[0] = result.total_energies[0] - penalty

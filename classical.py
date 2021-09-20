@@ -21,7 +21,7 @@ if __name__ == '__main__':
     energies['neutra'] = []
     energies['ione+'] = []
     energies['ione-'] = []
-    energies['weird'] = []
+    energies['eccitato'] = []
 
     for dist in dists:
 
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         energies['ione-'].append(e_fci)
 
         e_fci = get_energy(geometry, 1, 2)
-        energies['weird'].append(e_fci)
+        energies['eccitato'].append(e_fci)
 
     for method in energies:
         plt.plot(dists, energies[method], label=method)
