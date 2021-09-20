@@ -1,4 +1,4 @@
-[![Code Quality Score](https://www.code-inspector.com/project/29094/score/svg)](https://frontend.code-inspector.com/public/project/29093/C-VQE/dashboard)
+[![Code Quality Score](https://www.code-inspector.com/project/29093/score/svg)](https://frontend.code-inspector.com/public/project/29093/C-VQE/dashboard)
 
 
 ## Changes to downloaded libs
