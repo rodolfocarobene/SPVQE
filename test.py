@@ -3,8 +3,8 @@ import itertools
 
 import numpy as np
 
-from subroutineVQE import solveVQE
-from subroutineGUI import retriveVQEOptions
+from subroutineVQE import solve_VQE
+from subroutineGUI import retrive_VQE_options
 from subroutineJSON import retriveJSONOptions, writeJson
 from subroutineMAIN import iteratorItemToString, fromItemIterToOption
 
