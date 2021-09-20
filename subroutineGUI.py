@@ -1,23 +1,24 @@
 import itertools
+import warnings
 
 import numpy as np
 import PySimpleGUI as psg
 
-import warnings
-#warnings.filterwarnings('ignore', category=SystemTimeWarning)
-warnings.simplefilter("ignore")
-
-from qiskit.algorithms.optimizers import CG, COBYLA, SPSA, L_BFGS_B, ADAM
-from qiskit_nature.converters.second_quantization import QubitConverter
-from qiskit.providers.aer.noise import NoiseModel
-from qiskit_nature.mappers.second_quantization import ParityMapper
-from qiskit.utils import QuantumInstance
-from qiskit.ignis.mitigation import CompleteMeasFitter
 from qiskit import Aer
-from qiskit.providers.aer import QasmSimulator
 from qiskit import IBMQ
 
-def getDefaultOpt():
+from qiskit.algorithms.optimizers import CG, COBYLA, SPSA, L_BFGS_B, ADAM
+from qiskit.providers.aer.noise import NoiseModel
+from qiskit.utils import QuantumInstance
+from qiskit.ignis.mitigation import CompleteMeasFitter
+from qiskit.providers.aer import QasmSimulator
+
+from qiskit_nature.converters.second_quantization import QubitConverter
+from qiskit_nature.mappers.second_quantization import ParityMapper
+
+warnings.simplefilter("ignore")
+
+def get_default_opt():
     print('Loading default values')
     values = {
         'spin' : 0,
@@ -61,101 +62,105 @@ def getDefaultOpt():
     }
     return values
 
-def retriveVQEOptions(argv):
+def get_layout():
     possibleForms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
     possibleBasis = ['sto-3g', 'sto-6g']
     possibleNoise = ['None', 'ibmq_santiago']
     possibleBool = ['True', 'False']
     possibleLag = ['True', 'False', 'Series', 'AUGSeries']
     possibleOptim = ['COBYLA', 'CG', 'SPSA', 'L_BFGS_B', 'ADAM']
-    possibleLagop = ['number','spin-squared','spin-z',
+    possibleLagop = ['number', 'spin-squared', 'spin-z',
                      'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
-    possibleBack = ['statevector_simulator','qasm_simulator','hardware']
+    possibleBack = ['statevector_simulator', 'qasm_simulator', 'hardware']
 
     layout=[[psg.Text('Molecola')],
-            [psg.Text('Spin'), psg.Input(default_text=0, size=(4,10), key='spin'),
-             psg.Text('Charge'), psg.Input(default_text=1, size=(4,10), key='charge'),
+            [psg.Text('Spin'), psg.Input(default_text=0, size=(4, 10), key='spin'),
+             psg.Text('Charge'), psg.Input(default_text=1, size=(4, 10), key='charge'),
              psg.Text('Basis'),
              psg.Listbox(possibleBasis, default_values=['sto-6g'],
-                         select_mode='extended', size=(7,2), key='basis')],
+                         select_mode='extended', size=(7, 2), key='basis')],
 
             [psg.Text('Scegli forma variazionale'),
              psg.Listbox(possibleForms, default_values=['TwoLocal'],
-                         select_mode='extended', size=(12,4), key='varforms')],
+                         select_mode='extended', size=(12, 4), key='varforms')],
 
             [psg.Text('Scegli il tipo di backend'),
              psg.Listbox(possibleBack,default_values=['statevector_simulator'],
-                         select_mode='extended', size=(17,3), key='backend'),
-             psg.Text('shots'), psg.Input(default_text=1024, size=(4,10), key='shots')],
+                         select_mode='extended', size=(17, 3), key='backend'),
+             psg.Text('shots'), psg.Input(default_text=1024, size=(4, 10), key='shots')],
 
             [psg.Text('Scegli l\'eventuale rumore'),
              psg.Listbox(possibleNoise, default_values=['None'],
-                         select_mode='extended', size=(14,2), key='noise')],
+                         select_mode='extended', size=(14, 2), key='noise')],
 
             [psg.Text('Correction'),
              psg.Listbox(possibleBool, default_values=['False'],
-                         select_mode='extended', size=(5,2), key='correction')],
+                         select_mode='extended', size=(5, 2), key='correction')],
 
             [psg.Text('Optimizer'),
              psg.Listbox(possibleOptim, default_values=['COBYLA'],
-                         select_mode='extended', size=(8,5), key='optimizer')],
+                         select_mode='extended', size=(8, 5), key='optimizer')],
 
-            [psg.Text('Distanze: Min'), psg.Input(default_text=0.3, size=(4,10), key='dist_min'),
-             psg.Text('          Max'), psg.Input(default_text=3.5, size=(4,10), key='dist_max'),
-             psg.Text('          Delta'), psg.Input(default_text=0.1, size=(4,10), key='dist_delta')],
+            [psg.Text('Distanze: Min'), psg.Input(default_text=0.3, size=(4, 10), key='dist_min'),
+             psg.Text('          Max'), psg.Input(default_text=3.5, size=(4, 10), key='dist_max'),
+             psg.Text('          Delta'), psg.Input(default_text=0.1, size=(4, 10), key='dist_delta')],
 
             [psg.Text('Lagrangiana'),
              psg.Listbox(possibleLag,default_values=['Series'],
-                         select_mode='extended', size=(10,4), key='lagrangiana')],
+                         select_mode='extended', size=(10, 4), key='lagrangiana')],
 
-            [psg.Text('LagSeries(itermax) MIN:'), psg.Input(default_text=10, size=(4,10), key='series_itermax_min'),
-             psg.Text('MAX: '), psg.Input(default_text=20, size=(4,10), key='series_itermax_max'),
-             psg.Text('DELTA: '), psg.Input(default_text=20, size=(4,10), key='series_itermax_step')],
+            [psg.Text('LagSeries(itermax) MIN:'), psg.Input(default_text=10, size=(4, 10), key='series_itermax_min'),
+             psg.Text('MAX: '), psg.Input(default_text=20, size=(4, 10), key='series_itermax_max'),
+             psg.Text('DELTA: '), psg.Input(default_text=20, size=(4, 10), key='series_itermax_step')],
 
-            [psg.Text('LagSeries(step) MIN:'), psg.Input(default_text=0.1, size=(4,10), key='series_step_min'),
-             psg.Text('MAX: '), psg.Input(default_text=1, size=(4,10), key='series_step_max'),
-             psg.Text('DELTA: '), psg.Input(default_text=10, size=(4,10), key='series_step_step')],
+            [psg.Text('LagSeries(step) MIN:'), psg.Input(default_text=0.1, size=(4, 10), key='series_step_min'),
+             psg.Text('MAX: '), psg.Input(default_text=1, size=(4, 10), key='series_step_max'),
+             psg.Text('DELTA: '), psg.Input(default_text=10, size=(4, 10), key='series_step_step')],
 
-            [psg.Text('LagSeries(lamb) MIN:'), psg.Input(default_text=2, size=(4,10), key='series_lamb_min'),
-             psg.Text('MAX: '), psg.Input(default_text=6, size=(4,10), key='series_lamb_max'),
-             psg.Text('DELTA: '), psg.Input(default_text=10, size=(4,10), key='series_lamb_step')],
+            [psg.Text('LagSeries(lamb) MIN:'), psg.Input(default_text=2, size=(4, 10), key='series_lamb_min'),
+             psg.Text('MAX: '), psg.Input(default_text=6, size=(4, 10), key='series_lamb_max'),
+             psg.Text('DELTA: '), psg.Input(default_text=10, size=(4, 10), key='series_lamb_step')],
 
             [psg.Text('Operatore'),
              psg.Listbox(possibleLagop,default_values=['number'],
-                         select_mode='extended', size=(18,7), key='lag_op')],
+                         select_mode='extended', size=(18, 7), key='lag_op')],
 
-            [psg.Text('NUMBER: Value'), psg.Input(default_text=2, size=(4,10), key='lag_value_num'),
-             psg.Text('Mult: min'),  psg.Input(default_text=0.2, size=(4,10), key='lag_mult_num_min'),
-             psg.Text('max'), psg.Input(default_text=1, size=(4,10), key='lag_mult_num_max'),
-             psg.Text('delta'), psg.Input(default_text=10, size=(4,10), key='lag_mult_num_delta')],
+            [psg.Text('NUMBER: Value'), psg.Input(default_text=2, size=(4, 10), key='lag_value_num'),
+             psg.Text('Mult: min'),  psg.Input(default_text=0.2, size=(4, 10), key='lag_mult_num_min'),
+             psg.Text('max'), psg.Input(default_text=1, size=(4, 10), key='lag_mult_num_max'),
+             psg.Text('delta'), psg.Input(default_text=10, size=(4, 10), key='lag_mult_num_delta')],
 
-            [psg.Text('SPIN-2: Value'), psg.Input(default_text=0, size=(4,10), key='lag_value_spin2'),
-             psg.Text('Mult: min'),  psg.Input(default_text=0.2, size=(4,10), key='lag_mult_spin2_min'),
-             psg.Text('max'), psg.Input(default_text=1, size=(4,10), key='lag_mult_spin2_max'),
-             psg.Text('delta'), psg.Input(default_text=10, size=(4,10), key='lag_mult_spin2_delta')],
+            [psg.Text('SPIN-2: Value'), psg.Input(default_text=0, size=(4, 10), key='lag_value_spin2'),
+             psg.Text('Mult: min'),  psg.Input(default_text=0.2, size=(4, 10), key='lag_mult_spin2_min'),
+             psg.Text('max'), psg.Input(default_text=1, size=(4, 10), key='lag_mult_spin2_max'),
+             psg.Text('delta'), psg.Input(default_text=10, size=(4, 10), key='lag_mult_spin2_delta')],
 
-            [psg.Text('SPIN-Z: Value'), psg.Input(default_text=0, size=(4,10), key='lag_value_spinz'),
-             psg.Text('Mult: min'),  psg.Input(default_text=0.2, size=(4,10), key='lag_mult_spinz_min'),
-             psg.Text('max'), psg.Input(default_text=1, size=(4,10), key='lag_mult_spinz_max'),
-             psg.Text('delta'), psg.Input(default_text=10, size=(4,10), key='lag_mult_spinz_delta')],
+            [psg.Text('SPIN-Z: Value'), psg.Input(default_text=0, size=(4, 10), key='lag_value_spinz'),
+             psg.Text('Mult: min'),  psg.Input(default_text=0.2, size=(4, 10), key='lag_mult_spinz_min'),
+             psg.Text('max'), psg.Input(default_text=1, size=(4, 10), key='lag_mult_spinz_max'),
+             psg.Text('delta'), psg.Input(default_text=10, size=(4, 10), key='lag_mult_spinz_delta')],
 
             [psg.Button('Inizia calcolo', font=('Times New Roman',12))]]
+    return layout
+
+def retrive_VQE_options(argv):
 
     if len(argv) > 1:
         if argv[1] == 'fast':
-            values = getDefaultOpt()
+            values = get_default_opt()
     else:
+        layout = get_layout()
         win =psg.Window('Definisci opzioni per VQE',
                         layout,
                         resizable=True,
                         font='Lucida',
                         text_justification='left')
-        e,values=win.read()
+        e, values = win.read()
         win.close()
 
-    setOptimizers(values)
-    setBackendAndNoise(values)
-    lagops = setLagrangeOps(values)
+    set_optimizers(values)
+    set_backend_and_noise(values)
+    lagops = set_lagrange_ops(values)
 
     options = {
         'dist' : {
@@ -190,13 +195,13 @@ def retriveVQEOptions(argv):
         }
     }
 
-    options = setDistAndGeometry(options)
+    options = set_dist_and_geometry(options)
 
-    printChoseOption(options)
+    print_chose_options(options)
 
     return options
 
-def setLagrangeOps(values):
+def set_lagrange_ops(values):
     if values['lagrangiana'] == ['False']:
         lagops_list = [[('dummy', 0, 0)]]
     else:
@@ -302,7 +307,7 @@ def setLagrangeOps(values):
 
     return lagops_list
 
-def printChoseOption(options):
+def print_chose_options(options):
     quantum_instance_name = []
     for ist in options['quantum_instance']:
         quantum_instance_name.append(ist[1])
@@ -324,7 +329,7 @@ def printChoseOption(options):
           '\n\tstep: ', options['series']['step'],
           '\n\tlamb: ', options['series']['lamb'])
 
-def setOptimizers(values):
+def set_optimizers(values):
     optimizers = []
     for opt in values['optimizer']:
         if opt == 'CG':
@@ -339,7 +344,7 @@ def setOptimizers(values):
             optimizers.append((SPSA(maxiter=2000), 'SPSA'))
     values['optimizer'] = optimizers
 
-def setBackendAndNoise(values):
+def set_backend_and_noise(values):
     quantum_instance_list = []
 
     provider = IBMQ.load_account()
@@ -361,7 +366,6 @@ def setBackendAndNoise(values):
             device = provider.get_backend(noise)
             coupling_map = device.configuration().coupling_map
             noise_model = NoiseModel.from_backend(device)
-            basis_gates = noise_model.basis_gates
             seed = 150
             quantum_instance.seed_simulator = seed
             quantum_instance.seed_transpiler = seed
@@ -380,7 +384,7 @@ def setBackendAndNoise(values):
 
     values['backend'] = quantum_instance_list
 
-def setDistAndGeometry(options):
+def set_dist_and_geometry(options):
     minimo = float(options['dist']['min'])
     massimo = float(options['dist']['max'])
     delta = float(options['dist']['delta'])

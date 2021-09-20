@@ -4,7 +4,7 @@ import sys
 
 import numpy as np
 
-def importValoriVeri(dists):
+def import_valori_veri(dists):
     all_dists = np.arange(0.3, 3.5, 0.1)
     riferimento_import = []
 
@@ -33,26 +33,26 @@ def importValoriVeri(dists):
 
     return riferimento_import
 
-def valoriDaConfrontare(filename):
+def valori_da_confrontare(filename):
     file = open(filename)
     data = json.load(file)
     file.close()
 
     vals = {}
-    for item in data['results_tot']:
+    for res in data['results_tot']:
         y = []
-        for singleResult in data['results_tot'][item]:
+        for singleResult in data['results_tot'][res]:
             y.append(singleResult['energy'])
-        vals[item] = y
+        vals[res] = y
 
     return vals, data['options']['dists']
 
-def sortDict(dict1):
+def sort_dict(dict1):
     newdict = {k: v for k, v in sorted(dict1.items(),
                                        key=lambda item: item[1])}
     newlist = []
-    for item in newdict:
-        newlist.append((item, newdict[item]))
+    for key in newdict:
+        newlist.append((key, newdict[key]))
     return newlist
 
 if __name__ == '__main__':
@@ -60,8 +60,8 @@ if __name__ == '__main__':
         print('missing args')
         exit()
 
-    vals, dists = valoriDaConfrontare(sys.argv[1])
-    riferimento = importValoriVeri(dists)
+    vals, dists = valori_da_confrontare(sys.argv[1])
+    riferimento = import_valori_veri(dists)
     differenze = {}
     for item in vals:
         tmp_difference = []
@@ -70,7 +70,7 @@ if __name__ == '__main__':
             tmp_difference.append(abs(riferimento_i - vals_i))
         differenze[item] = sum(tmp_difference)
 
-    sortedDict = sortDict(differenze)
-    for a,b in sortedDict:
-        print(a," : ", b)
+    sortedDict = sort_dict(differenze)
+    for a, b in sortedDict:
+        print(a, " : ", b)
 

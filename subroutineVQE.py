@@ -25,24 +25,24 @@ from qiskit.utils import QuantumInstance
 from qiskit.opflow.primitive_ops import PauliOp
 from qiskit.quantum_info import Pauli
 
-def getDateTimeString():
+def get_date_time_string():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
 
 myLogger = logging.getLogger('myLogger')
 myLogger.setLevel(logging.DEBUG)
-ch = logging.FileHandler('./logs/' + getDateTimeString() + '.log')
+ch = logging.FileHandler('./logs/' + get_date_time_string() + '.log')
 ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 myLogger.addHandler(ch)
 
-def addSingleSO4Gate(circuit,
+def add_single_SO4_gate(circuit,
                      qubit1,
                      qubit2,
                      params,
                      p0):
-    myLogger.info('Inizio di addSingleSO4Gate')
+    myLogger.info('Inizio di add_single_SO4_gate')
 
     circuit.s(qubit1)
     circuit.s(qubit2)
@@ -57,10 +57,10 @@ def addSingleSO4Gate(circuit,
     circuit.sdg(qubit1)
     circuit.sdg(qubit2)
 
-    myLogger.info('Fine di addSingleSO4Gate')
+    myLogger.info('Fine di add_single_SO4_gate')
 
-def constructSO4Ansatz(numqubits, init = None):
-    myLogger.info('Inizio di constructSO4Ansatz')
+def construct_SO4_ansatz(numqubits, init=None):
+    myLogger.info('Inizio di construct_SO4_ansatz')
 
     num_parameters = 6 * (numqubits - 1)
     parameters = []
@@ -68,33 +68,33 @@ def constructSO4Ansatz(numqubits, init = None):
         name = "par" + str(i)
         new = Parameter(name)
         parameters.append(new)
-    q = QuantumRegister(numqubits, name = 'q')
-    if init != None:
+    q = QuantumRegister(numqubits, name='q')
+    if init is not None:
         circ = init
     else:
         circ = QuantumCircuit(q)
     i = 0
     n = 0
     while i + 1 < numqubits:
-        addSingleSO4Gate(circ, i, i+1, parameters, 6*n)
+        add_single_SO4_gate(circ, i, i+1, parameters, 6*n)
         n = n + 1
         i = i + 2
     i = 1
     while i + 1 < numqubits:
-        addSingleSO4Gate(circ, i, i+1, parameters, 6*n)
+        add_single_SO4_gate(circ, i, i+1, parameters, 6*n)
         n = n +1
         i = i + 2
 
-    myLogger.info('Fine di constructSO4Ansatz')
+    myLogger.info('Fine di construct_SO4_ansatz')
 
     return circ
 
-def createLagrangeOperatorPS(hamiltonian,
+def create_lagrange_operator_PS(hamiltonian,
                              auxiliary,
                              multiplier,
                              operator,
                              value):
-    myLogger.info('Inizio di createLagrangeOperatorPS')
+    myLogger.info('Inizio di create_lagrange_operator_PS')
 
     if operator == "number":
         idx = 0
@@ -106,23 +106,23 @@ def createLagrangeOperatorPS(hamiltonian,
     x = np.zeros(hamiltonian.num_qubits)
     z = np.zeros(hamiltonian.num_qubits)
 
-    equality = auxiliary[idx].add(PauliOp(Pauli((z,x)), -value))
+    equality = auxiliary[idx].add(PauliOp(Pauli((z, x)), -value))
 
-    penaltySquared = (equality ** 2).mul(multiplier)
+    penalty_squared = (equality ** 2).mul(multiplier)
 
-    lagrangian = hamiltonian.add(penaltySquared)
+    lagrangian = hamiltonian.add(penalty_squared)
 
-    myLogger.info('Fine di createLagrangeOperatorPS')
+    myLogger.info('Fine di create_lagrange_operator_PS')
 
     return lagrangian
 
-def createLagrangeOperatorAUG(hamiltonian,
+def create_lagrange_operator_aug(hamiltonian,
                              auxiliary,
-                             multiplierSimple,
-                             multiplierSquare,
+                             multiplier_simple,
+                             multiplier_square,
                              operator,
                              value):
-    myLogger.info('Inizio di createLagrangeOperatorAUG')
+    myLogger.info('Inizio di create_lagrange_operator_aug')
 
     if operator == "number":
         idx = 0
@@ -134,19 +134,19 @@ def createLagrangeOperatorAUG(hamiltonian,
     x = np.zeros(hamiltonian.num_qubits)
     z = np.zeros(hamiltonian.num_qubits)
 
-    equality = auxiliary[idx].add(PauliOp(Pauli((z,x)), -value))
+    equality = auxiliary[idx].add(PauliOp(Pauli((z, x)), -value))
 
-    penaltySquared = (equality ** 2).mul(multiplierSquare)
-    penaltySimple = equality.mul(-multiplierSimple)
+    penalty_squared = (equality ** 2).mul(multiplier_square)
+    penaltySimple = equality.mul(-multiplier_simple)
 
-    lagrangian = hamiltonian.add(penaltySquared).add(penaltySimple)
+    lagrangian = hamiltonian.add(penalty_squared).add(penaltySimple)
 
-    myLogger.info('Fine di createLagrangeOperatorAUG')
+    myLogger.info('Fine di create_lagrange_operator_aug')
 
     return lagrangian
 
-def prepareBaseVQE(options):
-    myLogger.info('Inizio di prepareBaseVQE')
+def prepare_base_VQE(options):
+    myLogger.info('Inizio di prepare_base_VQE')
 
     spin = options['molecule']['spin']
     charge = options['molecule']['charge']
@@ -185,7 +185,7 @@ def prepareBaseVQE(options):
 
     num_qubits = qubit_op.num_qubits
 
-    vqe_solver = createVQEFromAnsatzType(var_form_type,
+    vqe_solver = create_VQE_from_ansatz_type(var_form_type,
                                          num_qubits,
                                          init_state,
                                          quantum_instance,
@@ -195,7 +195,7 @@ def prepareBaseVQE(options):
                                          num_spin_orbitals,
                                          init_point)
 
-    myLogger.info('Fine di prepareBaseVQE')
+    myLogger.info('Fine di prepare_base_VQE')
 
     return converter, vqe_solver, problem, qubit_op
 
@@ -203,7 +203,7 @@ def store_intermediate_result(count, par, energy, std):
     global parameters
     parameters.append(par)
 
-def createVQEFromAnsatzType(var_form_type,
+def create_VQE_from_ansatz_type(var_form_type,
                             num_qubits,
                             init_state,
                             quantum_instance,
@@ -212,7 +212,7 @@ def createVQEFromAnsatzType(var_form_type,
                             num_particles,
                             num_spin_orbitals,
                             initial_point):
-    myLogger.info('Inizio createVQEFromAnsatzType')
+    myLogger.info('Inizio create_VQE_from_ansatz_type')
 
     if var_form_type == 'TwoLocal':
         ansatz = TwoLocal(num_qubits=num_qubits,
@@ -254,7 +254,7 @@ def createVQEFromAnsatzType(var_form_type,
                          initial_point=initial_point)
 
     elif var_form_type == 'SO(4)':
-        ansatz = constructSO4Ansatz(num_qubits,
+        ansatz = construct_SO4_ansatz(num_qubits,
                                     init=init_state)
         if None in initial_point:
             initial_point = np.random.rand(6*(num_qubits-1))
@@ -267,38 +267,35 @@ def createVQEFromAnsatzType(var_form_type,
     else:
         raise Exception("VAR_FORM_TYPE NOT EXISTS")
 
-    myLogger.info('Fine  createVQEFromAnsatzType')
+    myLogger.info('Fine  create_VQE_from_ansatz_type')
 
     return vqe_solver
 
-def solveHamiltonianVQE(options):
-    myLogger.info('Inizio solveHamiltonianVQE')
+def solve_hamiltonian_VQE(options):
+    myLogger.info('Inizio solve_hamiltonian_VQE')
     myLogger.info('OPTIONS')
     myLogger.info(options)
 
-    converter, vqe_solver, problem, qubit_op = prepareBaseVQE(options)
+    converter, vqe_solver, problem, qubit_op = prepare_base_VQE(options)
 
     calc = GroundStateEigensolver(converter, vqe_solver)
     result = calc.solve(problem)
 
-    myLogger.info('Fine solveHamiltonianVQE')
+    myLogger.info('Fine solve_hamiltonian_VQE')
     myLogger.info('RESULT')
     myLogger.info(result)
 
     return result
 
-def solveLagrangianVQE(options):
-    myLogger.info('Inizio solveLagrangianVQE')
+def solve_lagrangian_VQE(options):
+    myLogger.info('Inizio solve_lagrangian_VQE')
     myLogger.info('OPTIONS')
     myLogger.info(options)
 
-    converter, vqe_solver, problem, qubit_op = prepareBaseVQE(options)
-
-    if options['var_form_type'] == 'UCCSD':
-        vqe_solver = vqe_solver.get_solver(problem, converter)
+    converter, vqe_solver, problem, qubit_op = prepare_base_VQE(options)
 
     auxOpsNotConverted = problem.second_q_ops()[1:4]
-    aux_ops = convertListFermOpToQubitOp(auxOpsNotConverted,
+    aux_ops = convert_list_fermOp_to_qubitOp(auxOpsNotConverted,
                                          converter,
                                          problem.num_particles)
 
@@ -307,7 +304,7 @@ def solveLagrangianVQE(options):
         operator = operatore[0]
         value = operatore[1]
         multiplier = operatore[2]
-        lagrange_op = createLagrangeOperatorPS(lagrange_op,
+        lagrange_op = create_lagrange_operator_PS(lagrange_op,
                                                aux_ops,
                                                multiplier=multiplier,
                                                operator=operator,
@@ -318,24 +315,24 @@ def solveLagrangianVQE(options):
 
     newResult = problem.interpret(oldResult)
 
-    myLogger.info('Fine solveLagrangianVQE')
+    myLogger.info('Fine solve_lagrangian_VQE')
     myLogger.info('RESULT')
     myLogger.info(newResult)
 
     return newResult
 
-def solveAUGLagrangianVQE(options, lamb):
-    myLogger.info('Inizio solveAUGLagrangianVQE')
+def solve_aug_lagrangian_VQE(options, lamb):
+    myLogger.info('Inizio solve_aug_lagrangian_VQE')
     myLogger.info('OPTIONS')
     myLogger.info(options)
 
-    converter, vqe_solver, problem, qubit_op = prepareBaseVQE(options)
+    converter, vqe_solver, problem, qubit_op = prepare_base_VQE(options)
 
     if options['var_form_type'] == 'UCCSD':
         vqe_solver = vqe_solver.get_solver(problem, converter)
 
     auxOpsNotConverted = problem.second_q_ops()[1:4]
-    aux_ops = convertListFermOpToQubitOp(auxOpsNotConverted,
+    aux_ops = convert_list_fermOp_to_qubitOp(auxOpsNotConverted,
                                          converter,
                                          problem.num_particles)
 
@@ -344,10 +341,10 @@ def solveAUGLagrangianVQE(options, lamb):
         operator = operatore[0]
         value = operatore[1]
         multiplier = operatore[2]
-        lagrange_op = createLagrangeOperatorAUG(lagrange_op,
+        lagrange_op = create_lagrange_operator_aug(lagrange_op,
                                                 aux_ops,
-                                                multiplierSquare=multiplier,
-                                                multiplierSimple=lamb,
+                                                multiplier_square=multiplier,
+                                                multiplier_simple=lamb,
                                                 operator=operator,
                                                 value=value)
 
@@ -356,25 +353,25 @@ def solveAUGLagrangianVQE(options, lamb):
 
     newResult = problem.interpret(oldResult)
 
-    myLogger.info('Fine solveAUGLagrangianVQE')
+    myLogger.info('Fine solve_aug_lagrangian_VQE')
     myLogger.info('RESULT')
     myLogger.info(newResult)
 
     return newResult
 
-def convertListFermOpToQubitOp(old_aux_ops, converter, num_particles):
-    myLogger.info('Inizio convertListFermOpToQubitOp')
+def convert_list_fermOp_to_qubitOp(old_aux_ops, converter, num_particles):
+    myLogger.info('Inizio convert_list_fermOp_to_qubitOp')
 
     new_aux_ops = []
     for op in old_aux_ops:
         opNew = converter.convert(op, num_particles)
         new_aux_ops.append(opNew)
 
-    myLogger.info('Fine convertListFermOpToQubitOp')
+    myLogger.info('Fine convert_list_fermOp_to_qubitOp')
 
     return new_aux_ops
 
-def findBestResult(partial_results):
+def find_best_result(partial_results):
     energyMin = 100
     tmpResult = partial_results[0]
     for result in partial_results:
@@ -404,10 +401,10 @@ def calcPenalty(lagOpList, result, threshold, tmp_mult):
 
     return penalty, accectableResult
 
-def solveLagSeriesVQE(options):
+def solve_lag_series_VQE(options):
     iter_max = options['series']['itermax']
     step = options['series']['step']
-    par = np.zeros(16)
+    par = np.zeros(get_num_par(options['var_form_type']))
     mult = 0.01
     threshold = 0.5
 
@@ -430,7 +427,7 @@ def solveLagSeriesVQE(options):
         options['lagrange']['operators'] = lagOpList
 
         options['init_point'] = par
-        result = solveLagrangianVQE(options)
+        result = solve_lagrangian_VQE(options)
         par = parameters[len(parameters) - 1]
 
         penalty, accectableResult = calcPenalty(lagOpList,
@@ -448,16 +445,26 @@ def solveLagSeriesVQE(options):
         print('\t\t', result.total_energies[0], '\t', penalty)
 
         if accectableResult:
-            result.total_energies[0] -= penalty
+            result.total_energies[0] = result.total_energies[0] - penalty
             partial_results.append(result)
 
-    result = findBestResult(partial_results)
+    result = find_best_result(partial_results)
 
     return result
 
-def solveLagAUGSeriesVQE(options):
+def get_num_par(varform):
+    if varform == 'TwoLocal':
+        return 16
+    elif varform == 'SO(4)':
+        return 18
+    elif varform == 'UCCSD':
+        return 16
+    elif varform == 'EfficientSU(2)':
+        return 32
+
+def solve_lag_aug_series_VQE(options):
     iter_max = options['series']['itermax']
-    par = np.zeros(16)
+    par = np.zeros(get_num_par(options['var_form_type']))
     mult = 0.01
     step = options['series']['step']
 
@@ -480,9 +487,11 @@ def solveLagAUGSeriesVQE(options):
 
         options['init_point'] = par
 
-        result = solveAUGLagrangianVQE(options, lamb)
+        result = solve_aug_lagrangian_VQE(options, lamb)
 
-        penalty = tmp_mult*((result.num_particles[0] - operatore[1])**2) - lamb * (result.num_particles[0] - operatore[1])
+        penalty = tmp_mult*((result.num_particles[0] - operatore[1])**2)
+        penalty -= lamb * (result.num_particles[0] - operatore[1])
+
         log_str = "Iter " + str(i)
         log_str += " mult " + str(np.round(tmp_mult, 2))
         log_str += " lamb " + str(lamb)
@@ -504,18 +513,18 @@ def solveLagAUGSeriesVQE(options):
 
     return result
 
-def solveVQE(options):
+def solve_VQE(options):
     global parameters
     parameters = []
 
     if not options['lagrange']['active']:
-        return solveHamiltonianVQE(options)
+        return solve_hamiltonian_VQE(options)
 
     if not options['lagrange']['series']:
-        return solveLagrangianVQE(options)
+        return solve_lagrangian_VQE(options)
     else:
         if options['lagrange']['augmented']:
-            return solveLagAUGSeriesVQE(options)
+            return solve_lag_aug_series_VQE(options)
         else:
-            return solveLagSeriesVQE(options)
+            return solve_lag_series_VQE(options)
 

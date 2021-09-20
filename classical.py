@@ -2,11 +2,11 @@ import numpy as np
 from pyscf import gto, scf, ao2mo, mp, cc, fci, tools
 import matplotlib.pyplot as plt
 
-def getGeometry(dist):
+def get_geometry(dist):
     alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
     return "H .0 .0 .0; H .0 .0 " + str(dist) + "; H .0 " + str(alt) + " " + str(dist/2)
 
-def getEnergy(geometry, charge, spin, basis = 'sto-6g')
+def get_energy(geometry, charge, spin, basis = 'sto-6g'):
     mol = gto.M(atom=geometry, charge=charge, spin=spin, basis=basis, symmetry=True, verbose=0)
     mf = scf.RHF(mol)
     Ehf = mf.kernel()
@@ -25,18 +25,18 @@ if __name__ == '__main__':
 
     for dist in dists:
 
-        geometry = getGeometry(dist)
+        geometry = get_geometry(dist)
 
-        e_fci = getEnergy(geometry, 1, 0)
+        e_fci = get_energy(geometry, 1, 0)
         energies['ione+'].append(e_fci)
 
-        e_fci = getEnergy(geometry, 0, 1)
+        e_fci = get_energy(geometry, 0, 1)
         energies['neutra'].append(e_fci)
 
-        e_fci = getEnergy(geometry, -1, 0)
+        e_fci = get_energy(geometry, -1, 0)
         energies['ione-'].append(e_fci)
 
-        e_fci = getEnergy(geometry, 1, 2)
+        e_fci = get_energy(geometry, 1, 2)
         energies['weird'].append(e_fci)
 
     for method in energies:
