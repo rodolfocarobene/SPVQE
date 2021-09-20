@@ -9,7 +9,7 @@ from subroutineJSON import retriveJSONOptions, writeJson
 from subroutineMAIN import iteratorItemToString, fromItemIterToOption
 
 if __name__ == '__main__':
-    options = retriveVQEOptions(sys.argv)
+    options = retrive_VQE_options(sys.argv)
 
     iteratore = list(itertools.product(options['molecule']['basis'],
                                        options['varforms'],
@@ -42,7 +42,7 @@ if __name__ == '__main__':
             name = iteratorItemToString(item)
             option = fromItemIterToOption(options, item)
 
-            result_tot = solveVQE(option)
+            result_tot = solve_VQE(option)
             results[name].append(result_tot)
 
             energy = result_tot.total_energies[0]
