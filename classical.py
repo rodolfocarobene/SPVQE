@@ -6,7 +6,7 @@ def get_geometry(dist):
     alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
     return "H .0 .0 .0; H .0 .0 " + str(dist) + "; H .0 " + str(alt) + " " + str(dist/2)
 
-def get_energy(geometry, charge, spin, basis = 'sto-6g'):
+def get_energy(geometry, charge, spin, basis = '6-31G'):
     mol = gto.M(atom=geometry, charge=charge, spin=spin, basis=basis, symmetry=True, verbose=0)
     mf = scf.RHF(mol)
     Ehf = mf.kernel()

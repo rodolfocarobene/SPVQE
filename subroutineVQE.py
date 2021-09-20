@@ -206,7 +206,8 @@ def prepare_base_VQE(options):
 def store_intermediate_result(count, par, energy, std):
     global parameters
     parameters.append(par)
-    myLogger.info(count, par, energy, std)
+    log_string = str(count) + ' ' + str(energy) + ' ' + str(std)
+    myLogger.info(log_string)
 
 def create_VQE_from_ansatz_type(var_form_type,
                             num_qubits,
