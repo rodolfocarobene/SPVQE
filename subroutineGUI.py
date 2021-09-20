@@ -63,84 +63,112 @@ def get_default_opt():
     return values
 
 def get_layout():
-    possibleForms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
-    possibleBasis = ['sto-3g', 'sto-6g']
-    possibleNoise = ['None', 'ibmq_santiago']
-    possibleBool = ['True', 'False']
-    possibleLag = ['True', 'False', 'Series', 'AUGSeries']
-    possibleOptim = ['COBYLA', 'CG', 'SPSA', 'L_BFGS_B', 'ADAM']
-    possibleLagop = ['number', 'spin-squared', 'spin-z',
+    possible_forms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
+    possible_basis = ['sto-3g', 'sto-6g']
+    possible_noise = ['None', 'ibmq_santiago']
+    possible_bool = ['True', 'False']
+    possible_lag = ['True', 'False', 'Series', 'AUGSeries']
+    possible_optim = ['COBYLA', 'CG', 'SPSA', 'L_BFGS_B', 'ADAM']
+    possible_lag_op = ['number', 'spin-squared', 'spin-z',
                      'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
-    possibleBack = ['statevector_simulator', 'qasm_simulator', 'hardware']
+    possible_backend = ['statevector_simulator', 'qasm_simulator', 'hardware']
 
-    layout=[[psg.Text('Molecola')],
-            [psg.Text('Spin'), psg.Input(default_text=0, size=(4, 10), key='spin'),
-             psg.Text('Charge'), psg.Input(default_text=1, size=(4, 10), key='charge'),
+    layout = [[psg.Text('Molecola')],
+            [psg.Text('Spin'),
+             psg.Input(default_text=0, size=(4, 10), key='spin'),
+             psg.Text('Charge'),
+             psg.Input(default_text=1, size=(4, 10), key='charge'),
              psg.Text('Basis'),
-             psg.Listbox(possibleBasis, default_values=['sto-6g'],
+             psg.Listbox(possible_basis, default_values=['sto-6g'],
                          select_mode='extended', size=(7, 2), key='basis')],
 
             [psg.Text('Scegli forma variazionale'),
-             psg.Listbox(possibleForms, default_values=['TwoLocal'],
+             psg.Listbox(possible_forms, default_values=['TwoLocal'],
                          select_mode='extended', size=(12, 4), key='varforms')],
 
             [psg.Text('Scegli il tipo di backend'),
-             psg.Listbox(possibleBack,default_values=['statevector_simulator'],
+             psg.Listbox(possible_backend, default_values=['statevector_simulator'],
                          select_mode='extended', size=(17, 3), key='backend'),
-             psg.Text('shots'), psg.Input(default_text=1024, size=(4, 10), key='shots')],
+             psg.Text('shots'),
+             psg.Input(default_text=1024, size=(4, 10), key='shots')],
 
             [psg.Text('Scegli l\'eventuale rumore'),
-             psg.Listbox(possibleNoise, default_values=['None'],
+             psg.Listbox(possible_noise, default_values=['None'],
                          select_mode='extended', size=(14, 2), key='noise')],
 
             [psg.Text('Correction'),
-             psg.Listbox(possibleBool, default_values=['False'],
+             psg.Listbox(possible_bool, default_values=['False'],
                          select_mode='extended', size=(5, 2), key='correction')],
 
             [psg.Text('Optimizer'),
-             psg.Listbox(possibleOptim, default_values=['COBYLA'],
+             psg.Listbox(possible_optim, default_values=['COBYLA'],
                          select_mode='extended', size=(8, 5), key='optimizer')],
 
-            [psg.Text('Distanze: Min'), psg.Input(default_text=0.3, size=(4, 10), key='dist_min'),
-             psg.Text('          Max'), psg.Input(default_text=3.5, size=(4, 10), key='dist_max'),
-             psg.Text('          Delta'), psg.Input(default_text=0.1, size=(4, 10), key='dist_delta')],
+            [psg.Text('Distanze: Min'),
+             psg.Input(default_text=0.3, size=(4, 10), key='dist_min'),
+             psg.Text('          Max'),
+             psg.Input(default_text=3.5, size=(4, 10), key='dist_max'),
+             psg.Text('          Delta'),
+             psg.Input(default_text=0.1, size=(4, 10), key='dist_delta')],
 
             [psg.Text('Lagrangiana'),
-             psg.Listbox(possibleLag,default_values=['Series'],
+             psg.Listbox(possible_lag, default_values=['Series'],
                          select_mode='extended', size=(10, 4), key='lagrangiana')],
 
-            [psg.Text('LagSeries(itermax) MIN:'), psg.Input(default_text=10, size=(4, 10), key='series_itermax_min'),
-             psg.Text('MAX: '), psg.Input(default_text=20, size=(4, 10), key='series_itermax_max'),
-             psg.Text('DELTA: '), psg.Input(default_text=20, size=(4, 10), key='series_itermax_step')],
+            [psg.Text('LagSeries(itermax) MIN:'),
+             psg.Input(default_text=10, size=(4, 10), key='series_itermax_min'),
+             psg.Text('MAX: '),
+             psg.Input(default_text=20, size=(4, 10), key='series_itermax_max'),
+             psg.Text('DELTA: '),
+             psg.Input(default_text=20, size=(4, 10), key='series_itermax_step')],
 
-            [psg.Text('LagSeries(step) MIN:'), psg.Input(default_text=0.1, size=(4, 10), key='series_step_min'),
-             psg.Text('MAX: '), psg.Input(default_text=1, size=(4, 10), key='series_step_max'),
-             psg.Text('DELTA: '), psg.Input(default_text=10, size=(4, 10), key='series_step_step')],
+            [psg.Text('LagSeries(step) MIN:'),
+             psg.Input(default_text=0.1, size=(4, 10), key='series_step_min'),
+             psg.Text('MAX: '),
+             psg.Input(default_text=1, size=(4, 10), key='series_step_max'),
+             psg.Text('DELTA: '),
+             psg.Input(default_text=10, size=(4, 10), key='series_step_step')],
 
-            [psg.Text('LagSeries(lamb) MIN:'), psg.Input(default_text=2, size=(4, 10), key='series_lamb_min'),
-             psg.Text('MAX: '), psg.Input(default_text=6, size=(4, 10), key='series_lamb_max'),
-             psg.Text('DELTA: '), psg.Input(default_text=10, size=(4, 10), key='series_lamb_step')],
+            [psg.Text('LagSeries(lamb) MIN:'),
+             psg.Input(default_text=2, size=(4, 10), key='series_lamb_min'),
+             psg.Text('MAX: '),
+             psg.Input(default_text=6, size=(4, 10), key='series_lamb_max'),
+             psg.Text('DELTA: '),
+             psg.Input(default_text=10, size=(4, 10), key='series_lamb_step')],
 
             [psg.Text('Operatore'),
-             psg.Listbox(possibleLagop,default_values=['number'],
+             psg.Listbox(possible_lag_op, default_values=['number'],
                          select_mode='extended', size=(18, 7), key='lag_op')],
 
-            [psg.Text('NUMBER: Value'), psg.Input(default_text=2, size=(4, 10), key='lag_value_num'),
-             psg.Text('Mult: min'),  psg.Input(default_text=0.2, size=(4, 10), key='lag_mult_num_min'),
-             psg.Text('max'), psg.Input(default_text=1, size=(4, 10), key='lag_mult_num_max'),
-             psg.Text('delta'), psg.Input(default_text=10, size=(4, 10), key='lag_mult_num_delta')],
+            [psg.Text('NUMBER: Value'),
+             psg.Input(default_text=2, size=(4, 10), key='lag_value_num'),
+             psg.Text('Mult: min'),
+             psg.Input(default_text=0.2, size=(4, 10), key='lag_mult_num_min'),
+             psg.Text('max'),
+             psg.Input(default_text=1, size=(4, 10), key='lag_mult_num_max'),
+             psg.Text('delta'),
+             psg.Input(default_text=10, size=(4, 10), key='lag_mult_num_delta')],
 
-            [psg.Text('SPIN-2: Value'), psg.Input(default_text=0, size=(4, 10), key='lag_value_spin2'),
-             psg.Text('Mult: min'),  psg.Input(default_text=0.2, size=(4, 10), key='lag_mult_spin2_min'),
-             psg.Text('max'), psg.Input(default_text=1, size=(4, 10), key='lag_mult_spin2_max'),
-             psg.Text('delta'), psg.Input(default_text=10, size=(4, 10), key='lag_mult_spin2_delta')],
+            [psg.Text('SPIN-2: Value'),
+             psg.Input(default_text=0, size=(4, 10), key='lag_value_spin2'),
+             psg.Text('Mult: min'),
+             psg.Input(default_text=0.2, size=(4, 10), key='lag_mult_spin2_min'),
+             psg.Text('max'),
+             psg.Input(default_text=1, size=(4, 10), key='lag_mult_spin2_max'),
+             psg.Text('delta'),
+             psg.Input(default_text=10, size=(4, 10), key='lag_mult_spin2_delta')],
 
-            [psg.Text('SPIN-Z: Value'), psg.Input(default_text=0, size=(4, 10), key='lag_value_spinz'),
-             psg.Text('Mult: min'),  psg.Input(default_text=0.2, size=(4, 10), key='lag_mult_spinz_min'),
-             psg.Text('max'), psg.Input(default_text=1, size=(4, 10), key='lag_mult_spinz_max'),
-             psg.Text('delta'), psg.Input(default_text=10, size=(4, 10), key='lag_mult_spinz_delta')],
+            [psg.Text('SPIN-Z: Value'),
+             psg.Input(default_text=0, size=(4, 10), key='lag_value_spinz'),
+             psg.Text('Mult: min'),
+             psg.Input(default_text=0.2, size=(4, 10), key='lag_mult_spinz_min'),
+             psg.Text('max'),
+             psg.Input(default_text=1, size=(4, 10), key='lag_mult_spinz_max'),
+             psg.Text('delta'),
+             psg.Input(default_text=10, size=(4, 10), key='lag_mult_spinz_delta')],
 
-            [psg.Button('Inizia calcolo', font=('Times New Roman',12))]]
+            [psg.Button('Inizia calcolo', font=('Times New Roman', 12))]]
+
     return layout
 
 def retrive_VQE_options(argv):
@@ -150,11 +178,11 @@ def retrive_VQE_options(argv):
             values = get_default_opt()
     else:
         layout = get_layout()
-        win =psg.Window('Definisci opzioni per VQE',
-                        layout,
-                        resizable=True,
-                        font='Lucida',
-                        text_justification='left')
+        win = psg.Window('Definisci opzioni per VQE',
+                         layout,
+                         resizable=True,
+                         font='Lucida',
+                         text_justification='left')
         e, values = win.read()
         win.close()
 
@@ -201,6 +229,94 @@ def retrive_VQE_options(argv):
 
     return options
 
+def set_ops_num_spin2(values, lagops_list):
+    mults_num = np.arange(float(values['lag_mult_num_min']),
+                          float(values['lag_mult_num_max']),
+                          float(values['lag_mult_num_delta']))
+    mults_spin2 = np.arange(float(values['lag_mult_spin2_min']),
+                            float(values['lag_mult_spin2_max']),
+                            float(values['lag_mult_spin2_delta']))
+    for mult_num in mults_num:
+        for mult_spin2 in mults_spin2:
+            mult_num = np.round(mult_num, 2)
+            mult_spin2 = np.round(mult_spin2, 2)
+            templist = []
+            templist.append(('number',
+                             int(values['lag_value_num']),
+                             mult_num))
+            templist.append(('spin-squared',
+                             int(values['lag_value_spin2']),
+                             mult_spin2))
+            lagops_list.append(templist)
+
+def set_ops_num_spinz(values, lagops_list):
+    mults_num = np.arange(float(values['lag_mult_num_min']),
+                          float(values['lag_mult_num_max']),
+                          float(values['lag_mult_num_delta']))
+    mults_spinz = np.arange(float(values['lag_mult_spinz_min']),
+                            float(values['lag_mult_spinz_max']),
+                            float(values['lag_mult_spinz_delta']))
+    for mult_num in mults_num:
+        for mult_spinz in mults_spinz:
+            mult_num = np.round(mult_num, 2)
+            mult_spinz = np.round(mult_spinz, 2)
+            templist = []
+            templist.append(('number',
+                             int(values['lag_value_num']),
+                             mult_num))
+            templist.append(('spin-z',
+                             int(values['lag_value_spinz']),
+                             mult_spinz))
+            lagops_list.append(templist)
+
+def set_ops_spin2_spinz(values, lagops_list):
+    mults_spin2 = np.arange(float(values['lag_mult_spin2_min']),
+                            float(values['lag_mult_spin2_max']),
+                            float(values['lag_mult_spin2_delta']))
+    mults_spinz = np.arange(float(values['lag_mult_spinz_min']),
+                            float(values['lag_mult_spinz_max']),
+                            float(values['lag_mult_spinz_delta']))
+    for mult_spin2 in mults_spin2:
+        for mult_spinz in mults_spinz:
+            mult_spin2 = np.round(mult_spin2, 2)
+            mult_spinz = np.round(mult_spinz, 2)
+            templist = []
+            templist.append(('spin-squared',
+                             int(values['lag_value_spin2']),
+                             mult_spin2))
+            templist.append(('spin-z',
+                             int(values['lag_value_spinz']),
+                             mult_spinz))
+            lagops_list.append(templist)
+
+def set_ops_num_spin2_spinz(values, lagops_list):
+    mults_spin2 = np.arange(float(values['lag_mult_spin2_min']),
+                            float(values['lag_mult_spin2_max']),
+                            float(values['lag_mult_spin2_delta']))
+    mults_num = np.arange(float(values['lag_mult_num_min']),
+                          float(values['lag_mult_num_max']),
+                          float(values['lag_mult_num_delta']))
+    mults_spinz = np.arange(float(values['lag_mult_spinz_min']),
+                            float(values['lag_mult_spinz_max']),
+                            float(values['lag_mult_spinz_delta']))
+    for mult_spin2 in mults_spin2:
+        for mult_spinz in mults_spinz:
+            for mult_num in mults_num:
+                mult_spin2 = np.round(mult_spin2, 2)
+                mult_spinz = np.round(mult_spinz, 2)
+                mult_num = np.round(mult_num, 2)
+                templist = []
+                templist.append(('spin-squared',
+                                 int(values['lag_value_spin2']),
+                                 mult_spin2))
+                templist.append(('spin-z',
+                                 int(values['lag_value_spinz']),
+                                 mult_spinz))
+                templist.append(('number',
+                                 int(values['lag_value_num']),
+                                 mult_num))
+                lagops_list.append(templist)
+
 def set_lagrange_ops(values):
     if values['lagrangiana'] == ['False']:
         lagops_list = [[('dummy', 0, 0)]]
@@ -214,7 +330,9 @@ def set_lagrange_ops(values):
                               float(values['lag_mult_num_delta']))
             for mult in mults:
                 mult = np.round(mult, 2)
-                lagops_list.append([(op, int(values['lag_value_num']), mult)])
+                lagops_list.append([(op,
+                                     int(values['lag_value_num']),
+                                     mult)])
 
         if op == 'spin-squared':
             mults = np.arange(float(values['lag_mult_spin2_min']),
@@ -222,7 +340,9 @@ def set_lagrange_ops(values):
                               float(values['lag_mult_spin2_delta']))
             for mult in mults:
                 mult = np.round(mult, 2)
-                lagops_list.append([(op, int(values['lag_value_spin2']), mult)])
+                lagops_list.append([(op,
+                                     int(values['lag_value_spin2']),
+                                     mult)])
 
         if op == 'spin-z':
             mults = np.arange(float(values['lag_mult_spinz_min']),
@@ -230,80 +350,21 @@ def set_lagrange_ops(values):
                               float(values['lag_mult_spinz_delta']))
             for mult in mults:
                 mult = np.round(mult, 2)
-                lagops_list.append([(op, int(values['lag_value_spinz']), mult)])
+                lagops_list.append([(op,
+                                     int(values['lag_value_spinz']),
+                                     mult)])
 
         if op == 'num+spin2':
-            mults_num = np.arange(float(values['lag_mult_num_min']),
-                                  float(values['lag_mult_num_max']),
-                                  float(values['lag_mult_num_delta']))
-            mults_spin2 = np.arange(float(values['lag_mult_spin2_min']),
-                                    float(values['lag_mult_spin2_max']),
-                                    float(values['lag_mult_spin2_delta']))
-            for mult_num in mults_num:
-                for mult_spin2 in mults_spin2:
-                    mult_num = np.round(mult_num, 2)
-                    mult_spin2 = np.round(mult_spin2, 2)
-                    templist = []
-                    templist.append(('number', int(values['lag_value_num']), mult_num))
-                    templist.append(('spin-squared', int(values['lag_value_spin2']), mult_spin2))
-                    lagops_list.append(templist)
-
+            set_ops_num_spin2(values, lagops_list)
 
         if op == 'num+spinz':
-            mults_num = np.arange(float(values['lag_mult_num_min']),
-                                  float(values['lag_mult_num_max']),
-                                  float(values['lag_mult_num_delta']))
-            mults_spinz = np.arange(float(values['lag_mult_spinz_min']),
-                                    float(values['lag_mult_spinz_max']),
-                                    float(values['lag_mult_spinz_delta']))
-            for mult_num in mults_num:
-                for mult_spinz in mults_spinz:
-                    mult_num = np.round(mult_num, 2)
-                    mult_spinz = np.round(mult_spinz, 2)
-                    templist = []
-                    templist.append(('number', int(values['lag_value_num']), mult_num))
-                    templist.append(('spin-z', int(values['lag_value_spinz']), mult_spinz))
-                    lagops_list.append(templist)
-
+            set_ops_num_spinz(values, lagops_list)
 
         if op == 'spin2+spinz':
-            mults_spin2 = np.arange(float(values['lag_mult_spin2_min']),
-                                    float(values['lag_mult_spin2_max']),
-                                    float(values['lag_mult_spin2_delta']))
-            mults_spinz = np.arange(float(values['lag_mult_spinz_min']),
-                                    float(values['lag_mult_spinz_max']),
-                                    float(values['lag_mult_spinz_delta']))
-            for mult_spin2 in mults_spin2:
-                for mult_spinz in mults_spinz:
-                    mult_spin2 = np.round(mult_spin2, 2)
-                    mult_spinz = np.round(mult_spinz, 2)
-                    templist = []
-                    templist.append(('spin-squared', int(values['lag_value_spin2']), mult_spin2))
-                    templist.append(('spin-z', int(values['lag_value_spinz']), mult_spinz))
-                    lagops_list.append(templist)
-
+            set_ops_spin2_spinz(values, lagops_list)
 
         if op == 'num+spin2+spinz':
-            mults_spin2 = np.arange(float(values['lag_mult_spin2_min']),
-                                    float(values['lag_mult_spin2_max']),
-                                    float(values['lag_mult_spin2_delta']))
-            mults_num = np.arange(float(values['lag_mult_num_min']),
-                                  float(values['lag_mult_num_max']),
-                                  float(values['lag_mult_num_delta']))
-            mults_spinz = np.arange(float(values['lag_mult_spinz_min']),
-                                    float(values['lag_mult_spinz_max']),
-                                    float(values['lag_mult_spinz_delta']))
-            for mult_spin2 in mults_spin2:
-                for mult_spinz in mults_spinz:
-                    for mult_num in mults_num:
-                        mult_spin2 = np.round(mult_spin2, 2)
-                        mult_spinz = np.round(mult_spinz, 2)
-                        mult_num = np.round(mult_num, 2)
-                        templist = []
-                        templist.append(('spin-squared', int(values['lag_value_spin2']), mult_spin2))
-                        templist.append(('spin-z', int(values['lag_value_spinz']), mult_spinz))
-                        templist.append(('number', int(values['lag_value_num']), mult_num))
-                        lagops_list.append(templist)
+            set_ops_num_spin2_spinz(values, lagops_list)
 
     return lagops_list
 
@@ -380,7 +441,7 @@ def set_backend_and_noise(values):
             quantum_instance.measurement_error_mitigation_shots = 1000
             name += '_corrected'
 
-        quantum_instance_list.append((quantum_instance,name))
+        quantum_instance_list.append((quantum_instance, name))
 
     values['backend'] = quantum_instance_list
 
@@ -389,14 +450,14 @@ def set_dist_and_geometry(options):
     massimo = float(options['dist']['max'])
     delta = float(options['dist']['delta'])
 
-    dist = np.arange(minimo,massimo,delta)
+    dist = np.arange(minimo, massimo, delta)
     options['dists'] = dist
     alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
 
     geometries = []
 
-    for i, d in enumerate(dist):
-        geom = "H .0 .0 .0; H .0 .0 " + str(d) + "; H .0 " + str(alt[i]) + " " + str(d/2)
+    for i, single_dist in enumerate(dist):
+        geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 " + str(alt[i]) + " " + str(single_dist/2)
         geometries.append(geom)
 
     options['geometries'] = geometries
