@@ -2,7 +2,7 @@ import copy
 
 import numpy as np
 
-def iteratorItemToString(item):
+def iterator_item_to_string(item):
     name = item[0]
     name += '_' + item[1]
     name += '_' + item[2][1]
@@ -26,7 +26,7 @@ def iteratorItemToString(item):
 
     return name
 
-def fromItemIterToOption(options, item):
+def from_item_iter_to_option(options, item):
     option = copy.deepcopy(options)
     option['molecule']['basis'] = item[0]
     option['var_form_type'] = item[1]

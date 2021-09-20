@@ -5,8 +5,8 @@ import numpy as np
 
 from subroutineVQE import solve_VQE
 from subroutineGUI import retrive_VQE_options
-from subroutineJSON import retriveJSONOptions, writeJson
-from subroutineMAIN import iteratorItemToString, fromItemIterToOption
+from subroutineJSON import retrive_json_options, write_json
+from subroutineMAIN import iterator_item_to_string, from_item_iter_to_option
 
 if __name__ == '__main__':
     options = retrive_VQE_options(sys.argv)

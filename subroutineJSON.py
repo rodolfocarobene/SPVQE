@@ -1,21 +1,21 @@
 import json
-import git
 import os
-
 from datetime import datetime
 
-def getDateTimeString():
+import git
+
+def get_date_time_string():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
 
-def retriveJSONOptions(filename, options, results):
+def retrive_json_optios(filename, options, results):
     JsonOptions = {
         'commit': None,
         'file': filename,
         'options': options,
         'results_tot': results,
         'description': None,
-        'varianti': checkVarianti(options)
+        'varianti': check_varianti(options)
     }
 
     instances = []
@@ -33,29 +33,29 @@ def retriveJSONOptions(filename, options, results):
     JsonOptions['options']['series']['lamb'] = JsonOptions['options']['series']['lamb'].tolist()
 
     total_results = {}
-    for resultTot in JsonOptions['results_tot']:
+    for result_tot in JsonOptions['results_tot']:
         results = []
-        for idx in range(len(JsonOptions['results_tot'][resultTot])):
-            singleResult = fromElectronicResultToDict(JsonOptions['results_tot'][resultTot][idx])
-            results.append(singleResult)
-        total_results[resultTot] = results
+        for idx in range(len(JsonOptions['results_tot'][result_tot])):
+            single_res = from_electronic_res_to_dict(JsonOptions['results_tot'][result_tot][idx])
+            results.append(single_res)
+        total_results[result_tot] = results
 
     JsonOptions['results_tot'] = total_results
 
     return JsonOptions
 
-def fromElectronicResultToDict(resultOld):
-    resultNew = {
-        'energy': resultOld.total_energies[0],
+def from_electronic_res_to_dict(result_old):
+    result_new = {
+        'energy': result_old.total_energies[0],
         'auxiliary': {
-            'particles': resultOld.num_particles,
-            'spin-z': resultOld.spin,
-            'spin-sq': resultOld.total_angular_momentum
+            'particles': result_old.num_particles,
+            'spin-z': result_old.spin,
+            'spin-sq': result_old.total_angular_momentum
         }
     }
-    return resultNew
+    return result_new
 
-def checkVarianti(opt):
+def check_varianti(opt):
 
     varianti = []
     if len(opt['molecule']['basis']) > 1:
@@ -72,8 +72,8 @@ def checkVarianti(opt):
         varianti.append('lagrange operator')
     return varianti
 
-def writeJson(JsonOptions):
-    filename = "data/exp_"+getDateTimeString()
+def write_json(JsonOptions):
+    filename = "data/exp_"+get_date_time_string()
     repo = git.Repo(search_parent_directories=True)
     commit = repo.head.object.hexsha
     JsonOptions['commit'] = commit
