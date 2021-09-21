@@ -78,7 +78,12 @@ def write_json(JsonOptions):
     commit = repo.head.object.hexsha
     JsonOptions['commit'] = commit
 
-    description = input("Inserisci una minima descrizione: ")
+    try:
+        description = input("Inserisci una minima descrizione: ")
+    except:
+        print('errore nella codifica della descrizione')
+        description = "dummy"
+
     JsonOptions['description'] = description
 
     json_obj = json.dumps(JsonOptions, indent=4)

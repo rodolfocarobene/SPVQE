@@ -379,7 +379,7 @@ def convert_list_fermOp_to_qubitOp(old_aux_ops, converter, num_particles):
 
 def find_best_result(partial_results):
     energy_min = 100
-    tmp_result = partial_results[0]
+    tmp_result = 5
     for result in partial_results:
         if result.total_energies[0] < energy_min:
             energy_min = result.total_energies[0]
