@@ -63,6 +63,7 @@ def get_default_opt():
     return values
 
 def get_layout():
+    possible_molecules = ['H3+', 'H2', 'H2+', 'H2*', 'H4', 'H4*']
     possible_forms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
     possible_basis = ['sto-3g', 'sto-6g']
     possible_noise = ['None', 'ibmq_santiago']
@@ -73,14 +74,12 @@ def get_layout():
                      'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
     possible_backend = ['statevector_simulator', 'qasm_simulator', 'hardware']
 
-    layout = [[psg.Text('Molecola')],
-            [psg.Text('Spin'),
-             psg.Input(default_text=0, size=(4, 10), key='spin'),
-             psg.Text('Charge'),
-             psg.Input(default_text=1, size=(4, 10), key='charge'),
-             psg.Text('Basis'),
-             psg.Listbox(possible_basis, default_values=['sto-6g'],
-                         select_mode='extended', size=(7, 2), key='basis')],
+    layout = [[psg.Text('Molecola'),
+               psg.Listbox(possible_molecules, default_values=['H3+'],
+                           select_mode='single', size=(5,6), key='molecule'),
+               psg.Text('Basis'),
+               psg.Listbox(possible_basis, default_values=['sto-6g'],
+                           select_mode='extended', size=(7, 2), key='basis')],
 
             [psg.Text('Scegli forma variazionale'),
              psg.Listbox(possible_forms, default_values=['TwoLocal'],
@@ -197,8 +196,9 @@ def retrive_VQE_options(argv):
             'delta' : values['dist_delta']
         },
         'molecule' : {
-            'spin' : int(values['spin']),
-            'charge' : int(values['charge']),
+            'molecule' : values['molecule'],
+            'spin' : get_spin(values['molecule']),
+            'charge' : get_charge(values['molecule']),
             'basis' : values['basis']
         },
         'varforms' : values['varforms'],
@@ -377,18 +377,22 @@ def print_chose_options(options):
         optimizers_name.append(opt[1])
 
     print('OPZIONI SCELTE')
+    print('mol_type: ', options['molecule']['molecule'][0])
+    print('charge: ', options['molecule']['charge'])
+    print('spin: ', options['molecule']['spin'])
     print('dist: ', options['dists'])
     print('basis: ', options['molecule']['basis'])
     print('varforms: ', options['varforms'])
     print('instances: ', quantum_instance_name)
     print('optimizer: ', optimizers_name)
-    print('lagrange: ',
-          '\n\tactive: ', options['lagrange']['active'],
-          '\n\toperator: ', options['lagrange']['operators'])
-    print('series: ',
-          '\n\titermax: ', options['series']['itermax'],
-          '\n\tstep: ', options['series']['step'],
-          '\n\tlamb: ', options['series']['lamb'])
+    if options['lagrange']['active'][0] != 'False':
+        print('lagrange: ',
+              '\n\tactive: ', options['lagrange']['active'],
+              '\n\toperator: ', options['lagrange']['operators'])
+        print('series: ',
+              '\n\titermax: ', options['series']['itermax'],
+              '\n\tstep: ', options['series']['step'],
+              '\n\tlamb: ', options['series']['lamb'])
 
 def set_optimizers(values):
     optimizers = []
@@ -452,14 +456,65 @@ def set_dist_and_geometry(options):
 
     dist = np.arange(minimo, massimo, delta)
     options['dists'] = dist
-    alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
-
     geometries = []
 
-    for i, single_dist in enumerate(dist):
-        geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 " + str(alt[i]) + " " + str(single_dist/2)
-        geometries.append(geom)
+    mol_type = options['molecule']['molecule'][0]
+    if mol_type == 'H3+':
+        alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
+        for i, single_dist in enumerate(dist):
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 " + str(alt[i]) + " " + str(single_dist/2)
+            geometries.append(geom)
+    elif mol_type == 'H2':
+        for single_dist in dist:
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
+            geometries.append(geom)
+    elif mol_type == 'H2*':
+        for single_dist in dist:
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
+            geometries.append(geom)
+    elif mol_type == 'H2+':
+        for single_dist in dist:
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
+            geometries.append(geom)
+    elif mol_type == 'H4':
+        for single_dist in dist:
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 .0 " + str(2*single_dist) + "; H .0 .0 " + str(3*single_dist)
+            geometries.append(geom)
+    elif mol_type == 'H4*':
+        for single_dist in dist:
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 .0 " + str(2*single_dist) + "; H .0 .0 " + str(3*single_dist)
+            geometries.append(geom)
 
     options['geometries'] = geometries
 
     return options
+
+def get_spin(mol_opt):
+    mol_type = mol_opt[0]
+    if mol_type == 'H3+':
+        return 0
+    elif mol_type == 'H2':
+        return 0
+    elif mol_type == 'H2*':
+        return 2
+    elif mol_type == 'H2+':
+        return 1
+    elif mol_type == 'H4':
+        return 0
+    elif mol_type == 'H4*':
+        return 2
+
+def get_charge(mol_opt):
+    mol_type = mol_opt[0]
+    if mol_type == 'H3+':
+        return 1
+    elif mol_type == 'H2':
+        return 0
+    elif mol_type == 'H2*':
+        return 0
+    elif mol_type == 'H2+':
+        return 1
+    elif mol_type == 'H4':
+        return 0
+    elif mol_type == 'H4*':
+        return 0

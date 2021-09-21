@@ -410,7 +410,7 @@ def calc_penalty(lag_op_list, result, threshold, tmp_mult):
 def solve_lag_series_VQE(options):
     iter_max = options['series']['itermax']
     step = options['series']['step']
-    par = np.zeros(get_num_par(options['var_form_type']))
+    par = np.zeros(get_num_par(options['var_form_type'], options['molecule']['molecule'][0]))
     mult = 0.01
     threshold = 0.5
 
@@ -458,21 +458,40 @@ def solve_lag_series_VQE(options):
 
     return result
 
-def get_num_par(varform):
-    if varform == 'TwoLocal':
-        return 16
-    elif varform == 'SO(4)':
-        return 18
-    elif varform == 'UCCSD':
-        return 16
-    elif varform == 'EfficientSU(2)':
-        return 32
+def get_num_par(varform, mol_type):
+    if mol_type == 'H3+':
+        if varform == 'TwoLocal':
+            return 16
+        elif varform == 'SO(4)':
+            return 18
+        elif varform == 'UCCSD':
+            return 16
+        elif varform == 'EfficientSU(2)':
+            return 32
+    elif 'H2' in mol_type:
+        if varform == 'TwoLocal':
+            return 8
+        elif varform == 'SO(4)':
+            return 6
+        elif varform == 'UCCSD':
+            return 8
+        elif varform == 'EfficientSU(2)':
+            return 16
+    elif 'H4' in mol_type:
+        if varform == 'TwoLocal':
+            return 24
+        elif varform == 'SO(4)':
+            return 30
+        elif varform == 'UCCSD':
+            return 24
+        elif varform == 'EfficientSU(2)':
+            return 48
     else:
-        return 0
+        raise Exception('mol_type not totally implemented')
 
 def solve_lag_aug_series_VQE(options):
     iter_max = options['series']['itermax']
-    par = np.zeros(get_num_par(options['var_form_type']))
+    par = np.zeros(get_num_par(options['var_form_type'], options['molecule']['molecule'][0]))
     mult = 0.01
     step = options['series']['step']
 
