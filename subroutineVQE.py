@@ -19,8 +19,10 @@ from qiskit_nature.drivers import UnitsType, Molecule
 from qiskit_nature.drivers.second_quantization import PySCFDriver
 from qiskit_nature.drivers.second_quantization.electronic_structure_driver import MethodType
 from qiskit_nature.problems.second_quantization.electronic import ElectronicStructureProblem
+from qiskit_nature.results import ElectronicStructureResult
 from qiskit_nature.mappers.second_quantization import ParityMapper, BravyiKitaevMapper
 from qiskit_nature.converters.second_quantization import QubitConverter
+from qiskit_nature.transformers.second_quantization.electronic import FreezeCoreTransformer
 from qiskit_nature.circuit.library import HartreeFock, UCCSD
 from qiskit_nature.algorithms import VQEUCCFactory, GroundStateEigensolver
 from qiskit_nature.results import EigenstateResult
@@ -149,6 +151,12 @@ def create_lagrange_operator_aug(hamiltonian,
 
     return lagrangian
 
+def get_transformers_from_mol_type(mol_type):
+    if mol_type == 'H2O':
+        return [FreezeCoreTransformer()]
+    else:
+        return None
+
 def prepare_base_VQE(options):
     myLogger.info('Inizio di prepare_base_VQE')
 
@@ -163,7 +171,6 @@ def prepare_base_VQE(options):
     converter = options['converter']
     init_point = options['init_point']
 
-
     driver = PySCFDriver(atom=geometry,
                          unit=UnitsType.ANGSTROM,
                          basis=basis,
@@ -171,7 +178,8 @@ def prepare_base_VQE(options):
                          charge=charge,
                          method=MethodType.RHF)
 
-    problem = ElectronicStructureProblem(driver)
+    transformers = get_transformers_from_mol_type(options['molecule']['molecule'])
+    problem = ElectronicStructureProblem(driver, transformers)
     main_op = problem.second_q_ops()[0]
 
     driver_result = driver.run()
@@ -181,6 +189,10 @@ def prepare_base_VQE(options):
     num_particles = (alpha, beta)
     num_spin_orbitals = particle_number.num_spin_orbitals
 
+    myLogger.info("alpha " + str(alpha))
+    myLogger.info("beta " + str(beta))
+    myLogger.info("spin-orb " + str(num_spin_orbitals))
+
     qubit_op = converter.convert(main_op, num_particles=num_particles)
 
     init_state = HartreeFock(num_spin_orbitals,
@@ -188,6 +200,9 @@ def prepare_base_VQE(options):
                              converter)
 
     num_qubits = qubit_op.num_qubits
+
+    if init_state.num_qubits != num_qubits:
+        init_state = None
 
     vqe_solver = create_VQE_from_ansatz_type(var_form_type,
                                          num_qubits,
@@ -236,6 +251,7 @@ def create_VQE_from_ansatz_type(var_form_type,
     elif var_form_type == 'EfficientSU(2)':
         ansatz = EfficientSU2(num_qubits=num_qubits,
                               entanglement='linear',
+                              reps=1,
                               initial_state=init_state)
         if None in initial_point:
             initial_point = np.random.rand(ansatz.num_parameters)
@@ -319,6 +335,8 @@ def solve_lagrangian_VQE(options):
     old_result = vqe_solver.compute_minimum_eigenvalue(operator=lagrange_op,
                                                  aux_operators=aux_ops)
 
+    myLogger.info('OLDRESULT:')
+    myLogger.info(old_result)
     new_result = problem.interpret(old_result)
 
     myLogger.info('Fine solve_lagrangian_VQE')
@@ -357,6 +375,8 @@ def solve_aug_lagrangian_VQE(options, lamb):
     old_result = vqe_solver.compute_minimum_eigenvalue(operator=lagrange_op,
                                                       aux_operators=aux_ops)
 
+    myLogger.info('OLDRESULT:')
+    myLogger.info(old_result)
     new_result = problem.interpret(old_result)
 
     myLogger.info('Fine solve_aug_lagrangian_VQE')
@@ -379,7 +399,12 @@ def convert_list_fermOp_to_qubitOp(old_aux_ops, converter, num_particles):
 
 def find_best_result(partial_results):
     energy_min = 100
-    tmp_result = 5
+
+    tmp_result = ElectronicStructureResult()
+    tmp_result.nuclear_repulsion_energy5 = 50
+    tmp_result.computed_energies = np.array([0])
+    tmp_result.extracted_transformer_energies = {'dummy': 0}
+
     for result in partial_results:
         if result.total_energies[0] < energy_min:
             energy_min = result.total_energies[0]
@@ -401,8 +426,8 @@ def calc_penalty(lag_op_list, result, threshold, tmp_mult):
             if abs(result.total_angular_momentum[0] - operatore[1]) > threshold:
                 accectable_result = False
         if operatore[0] == 'spin-z':
-            penalty += tmp_mult*((result.spin[0] - operatore[1])**2)
-            if abs(result.spin[0] - operatore[1]) > threshold:
+            penalty += tmp_mult*((result.magnetization[0] - operatore[1])**2)
+            if abs(result.magnetization[0] - operatore[1]) > threshold:
                     accectable_result = False
 
     return penalty, accectable_result
@@ -410,9 +435,9 @@ def calc_penalty(lag_op_list, result, threshold, tmp_mult):
 def solve_lag_series_VQE(options):
     iter_max = options['series']['itermax']
     step = options['series']['step']
-    par = np.zeros(get_num_par(options['var_form_type'], options['molecule']['molecule'][0]))
+    par = np.zeros(get_num_par(options['var_form_type'], options['molecule']['molecule']))
     mult = 0.01
-    threshold = 0.5
+    threshold = 0.6
 
     global parameters
     parameters = [par]
@@ -468,6 +493,11 @@ def get_num_par(varform, mol_type):
             return 16
         elif varform == 'EfficientSU(2)':
             return 32
+    elif 'H2O' in mol_type:
+        if varform == 'TwoLocal':
+            return 40
+        else:
+            raise Exception('varform not yet implemented for this mol')
     elif 'H2' in mol_type:
         if varform == 'TwoLocal':
             return 8
@@ -486,12 +516,17 @@ def get_num_par(varform, mol_type):
             return 24
         elif varform == 'EfficientSU(2)':
             return 48
+    elif 'Li' in mol_type:
+        if varform == 'TwoLocal':
+            return 72
+        else:
+            raise Exception('varform not yet implemented for this mol')
     else:
         raise Exception('mol_type not totally implemented')
 
 def solve_lag_aug_series_VQE(options):
     iter_max = options['series']['itermax']
-    par = np.zeros(get_num_par(options['var_form_type'], options['molecule']['molecule'][0]))
+    par = np.zeros(get_num_par(options['var_form_type'], options['molecule']['molecule']))
     mult = 0.01
     step = options['series']['step']
 
@@ -534,7 +569,7 @@ def solve_lag_aug_series_VQE(options):
             if operatore[0] == 'spin-squared':
                 lamb = lamb - tmp_mult*2*(result.total_angular_momentum[0] - operatore[1])
             if operatore[0] == 'spin-z':
-                lamb = lamb - tmp_mult*2*(result.spin[0] - operatore[1])
+                lamb = lamb - tmp_mult*2*(result.magnetization[0] - operatore[1])
 
         #print(result.total_energies[0] - penalty, " ", penalty)
 

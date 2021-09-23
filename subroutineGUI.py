@@ -63,7 +63,7 @@ def get_default_opt():
     return values
 
 def get_layout():
-    possible_molecules = ['H3+', 'H2', 'H2+', 'H2*', 'H4', 'H4*']
+    possible_molecules = ['H3+', 'H2', 'H2+', 'H2*', 'H4', 'H4*', 'Li2', 'Li2+', 'H2O']
     possible_forms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
     possible_basis = ['sto-3g', 'sto-6g']
     possible_noise = ['None', 'ibmq_santiago']
@@ -75,8 +75,8 @@ def get_layout():
     possible_backend = ['statevector_simulator', 'qasm_simulator', 'hardware']
 
     layout = [[psg.Text('Molecola'),
-               psg.Listbox(possible_molecules, default_values=['H3+'],
-                           select_mode='single', size=(5,6), key='molecule'),
+               psg.Combo(possible_molecules, default_value='H3+',
+                         size=(5,1), key='molecule'),
                psg.Text('Basis'),
                psg.Listbox(possible_basis, default_values=['sto-6g'],
                            select_mode='extended', size=(7, 2), key='basis')],
@@ -377,7 +377,7 @@ def print_chose_options(options):
         optimizers_name.append(opt[1])
 
     print('OPZIONI SCELTE')
-    print('mol_type: ', options['molecule']['molecule'][0])
+    print('mol_type: ', options['molecule']['molecule'])
     print('charge: ', options['molecule']['charge'])
     print('spin: ', options['molecule']['spin'])
     print('dist: ', options['dists'])
@@ -458,39 +458,36 @@ def set_dist_and_geometry(options):
     options['dists'] = dist
     geometries = []
 
-    mol_type = options['molecule']['molecule'][0]
+    mol_type = options['molecule']['molecule']
     if mol_type == 'H3+':
         alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
         for i, single_dist in enumerate(dist):
             geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 " + str(alt[i]) + " " + str(single_dist/2)
             geometries.append(geom)
-    elif mol_type == 'H2':
+    elif 'H2O' in mol_type:
+        for single_dist in dist:
+            alt = single_dist * np.cos(0.25)
+            lung = single_dist * np.sin(0.25)
+            geom = "H .0 .0 .0; O .0 .0 0.9584; H .0 " + str(alt) + " " + str(lung)
+            geometries.append(geom)
+    elif 'H2' in mol_type:
         for single_dist in dist:
             geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
             geometries.append(geom)
-    elif mol_type == 'H2*':
-        for single_dist in dist:
-            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
-            geometries.append(geom)
-    elif mol_type == 'H2+':
-        for single_dist in dist:
-            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
-            geometries.append(geom)
-    elif mol_type == 'H4':
+    elif 'H4' in mol_type:
         for single_dist in dist:
             geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 .0 " + str(2*single_dist) + "; H .0 .0 " + str(3*single_dist)
             geometries.append(geom)
-    elif mol_type == 'H4*':
+    elif 'Li2' in mol_type:
         for single_dist in dist:
-            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 .0 " + str(2*single_dist) + "; H .0 .0 " + str(3*single_dist)
+            geom = "Li .0 .0 .0; Li .0 .0 " + str(single_dist)
             geometries.append(geom)
-
     options['geometries'] = geometries
 
     return options
 
 def get_spin(mol_opt):
-    mol_type = mol_opt[0]
+    mol_type = mol_opt
     if mol_type == 'H3+':
         return 0
     elif mol_type == 'H2':
@@ -503,9 +500,15 @@ def get_spin(mol_opt):
         return 0
     elif mol_type == 'H4*':
         return 2
+    elif mol_type == 'Li2':
+        return 0
+    elif mol_type == 'Li2+':
+        return 1
+    elif mol_type == 'H2O':
+        return 0
 
 def get_charge(mol_opt):
-    mol_type = mol_opt[0]
+    mol_type = mol_opt
     if mol_type == 'H3+':
         return 1
     elif mol_type == 'H2':
@@ -517,4 +520,10 @@ def get_charge(mol_opt):
     elif mol_type == 'H4':
         return 0
     elif mol_type == 'H4*':
+        return 0
+    elif mol_type == 'Li2':
+        return 0
+    elif mol_type == 'Li2+':
+        return 1
+    elif mol_type == 'H2O':
         return 0

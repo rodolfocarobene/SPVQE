@@ -1,14 +1,26 @@
+import logging
 import json
 import os
 from datetime import datetime
 
 import git
+import numpy as np
 
 def get_date_time_string():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
 
+myLogger = logging.getLogger('myLoggerTwo')
+myLogger.setLevel(logging.DEBUG)
+ch = logging.FileHandler('./logs/results' + get_date_time_string() + '.log')
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+myLogger.addHandler(ch)
+
 def retrive_json_options(filename, options, results):
+    myLogger.info(results)
+
     JsonOptions = {
         'commit': None,
         'file': filename,
@@ -45,8 +57,11 @@ def retrive_json_options(filename, options, results):
     return JsonOptions
 
 def from_electronic_res_to_dict(result_old):
+    en = result_old.total_energies[0]
+    if np.iscomplexobj(en):
+        en = en.real
     result_new = {
-        'energy': result_old.total_energies[0],
+        'energy': float(en),
         'auxiliary': {
             'particles': result_old.num_particles,
             'spin-z': result_old.spin,
@@ -85,6 +100,8 @@ def write_json(JsonOptions):
         description = "dummy"
 
     JsonOptions['description'] = description
+    
+    print(JsonOptions)
 
     json_obj = json.dumps(JsonOptions, indent=4)
 
