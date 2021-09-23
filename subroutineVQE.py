@@ -189,9 +189,9 @@ def prepare_base_vqe(options):
     num_particles = (alpha, beta)
     num_spin_orbitals = particle_number.num_spin_orbitals
 
-    myLogger.info("alpha " + str(alpha))
-    myLogger.info("beta " + str(beta))
-    myLogger.info("spin-orb " + str(num_spin_orbitals))
+    myLogger.info("alpha %d", alpha)
+    myLogger.info("beta %d",beta)
+    myLogger.info("spin-orb %d", num_spin_orbitals)
 
     qubit_op = converter.convert(main_op, num_particles=num_particles)
 
@@ -219,8 +219,8 @@ def prepare_base_vqe(options):
     return converter, vqe_solver, problem, qubit_op
 
 def store_intermediate_result(count, par, energy, std):
-    global parameters
-    parameters.append(par)
+    global PARAMETERS
+    PARAMETERS.append(par)
     log_string = str(count) + ' ' + str(energy) + ' ' + str(std)
     myLogger.info(log_string)
 
@@ -439,8 +439,8 @@ def solve_lag_series_vqe(options):
     mult = 0.01
     threshold = 0.6
 
-    global parameters
-    parameters = [par]
+    global PARAMETERS
+    PARAMETERS = [par]
 
     partial_results = []
 
@@ -459,12 +459,12 @@ def solve_lag_series_vqe(options):
 
         options['init_point'] = par
         result = solve_lagrangian_vqe(options)
-        par = parameters[len(parameters) - 1]
+        par = PARAMETERS[len(PARAMETERS) - 1]
 
         penalty, accectable_result = calc_penalty(lag_op_list,
-                                                result,
-                                                threshold,
-                                                tmp_mult)
+                                                  result,
+                                                  threshold,
+                                                  tmp_mult)
 
         log_str = "Iter " + str(i)
         log_str += " mult " + str(np.round(tmp_mult, 2))
@@ -532,8 +532,8 @@ def solve_lag_aug_series_vqe(options):
 
     lamb = options['series']['lamb']
 
-    global parameters
-    parameters = [par]
+    global PARAMETERS
+    PARAMETERS = [par]
     for i in range(iter_max):
         tmp_mult = mult + step * i
 
@@ -561,7 +561,7 @@ def solve_lag_aug_series_vqe(options):
         log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty, 7))
         myLogger.info(log_str)
 
-        par = parameters[len(parameters) - 1]
+        par = PARAMETERS[len(PARAMETERS) - 1]
 
         for operatore in lag_op_list:
             if operatore[0] == 'number':
@@ -576,8 +576,8 @@ def solve_lag_aug_series_vqe(options):
     return result
 
 def solve_VQE(options):
-    global parameters
-    parameters = []
+    global PARAMETERS
+    PARAMETERS = []
 
     if not options['lagrange']['active']:
         return solve_hamiltonian_vqe(options)
