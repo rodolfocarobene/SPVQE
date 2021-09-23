@@ -100,8 +100,6 @@ def write_json(JsonOptions):
         description = "dummy"
 
     JsonOptions['description'] = description
-    
-    print(JsonOptions)
 
     json_obj = json.dumps(JsonOptions, indent=4)
 
