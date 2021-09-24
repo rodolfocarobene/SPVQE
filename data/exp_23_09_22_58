@@ -1,0 +1,176 @@
+{
+    "commit": "061c47f2825fb1b3ab3b2ecd8b967cdfe0561a87",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "0.3",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "molecule": "H2O",
+            "spin": 0,
+            "charge": 0,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; O .0 .0 0.9584; H .0 0.2906737265131934 0.07422118777635688"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "COBYLA"
+        ],
+        "lagrange": {
+            "active": [
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.5,
+                0.6,
+                0.7,
+                0.7999999999999999,
+                0.8999999999999999,
+                0.9999999999999999,
+                1.0999999999999999
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            0.3
+        ],
+        "geometries": [
+            "H .0 .0 .0; O .0 .0 0.9584; H .0 0.2906737265131934 0.07422118777635688"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x0.5_": [
+            {
+                "energy": -72.51676429463487,
+                "auxiliary": {
+                    "particles": [
+                        7.999998864653817
+                    ],
+                    "spin-z": [
+                        0.0003760624948637714
+                    ],
+                    "spin-sq": [
+                        0.000376203917863878
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x0.6_": [
+            {
+                "energy": -72.51556622390859,
+                "auxiliary": {
+                    "particles": [
+                        8.000013004405046
+                    ],
+                    "spin-z": [
+                        0.00024497589690009036
+                    ],
+                    "spin-sq": [
+                        0.000245035910090177
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x0.7_": [
+            {
+                "energy": 0.0,
+                "auxiliary": {
+                    "particles": null,
+                    "spin-z": null,
+                    "spin-sq": null
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x0.8_": [
+            {
+                "energy": -71.81621384634227,
+                "auxiliary": {
+                    "particles": [
+                        7.999922724592995
+                    ],
+                    "spin-z": [
+                        0.00011584593323543668
+                    ],
+                    "spin-sq": [
+                        0.000115859353515684
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x0.9_": [
+            {
+                "energy": -72.17315978084045,
+                "auxiliary": {
+                    "particles": [
+                        7.9999835004812425
+                    ],
+                    "spin-z": [
+                        0.001466087889666956
+                    ],
+                    "spin-sq": [
+                        0.001468237303367216
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x1.0_": [
+            {
+                "energy": -72.51813520222314,
+                "auxiliary": {
+                    "particles": [
+                        8.000005311573785
+                    ],
+                    "spin-z": [
+                        0.000938447638377915
+                    ],
+                    "spin-sq": [
+                        0.000939328322347919
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x1.1_": [
+            {
+                "energy": -71.55944438622973,
+                "auxiliary": {
+                    "particles": [
+                        7.999928443023707
+                    ],
+                    "spin-z": [
+                        0.014950441556507932
+                    ],
+                    "spin-sq": [
+                        0.01517395725924247
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "H2Olga",
+    "varianti": []
+}

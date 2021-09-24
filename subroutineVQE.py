@@ -333,11 +333,12 @@ def solve_lagrangian_vqe(options):
                                                value=value)
 
     old_result = vqe_solver.compute_minimum_eigenvalue(operator=lagrange_op,
-                                                 aux_operators=aux_ops)
+                                                       aux_operators=aux_ops)
 
     myLogger.info('OLDRESULT:')
     myLogger.info(old_result)
     new_result = problem.interpret(old_result)
+    print('EXT:',new_result.extracted_transformer_energies)
 
     myLogger.info('Fine solve_lagrangian_vqe')
     myLogger.info('RESULT')
