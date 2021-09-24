@@ -338,7 +338,6 @@ def solve_lagrangian_vqe(options):
     myLogger.info('OLDRESULT:')
     myLogger.info(old_result)
     new_result = problem.interpret(old_result)
-    print('EXT:',new_result.extracted_transformer_energies)
 
     myLogger.info('Fine solve_lagrangian_vqe')
     myLogger.info('RESULT')
