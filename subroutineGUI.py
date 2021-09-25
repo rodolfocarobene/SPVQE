@@ -63,7 +63,8 @@ def get_default_opt():
     return values
 
 def get_layout():
-    possible_molecules = ['H3+', 'H2', 'H2+', 'H2*', 'H4', 'H4*', 'Li2', 'Li2+', 'H2O']
+    possible_molecules = ['H3+', 'H2', 'H2+', 'H2*', 'H4', 'H4*', 'Li2', 'Li2+',
+                          'LiH', 'H2O']
     possible_forms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
     possible_basis = ['sto-3g', 'sto-6g']
     possible_noise = ['None', 'ibmq_santiago']
@@ -406,7 +407,7 @@ def set_optimizers(values):
         elif opt == 'L_BFGS_B':
             optimizers.append((L_BFGS_B(maxiter=1000, epsilon=1e-3), 'LBFGSB'))
         elif opt == 'SPSA':
-            optimizers.append((SPSA(maxiter=2000), 'SPSA'))
+            optimizers.append((SPSA(maxiter=100), 'SPSA'))
     values['optimizer'] = optimizers
 
 def set_backend_and_noise(values):
@@ -482,6 +483,10 @@ def set_dist_and_geometry(options):
         for single_dist in dist:
             geom = "Li .0 .0 .0; Li .0 .0 " + str(single_dist)
             geometries.append(geom)
+    elif 'LiH' in mol_type:
+        for single_dist in dist:
+            geom = "Li .0 .0 .0; H .0 .0 " + str(single_dist)
+            geometries.append(geom)
     options['geometries'] = geometries
 
     return options
@@ -506,6 +511,8 @@ def get_spin(mol_opt):
         return 1
     elif mol_type == 'H2O':
         return 0
+    elif mol_type == 'LiH':
+        return 0
 
 def get_charge(mol_opt):
     mol_type = mol_opt
@@ -525,5 +532,7 @@ def get_charge(mol_opt):
         return 0
     elif mol_type == 'Li2+':
         return 1
+    elif mol_type == 'LiH':
+        return 0
     elif mol_type == 'H2O':
         return 0

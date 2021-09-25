@@ -1,0 +1,116 @@
+{
+    "commit": "f9f01751a7078e33b4a2aec8b60835de407bb49f",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "0.3",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "molecule": "LiH",
+            "spin": 0,
+            "charge": 0,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "Li .0 .0 .0; H .0 .0 0.3"
+        },
+        "varforms": [
+            "EfficientSU(2)"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "COBYLA"
+        ],
+        "lagrange": {
+            "active": [
+                "True",
+                "False",
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            0.3
+        ],
+        "geometries": [
+            "Li .0 .0 .0; H .0 .0 0.3"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_COBYLA_Lag_spin-squared(0.2)": [
+            {
+                "energy": -5.734984237451078,
+                "auxiliary": {
+                    "particles": [
+                        4.006123514590248
+                    ],
+                    "spin-z": [
+                        0.008776243539811324
+                    ],
+                    "spin-sq": [
+                        0.008853265990481394
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_COBYLA": [
+            {
+                "energy": -5.933843239766105,
+                "auxiliary": {
+                    "particles": [
+                        4.0000766939469266
+                    ],
+                    "spin-z": [
+                        0.00023559851335086535
+                    ],
+                    "spin-sq": [
+                        0.000235654020010341
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": -5.871960880003039,
+                "auxiliary": {
+                    "particles": [
+                        4.0099371977446445
+                    ],
+                    "spin-z": [
+                        0.39870887491045404
+                    ],
+                    "spin-sq": [
+                        0.5576776418428142
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "prova singola distanza per LiH",
+    "varianti": [
+        "lagrange activity"
+    ]
+}

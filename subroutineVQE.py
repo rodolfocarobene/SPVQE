@@ -152,10 +152,19 @@ def create_lagrange_operator_aug(hamiltonian,
     return lagrangian
 
 def get_transformers_from_mol_type(mol_type):
-    if mol_type == 'H2O':
+    freeze = ['LiH']
+    if mol_type in freeze:
         return [FreezeCoreTransformer()]
     else:
         return None
+
+def from_geometry_to_atoms(geometry):
+    tot_atoms = []
+    atoms_geom = geometry.split(';')
+    for single_atom_geom in atoms_geom:
+        atom = single_atom_geom.split()[0]
+        tot_atoms.append(atom)
+    return tot_atoms
 
 def prepare_base_vqe(options):
     myLogger.info('Inizio di prepare_base_vqe')
@@ -189,11 +198,20 @@ def prepare_base_vqe(options):
     num_particles = (alpha, beta)
     num_spin_orbitals = particle_number.num_spin_orbitals
 
+    if len(transformers) > 0:
+        core_orb = transformers[0].count_core_orbitals(from_geometry_to_atoms(geometry))
+        num_spin_orbitals -= core_orb * 2
+        alpha -= core_orb
+        beta -= core_orb
+        # sto supponendo di togliere solo orbitali s
+
     myLogger.info("alpha %d", alpha)
     myLogger.info("beta %d",beta)
     myLogger.info("spin-orb %d", num_spin_orbitals)
 
     qubit_op = converter.convert(main_op, num_particles=num_particles)
+
+    myLogger.info("num qubit : %d", qubit_op.num_qubits)
 
     init_state = HartreeFock(num_spin_orbitals,
                              num_particles,
@@ -473,11 +491,13 @@ def solve_lag_series_vqe(options):
         log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty, 7))
 
         myLogger.info(log_str)
-        #print('\t\t', result.total_energies[0], '\t', penalty)
+        print(log_str)
 
         if accectable_result:
-            result.total_energies[0] = result.total_energies[0] - penalty
             partial_results.append(result)
+        if accectable_result and penalty < 1e-8:
+            print('Ultima iterazione: ', i)
+            break
 
     result = find_best_result(partial_results)
 
@@ -495,7 +515,7 @@ def get_num_par(varform, mol_type):
             return 32
     elif 'H2O' in mol_type:
         if varform == 'TwoLocal':
-            return 40
+            return 48
         else:
             raise Exception('varform not yet implemented for this mol')
     elif 'H2' in mol_type:
@@ -516,9 +536,16 @@ def get_num_par(varform, mol_type):
             return 24
         elif varform == 'EfficientSU(2)':
             return 48
-    elif 'Li' in mol_type:
+    elif 'Li2' in mol_type:
         if varform == 'TwoLocal':
             return 72
+        else:
+            raise Exception('varform not yet implemented for this mol')
+    elif 'LiH' == mol_type:
+        if varform == 'TwoLocal':
+            return 32
+        elif varform == 'EfficientSU(2)':
+            return 32
         else:
             raise Exception('varform not yet implemented for this mol')
     else:

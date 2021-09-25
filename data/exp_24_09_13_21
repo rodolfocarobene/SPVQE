@@ -1,0 +1,80 @@
+{
+    "commit": "f9f01751a7078e33b4a2aec8b60835de407bb49f",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "0.3",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "molecule": "H2O",
+            "spin": 0,
+            "charge": 0,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; O .0 .0 0.9584; H .0 0.2906737265131934 0.07422118777635688"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "COBYLA"
+        ],
+        "lagrange": {
+            "active": [
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.5
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            0.3
+        ],
+        "geometries": [
+            "H .0 .0 .0; O .0 .0 0.9584; H .0 0.2906737265131934 0.07422118777635688"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x0.5_": [
+            {
+                "energy": -72.51901516963753,
+                "auxiliary": {
+                    "particles": [
+                        7.999925721026432
+                    ],
+                    "spin-z": [
+                        0.0014071001452626852
+                    ],
+                    "spin-sq": [
+                        0.001409080076081482
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "prova singola distanza H2O",
+    "varianti": []
+}
