@@ -152,9 +152,8 @@ def create_lagrange_operator_aug(hamiltonian,
     return lagrangian
 
 def get_transformers_from_mol_type(mol_type):
-    freeze = [] #'LiH']
-    if mol_type in freeze:
-        return [FreezeCoreTransformer()]
+    if mol_type == 'LiH':
+        return [FreezeCoreTransformer(True, [2, 3, 4])]
     else:
         return []
 
@@ -165,6 +164,18 @@ def from_geometry_to_atoms(geometry):
         atom = single_atom_geom.split()[0]
         tot_atoms.append(atom)
     return tot_atoms
+
+def get_num_particles(mol_type,
+                      particle_number,
+                      driver_result):
+
+    alpha, beta = particle_number.num_alpha, particle_number.num_beta
+    num_spin_orbitals = particle_number.num_spin_orbitals
+
+    if mol_type == 'LiH':
+        return 1, 1, 4
+    else:
+        return alpha, beta, num_spin_orbitals
 
 def prepare_base_vqe(options):
     myLogger.info('Inizio di prepare_base_vqe')
@@ -194,17 +205,12 @@ def prepare_base_vqe(options):
     driver_result = driver.run()
     particle_number = driver_result.get_property('ParticleNumber')
 
-    alpha, beta = particle_number.num_alpha, particle_number.num_beta
-    num_particles = (alpha, beta)
-    num_spin_orbitals = particle_number.num_spin_orbitals
+    alpha, beta, num_spin_orbitals = get_num_particles(options['molecule']['molecule'],
+                                                       particle_number,
+                                                       driver_result)
 
-    if len(transformers) > 0:
-        core_orb = transformers[0].count_core_orbitals(from_geometry_to_atoms(geometry))
-        num_spin_orbitals -= core_orb * 2
-        alpha -= core_orb
-        beta -= core_orb
-        num_particles = (alpha, beta)
-        # sto supponendo di togliere solo orbitali s
+
+    num_particles = (alpha, beta)
 
     myLogger.info("alpha %d", alpha)
     myLogger.info("beta %d",beta)
@@ -546,9 +552,9 @@ def get_num_par(varform, mol_type):
             raise Exception('varform not yet implemented for this mol')
     elif 'LiH' == mol_type:
         if varform == 'TwoLocal':
-            return 40
+            return 8
         elif varform == 'EfficientSU(2)':
-            return 40
+            return 8
         else:
             raise Exception('varform not yet implemented for this mol')
     else:

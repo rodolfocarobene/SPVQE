@@ -401,7 +401,7 @@ def set_optimizers(values):
         if opt == 'CG':
             optimizers.append((CG(maxiter=1000, eps=1e-5), 'CG'))
         elif opt == 'COBYLA':
-            optimizers.append((COBYLA(maxiter=50), 'COBYLA'))
+            optimizers.append((COBYLA(), 'COBYLA'))
         elif opt == 'ADAM':
             optimizers.append((ADAM(maxiter=1000, eps=1e-5), 'ADAM'))
         elif opt == 'L_BFGS_B':
@@ -425,8 +425,7 @@ def set_backend_and_noise(values):
             quantum_instance = QuantumInstance(Aer.get_backend('statevector_simulator'))
             noise = 'None'
         elif backend == 'qasm_simulator':
-            quantum_instance = QuantumInstance(backend=QasmSimulator(method='statevector'),
-                                               skip_qobj_validation=True,
+            quantum_instance = QuantumInstance(backend=provider.get_backend('ibmq_qasm_simulator'), #QasmSimulator(method='statevector'),
                                                shots=int(values['shots']))
         if backend == 'qasm_simulator' and noise != 'None':
             device = provider.get_backend(noise)
