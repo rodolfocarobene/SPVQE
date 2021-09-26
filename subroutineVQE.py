@@ -152,11 +152,11 @@ def create_lagrange_operator_aug(hamiltonian,
     return lagrangian
 
 def get_transformers_from_mol_type(mol_type):
-    freeze = ['LiH']
+    freeze = [] #'LiH']
     if mol_type in freeze:
         return [FreezeCoreTransformer()]
     else:
-        return None
+        return []
 
 def from_geometry_to_atoms(geometry):
     tot_atoms = []
@@ -203,6 +203,7 @@ def prepare_base_vqe(options):
         num_spin_orbitals -= core_orb * 2
         alpha -= core_orb
         beta -= core_orb
+        num_particles = (alpha, beta)
         # sto supponendo di togliere solo orbitali s
 
     myLogger.info("alpha %d", alpha)
@@ -211,15 +212,15 @@ def prepare_base_vqe(options):
 
     qubit_op = converter.convert(main_op, num_particles=num_particles)
 
-    myLogger.info("num qubit : %d", qubit_op.num_qubits)
-
     init_state = HartreeFock(num_spin_orbitals,
                              num_particles,
                              converter)
 
     num_qubits = qubit_op.num_qubits
 
+    myLogger.info("num qubit qubitop : %d", qubit_op.num_qubits)
     if init_state.num_qubits != num_qubits:
+        myLogger.info("num qubit initsta: %d", init_state.num_qubits)
         init_state = None
 
     vqe_solver = create_vqe_from_ansatz_type(var_form_type,
@@ -280,15 +281,17 @@ def create_vqe_from_ansatz_type(var_form_type,
                          quantum_instance=quantum_instance)
 
     elif var_form_type == 'UCCSD':
+
         ansatz = UCCSD(qubit_converter=converter,
                        initial_state=init_state,
                        num_particles=num_particles,
-                       num_spin_orbitals=num_spin_orbitals)._build()
+                       num_spin_orbitals=num_spin_orbitals)
 
         if None in initial_point:
-            initial_point = np.random.rand(ansatz.num_parameters)
+            initial_point = np.random.rand(40)
+            
         vqe_solver = VQE(quantum_instance=quantum_instance,
-                         ansatz=ansatz,
+                         ansatz=ansatz._build(),
                          optimizer=optimizer,
                          callback=store_intermediate_result,
                          initial_point=initial_point)
@@ -543,9 +546,9 @@ def get_num_par(varform, mol_type):
             raise Exception('varform not yet implemented for this mol')
     elif 'LiH' == mol_type:
         if varform == 'TwoLocal':
-            return 32
+            return 40
         elif varform == 'EfficientSU(2)':
-            return 32
+            return 40
         else:
             raise Exception('varform not yet implemented for this mol')
     else:

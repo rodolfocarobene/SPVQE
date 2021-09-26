@@ -401,7 +401,7 @@ def set_optimizers(values):
         if opt == 'CG':
             optimizers.append((CG(maxiter=1000, eps=1e-5), 'CG'))
         elif opt == 'COBYLA':
-            optimizers.append((COBYLA(), 'COBYLA'))
+            optimizers.append((COBYLA(maxiter=50), 'COBYLA'))
         elif opt == 'ADAM':
             optimizers.append((ADAM(maxiter=1000, eps=1e-5), 'ADAM'))
         elif opt == 'L_BFGS_B':
