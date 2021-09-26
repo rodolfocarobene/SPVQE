@@ -27,6 +27,9 @@ from qiskit_nature.circuit.library import HartreeFock, UCCSD
 from qiskit_nature.algorithms import VQEUCCFactory, GroundStateEigensolver
 from qiskit_nature.results import EigenstateResult
 
+global PARAMETERS
+PARAMETERS = []
+
 def get_date_time_string():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
@@ -39,12 +42,12 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 myLogger.addHandler(ch)
 
-def add_single_SO4_gate(circuit,
+def add_single_so4_gate(circuit,
                      qubit1,
                      qubit2,
                      params,
                      p0):
-    myLogger.info('Inizio di add_single_SO4_gate')
+    myLogger.info('Inizio di add_single_so4_gate')
 
     circuit.s(qubit1)
     circuit.s(qubit2)
@@ -59,10 +62,10 @@ def add_single_SO4_gate(circuit,
     circuit.sdg(qubit1)
     circuit.sdg(qubit2)
 
-    myLogger.info('Fine di add_single_SO4_gate')
+    myLogger.info('Fine di add_single_so4_gate')
 
-def construct_SO4_ansatz(numqubits, init=None):
-    myLogger.info('Inizio di construct_SO4_ansatz')
+def construct_so4_ansatz(numqubits, init=None):
+    myLogger.info('Inizio di construct_so4_ansatz')
 
     num_parameters = 6 * (numqubits - 1)
     so4_parameters = []
@@ -78,16 +81,16 @@ def construct_SO4_ansatz(numqubits, init=None):
     i = 0
     j = 0
     while i + 1 < numqubits:
-        add_single_SO4_gate(circ, i, i+1, so4_parameters, 6*j)
+        add_single_so4_gate(circ, i, i+1, so4_parameters, 6*j)
         j = j + 1
         i = i + 2
     i = 1
     while i + 1 < numqubits:
-        add_single_SO4_gate(circ, i, i+1, so4_parameters, 6*j)
+        add_single_so4_gate(circ, i, i+1, so4_parameters, 6*j)
         j = j +1
         i = i + 2
 
-    myLogger.info('Fine di construct_SO4_ansatz')
+    myLogger.info('Fine di construct_so4_ansatz')
 
     return circ
 
@@ -152,10 +155,13 @@ def create_lagrange_operator_aug(hamiltonian,
     return lagrangian
 
 def get_transformers_from_mol_type(mol_type):
+    transf_list = []
     if mol_type == 'LiH':
-        return [FreezeCoreTransformer(True, [2, 3, 4])]
-    else:
-        return []
+        transf_list.append(FreezeCoreTransformer(True, [2, 3, 4]))
+    if mol_type == 'H2O':
+        transf_list.append(FreezeCoreTransformer(True))
+
+    return freeze_list
 
 def from_geometry_to_atoms(geometry):
     tot_atoms = []
@@ -213,7 +219,7 @@ def prepare_base_vqe(options):
     num_particles = (alpha, beta)
 
     myLogger.info("alpha %d", alpha)
-    myLogger.info("beta %d",beta)
+    myLogger.info("beta %d", beta)
     myLogger.info("spin-orb %d", num_spin_orbitals)
 
     qubit_op = converter.convert(main_op, num_particles=num_particles)
@@ -295,7 +301,7 @@ def create_vqe_from_ansatz_type(var_form_type,
 
         if None in initial_point:
             initial_point = np.random.rand(40)
-            
+
         vqe_solver = VQE(quantum_instance=quantum_instance,
                          ansatz=ansatz._build(),
                          optimizer=optimizer,
@@ -303,7 +309,7 @@ def create_vqe_from_ansatz_type(var_form_type,
                          initial_point=initial_point)
 
     elif var_form_type == 'SO(4)':
-        ansatz = construct_SO4_ansatz(num_qubits,
+        ansatz = construct_so4_ansatz(num_qubits,
                                     init=init_state)
         if None in initial_point:
             initial_point = np.random.rand(6*(num_qubits-1))
@@ -344,7 +350,7 @@ def solve_lagrangian_vqe(options):
     converter, vqe_solver, problem, qubit_op = prepare_base_vqe(options)
 
     aux_ops_not_converted = problem.second_q_ops()[1:4]
-    aux_ops = convert_list_fermOp_to_qubitOp(aux_ops_not_converted,
+    aux_ops = convert_list_op_ferm_to_qubit(aux_ops_not_converted,
                                          converter,
                                          problem.num_particles)
 
@@ -383,7 +389,7 @@ def solve_aug_lagrangian_vqe(options, lamb):
         vqe_solver = vqe_solver.get_solver(problem, converter)
 
     aux_ops_not_converted = problem.second_q_ops()[1:4]
-    aux_ops = convert_list_fermOp_to_qubitOp(aux_ops_not_converted,
+    aux_ops = convert_list_op_ferm_to_qubit(aux_ops_not_converted,
                                          converter,
                                          problem.num_particles)
 
@@ -412,15 +418,15 @@ def solve_aug_lagrangian_vqe(options, lamb):
 
     return new_result
 
-def convert_list_fermOp_to_qubitOp(old_aux_ops, converter, num_particles):
-    myLogger.info('Inizio convert_list_fermOp_to_qubitOp')
+def convert_list_op_ferm_to_qubit(old_aux_ops, converter, num_particles):
+    myLogger.info('Inizio convert_list_op_ferm_to_qubit')
 
     new_aux_ops = []
-    for op in old_aux_ops:
-        op_new = converter.convert(op, num_particles)
+    for old_aux_op in old_aux_ops:
+        op_new = converter.convert(old_aux_op, num_particles)
         new_aux_ops.append(op_new)
 
-    myLogger.info('Fine convert_list_fermOp_to_qubitOp')
+    myLogger.info('Fine convert_list_op_ferm_to_qubit')
 
     return new_aux_ops
 
@@ -513,52 +519,56 @@ def solve_lag_series_vqe(options):
     return result
 
 def get_num_par(varform, mol_type):
+    num_pars = 0
+
     if mol_type == 'H3+':
         if varform == 'TwoLocal':
-            return 16
+            num_pars = 16
         elif varform == 'SO(4)':
-            return 18
+            num_pars = 18
         elif varform == 'UCCSD':
-            return 16
+            num_pars = 16
         elif varform == 'EfficientSU(2)':
-            return 32
+            num_pars = 32
     elif 'H2O' in mol_type:
         if varform == 'TwoLocal':
-            return 48
+            num_pars = 48
         else:
             raise Exception('varform not yet implemented for this mol')
     elif 'H2' in mol_type:
         if varform == 'TwoLocal':
-            return 8
+            num_pars = 8
         elif varform == 'SO(4)':
-            return 6
+            num_pars = 6
         elif varform == 'UCCSD':
-            return 8
+            num_pars = 8
         elif varform == 'EfficientSU(2)':
-            return 16
+            num_pars = 16
     elif 'H4' in mol_type:
         if varform == 'TwoLocal':
-            return 24
+            num_pars = 24
         elif varform == 'SO(4)':
-            return 30
+            num_pars = 30
         elif varform == 'UCCSD':
-            return 24
+            num_pars = 24
         elif varform == 'EfficientSU(2)':
-            return 48
+            num_pars = 48
     elif 'Li2' in mol_type:
         if varform == 'TwoLocal':
-            return 72
+            num_pars = 72
         else:
             raise Exception('varform not yet implemented for this mol')
     elif 'LiH' == mol_type:
         if varform == 'TwoLocal':
-            return 8
+            num_pars = 8
         elif varform == 'EfficientSU(2)':
-            return 8
+            num_pars = 8
         else:
             raise Exception('varform not yet implemented for this mol')
     else:
         raise Exception('mol_type not totally implemented')
+
+    return num_pars
 
 def solve_lag_aug_series_vqe(options):
     iter_max = options['series']['itermax']
@@ -616,12 +626,14 @@ def solve_VQE(options):
     PARAMETERS = []
 
     if not options['lagrange']['active']:
-        return solve_hamiltonian_vqe(options)
+        vqe_result = solve_hamiltonian_vqe(options)
     if not options['lagrange']['series']:
-        return solve_lagrangian_vqe(options)
+        vqe_result = solve_lagrangian_vqe(options)
     else:
         if options['lagrange']['augmented']:
-            return solve_lag_aug_series_vqe(options)
+            vqe_result = solve_lag_aug_series_vqe(options)
         else:
-            return solve_lag_series_vqe(options)
+            vqe_result = solve_lag_series_vqe(options)
+
+    return vqe_result
 
