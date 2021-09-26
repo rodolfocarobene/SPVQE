@@ -27,9 +27,6 @@ from qiskit_nature.circuit.library import HartreeFock, UCCSD
 from qiskit_nature.algorithms import VQEUCCFactory, GroundStateEigensolver
 from qiskit_nature.results import EigenstateResult
 
-global PARAMETERS
-PARAMETERS = []
-
 def get_date_time_string():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
@@ -161,7 +158,7 @@ def get_transformers_from_mol_type(mol_type):
     if mol_type == 'H2O':
         transf_list.append(FreezeCoreTransformer(True))
 
-    return freeze_list
+    return transf_list
 
 def from_geometry_to_atoms(geometry):
     tot_atoms = []
