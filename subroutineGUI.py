@@ -318,7 +318,7 @@ def set_ops_num_spin2_spinz(values, lagops_list):
                                  mult_num))
                 lagops_list.append(templist)
 
-def set_ops_num(values, lagops_list):
+def set_ops_num(values, lagops_list, op):
     mults = np.arange(float(values['lag_mult_num_min']),
                       float(values['lag_mult_num_max']),
                       float(values['lag_mult_num_delta']))
@@ -328,7 +328,7 @@ def set_ops_num(values, lagops_list):
                              int(values['lag_value_num']),
                              mult)])
 
-def set_ops_spin2(values, lagops_list):
+def set_ops_spin2(values, lagops_list, op):
     mults = np.arange(float(values['lag_mult_spin2_min']),
                       float(values['lag_mult_spin2_max']),
                       float(values['lag_mult_spin2_delta']))
@@ -338,7 +338,7 @@ def set_ops_spin2(values, lagops_list):
                              int(values['lag_value_spin2']),
                              mult)])
 
-def set_ops_spinz(values, lagops_list):
+def set_ops_spinz(values, lagops_list, op):
     mults = np.arange(float(values['lag_mult_spinz_min']),
                       float(values['lag_mult_spinz_max']),
                       float(values['lag_mult_spinz_delta']))
@@ -356,13 +356,13 @@ def set_lagrange_ops(values):
 
     for op in values['lag_op']:
         if op == 'number':
-            set_ops_num(values, lagops_list)
+            set_ops_num(values, lagops_list, op)
 
         elif op == 'spin-squared':
-            set_ops_spin2(values, lagops_list)
+            set_ops_spin2(values, lagops_list, op)
 
         elif op == 'spin-z':
-            set_ops_spinz(values, lagops_list)
+            set_ops_spinz(values, lagops_list, op)
 
         elif op == 'num+spin2':
             set_ops_num_spin2(values, lagops_list)

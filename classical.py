@@ -23,21 +23,17 @@ if __name__ == '__main__':
     energies['ione-'] = []
     energies['eccitato'] = []
 
-    for dist in dists:
+    for single_dist in dists:
 
-        geometry = get_geometry(dist)
+        geometry = get_geometry(single_dist)
 
-        e_fci = get_energy(geometry, 1, 0)
-        energies['ione+'].append(e_fci)
+        energies['ione+'].append(get_energy(geometry, 1, 0))
 
-        e_fci = get_energy(geometry, 0, 1)
-        energies['neutra'].append(e_fci)
+        energies['neutra'].append(get_energy(geometry, 0, 1))
 
-        e_fci = get_energy(geometry, -1, 0)
-        energies['ione-'].append(e_fci)
+        energies['ione-'].append(get_energy(geometry, -1, 0))
 
-        e_fci = get_energy(geometry, 1, 2)
-        energies['eccitato'].append(e_fci)
+        energies['eccitato'].append(get_energy(geometry, 1, 2))
 
     for method in energies:
         plt.plot(dists, energies[method], label=method)
