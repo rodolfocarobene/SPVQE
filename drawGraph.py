@@ -28,6 +28,9 @@ if __name__ == '__main__':
 
         for singleResult in results[item]:
             y.append(singleResult['energy'])
+            #y.append(singleResult['auxiliary']['particles'])
+            #y.append(singleResult['auxiliary']['spin-z'])
+            #y.append(singleResult['auxiliary']['spin-sq'])
 
         linestyle = 'None'
         markerstyle = 'o'
