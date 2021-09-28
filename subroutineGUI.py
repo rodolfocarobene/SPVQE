@@ -73,7 +73,8 @@ def get_layout():
     possible_optim = ['COBYLA', 'CG', 'SPSA', 'L_BFGS_B', 'ADAM']
     possible_lag_op = ['number', 'spin-squared', 'spin-z',
                      'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
-    possible_backend = ['statevector_simulator', 'qasm_simulator', 'hardware']
+    possible_backend = ['statevector_simulator', 'qasm_simulator',
+                        'qasm_simulator_online', 'hardware']
 
     layout = [[psg.Text('Molecola'),
                psg.Combo(possible_molecules, default_value='H3+',
@@ -88,7 +89,7 @@ def get_layout():
 
             [psg.Text('Scegli il tipo di backend'),
              psg.Listbox(possible_backend, default_values=['statevector_simulator'],
-                         select_mode='extended', size=(17, 3), key='backend'),
+                         select_mode='extended', size=(17, 4), key='backend'),
              psg.Text('shots'),
              psg.Input(default_text=1024, size=(4, 10), key='shots')],
 
@@ -434,6 +435,9 @@ def set_backend_and_noise(values):
             quantum_instance = QuantumInstance(Aer.get_backend('statevector_simulator'))
             noise = 'None'
         elif backend == 'qasm_simulator':
+            quantum_instance = QuantumInstance(backend=Aer.get_backend('qasm_simulator'),
+                                               shots=int(values['shots']))
+        elif backend == 'qasm_simulator_online':
             quantum_instance = QuantumInstance(backend=provider.get_backend('ibmq_qasm_simulator'), #QasmSimulator(method='statevector'),
                                                shots=int(values['shots']))
         if backend == 'qasm_simulator' and noise != 'None':
@@ -447,6 +451,8 @@ def set_backend_and_noise(values):
             quantum_instance.noise_model = noise_model
 
 
+        if 'qasm_simulator' in backend:
+            backend = 'qasm_simulator'
         name = backend + '_' + noise
 
         if backend == 'qasm_simulator' and noise != 'None' and corr == 'True':

@@ -154,7 +154,7 @@ def create_lagrange_operator_aug(hamiltonian,
 def get_transformers_from_mol_type(mol_type):
     transf_list = []
     if mol_type == 'LiH':
-        transf_list.append(FreezeCoreTransformer(True, [2, 3, 4]))
+        transf_list.append(FreezeCoreTransformer(True)) #, [2, 3, 4]))
     if mol_type == 'H2O':
         transf_list.append(FreezeCoreTransformer(True))
 
@@ -176,7 +176,9 @@ def get_num_particles(mol_type,
     num_spin_orbitals = particle_number.num_spin_orbitals
 
     if mol_type == 'LiH':
-        return 1, 1, 4
+        return 1, 1, 10#4
+    elif mol_type == 'H2O':
+        return 3, 3, 12
     else:
         return alpha, beta, num_spin_orbitals
 
@@ -280,6 +282,7 @@ def create_vqe_from_ansatz_type(var_form_type,
         ansatz = EfficientSU2(num_qubits=num_qubits,
                               entanglement='linear',
                               reps=1,
+                              skip_final_rotation_layer=True,
                               initial_state=init_state)
         if None in initial_point:
             initial_point = np.random.rand(ansatz.num_parameters)
@@ -428,17 +431,20 @@ def convert_list_op_ferm_to_qubit(old_aux_ops, converter, num_particles):
     return new_aux_ops
 
 def find_best_result(partial_results):
-    energy_min = 100
+    penal_min = 100
 
     tmp_result = ElectronicStructureResult()
     tmp_result.nuclear_repulsion_energy5 = 50
     tmp_result.computed_energies = np.array([0])
     tmp_result.extracted_transformer_energies = {'dummy': 0}
 
-    for result in partial_results:
-        if result.total_energies[0] < energy_min:
-            energy_min = result.total_energies[0]
+    for result, penalty in partial_results:
+        if penalty < penal_min:
             tmp_result = result
+
+       # if result.total_energies[0] < energy_min:
+       #     energy_min = result.total_energies[0]
+       #     tmp_result = result
 
     return tmp_result
 
@@ -503,13 +509,15 @@ def solve_lag_series_vqe(options):
         log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty, 7))
 
         myLogger.info(log_str)
-        print(log_str)
+        #print(log_str)
 
         if accectable_result:
-            partial_results.append(result)
-        if accectable_result and penalty < 1e-8:
-            print('Ultima iterazione: ', i)
+            partial_results.append((result, penalty/tmp_mult))
+        if accectable_result and penalty/tmp_mult < 1e-8:
+            #print('Ultima iterazione: ', i)
             break
+        if not accectable_result and i == iter_max - 1:
+            partial_results.append((result, penalty/tmp_mult))
 
     result = find_best_result(partial_results)
 
@@ -529,7 +537,9 @@ def get_num_par(varform, mol_type):
             num_pars = 32
     elif 'H2O' in mol_type:
         if varform == 'TwoLocal':
-            num_pars = 48
+            num_pars = 40
+        elif varform == 'EfficientSU(2)':
+            num_pars = 20
         else:
             raise Exception('varform not yet implemented for this mol')
     elif 'H2' in mol_type:
@@ -559,7 +569,7 @@ def get_num_par(varform, mol_type):
         if varform == 'TwoLocal':
             num_pars = 8
         elif varform == 'EfficientSU(2)':
-            num_pars = 8
+            num_pars = 16
         else:
             raise Exception('varform not yet implemented for this mol')
     else:
