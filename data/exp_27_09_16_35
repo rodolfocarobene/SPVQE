@@ -1,0 +1,252 @@
+{
+    "commit": "601310e7356a1bfcf822313ed6361529272a1313",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "3.5",
+            "max": "3.6",
+            "delta": "0.1"
+        },
+        "molecule": {
+            "molecule": "LiH",
+            "spin": 0,
+            "charge": 0,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "Li .0 .0 .0; H .0 .0 3.6"
+        },
+        "varforms": [
+            "EfficientSU(2)"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "COBYLA",
+            "CG"
+        ],
+        "lagrange": {
+            "active": [
+                "True",
+                "False",
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            3.5,
+            3.6
+        ],
+        "geometries": [
+            "Li .0 .0 .0; H .0 .0 3.5",
+            "Li .0 .0 .0; H .0 .0 3.6"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_COBYLA_Lag_spin-squared(0.2)": [
+            {
+                "energy": -7.774062354408808,
+                "auxiliary": {
+                    "particles": [
+                        2.000216795014438
+                    ],
+                    "spin-z": [
+                        0.000618311057284604
+                    ],
+                    "spin-sq": [
+                        0.000618693365848116
+                    ]
+                }
+            },
+            {
+                "energy": -7.762636321681853,
+                "auxiliary": {
+                    "particles": [
+                        2.0006400859797218
+                    ],
+                    "spin-z": [
+                        0.0006607883569130779
+                    ],
+                    "spin-sq": [
+                        0.000661224998165708
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_COBYLA": [
+            {
+                "energy": -7.534750986498326,
+                "auxiliary": {
+                    "particles": [
+                        2.00132565355844
+                    ],
+                    "spin-z": [
+                        0.052781595185958485
+                    ],
+                    "spin-sq": [
+                        0.055567491976332935
+                    ]
+                }
+            },
+            {
+                "energy": -7.762812357329819,
+                "auxiliary": {
+                    "particles": [
+                        2.0004983993401724
+                    ],
+                    "spin-z": [
+                        0.0010664338001553642
+                    ],
+                    "spin-sq": [
+                        0.001067571081205519
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": -7.776151646381396,
+                "auxiliary": {
+                    "particles": [
+                        2.00444456066498
+                    ],
+                    "spin-z": [
+                        0.017377435637418115
+                    ],
+                    "spin-sq": [
+                        0.017679410906750726
+                    ]
+                }
+            },
+            {
+                "energy": -7.764690144246975,
+                "auxiliary": {
+                    "particles": [
+                        2.004660183887035
+                    ],
+                    "spin-z": [
+                        0.019826039636176462
+                    ],
+                    "spin-sq": [
+                        0.020219111483831684
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_CG_Lag_spin-squared(0.2)": [
+            {
+                "energy": -7.774475420408433,
+                "auxiliary": {
+                    "particles": [
+                        2.0007338033479
+                    ],
+                    "spin-z": [
+                        0.0013165061052771154
+                    ],
+                    "spin-sq": [
+                        0.001318239293602297
+                    ]
+                }
+            },
+            {
+                "energy": -7.762915327156577,
+                "auxiliary": {
+                    "particles": [
+                        2.0006514628824434
+                    ],
+                    "spin-z": [
+                        0.0012243725770845204
+                    ],
+                    "spin-sq": [
+                        0.001225871665292114
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_CG": [
+            {
+                "energy": -7.7744705694029745,
+                "auxiliary": {
+                    "particles": [
+                        2.0007263174410683
+                    ],
+                    "spin-z": [
+                        0.00130326555558824
+                    ],
+                    "spin-sq": [
+                        0.001304964056696624
+                    ]
+                }
+            },
+            {
+                "energy": -7.762915790080024,
+                "auxiliary": {
+                    "particles": [
+                        2.0006518901293804
+                    ],
+                    "spin-z": [
+                        0.0012259460863857097
+                    ],
+                    "spin-sq": [
+                        0.001227449030192417
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_CG_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": -7.776299175349121,
+                "auxiliary": {
+                    "particles": [
+                        2.004910213350444
+                    ],
+                    "spin-z": [
+                        0.019569284365739792
+                    ],
+                    "spin-sq": [
+                        0.019952241256326917
+                    ]
+                }
+            },
+            {
+                "energy": -7.764699345147397,
+                "auxiliary": {
+                    "particles": [
+                        2.0046660438353934
+                    ],
+                    "spin-z": [
+                        0.019896992073197173
+                    ],
+                    "spin-sq": [
+                        0.020292882366758035
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "prova cobyla/cg a distanza elevata (efficientsu2)",
+    "varianti": [
+        "optimizer",
+        "lagrange activity"
+    ]
+}

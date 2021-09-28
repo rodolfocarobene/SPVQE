@@ -1,0 +1,99 @@
+{
+    "commit": "601310e7356a1bfcf822313ed6361529272a1313",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "0.3",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "molecule": "LiH",
+            "spin": 0,
+            "charge": 0,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "Li .0 .0 .0; H .0 .0 0.3"
+        },
+        "varforms": [
+            "EfficientSU(2)"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "COBYLA",
+            "CG"
+        ],
+        "lagrange": {
+            "active": [
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            0.3
+        ],
+        "geometries": [
+            "Li .0 .0 .0; H .0 .0 0.3"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_COBYLA_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": -5.936252514599545,
+                "auxiliary": {
+                    "particles": [
+                        2.0000002850529515
+                    ],
+                    "spin-z": [
+                        3.8011867031784163e-07
+                    ],
+                    "spin-sq": [
+                        3.80118814748e-07
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_CG_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": -5.936357564777289,
+                "auxiliary": {
+                    "particles": [
+                        2.000000128419238
+                    ],
+                    "spin-z": [
+                        1.2393542525801493e-05
+                    ],
+                    "spin-sq": [
+                        1.2393696125717e-05
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "cancellare",
+    "varianti": [
+        "optimizer"
+    ]
+}
