@@ -28,6 +28,14 @@ def from_item_to_label(item):
     name = re.sub(r'None_', '', name)
     return name
 
+def get_title(argv):
+    index_title = argv.index('title')
+
+    if len(argv) > index_title+1:
+        return argv[index_title+1]
+    else:
+        return "none"
+
 def get_types(argv):
     tmp_types = []
     sizes = [4]
@@ -97,30 +105,36 @@ if __name__ == '__main__':
 
     fig.subplots_adjust(right=0.936, top=0.8)
 
-    axes[0].plot(np.arange(0.3, 3.5, 0.1),
-            return_classical_results(mol_type).fci,
-            label='Full Configuration Interaction (FCI)', linestyle='dashed', marker='None')
+    if 'no-ref' not in sys.argv:
+        axes[0].plot(np.arange(0.3, 3.5, 0.1),
+                     return_classical_results(mol_type).fci,
+                     label='Full Configuration Interaction (FCI)',
+                     linestyle='dotted', marker='None')
 
-    axes[0].plot(np.arange(0.3, 3.5, 0.1),
-            return_classical_results(mol_type).hf,
-            label='Hartree Fock (HF)', linestyle='dashed', marker='None')
-
-    plt.xlabel(r"$d$ $[\AA]$", fontsize='x-large')
-    axes[0].set_ylabel(r"Energy $[E_H]$", fontsize='x-large')
+        axes[0].plot(np.arange(0.3, 3.5, 0.1),
+                     return_classical_results(mol_type).hf,
+                     label='Hartree Fock (HF)',
+                     linestyle='dotted', marker='None')
 
     for i, type_graph in enumerate(types_graph):
         if type_graph == 'number':
-            axes[i+1].set_ylabel(r"Particles number", fontsize='x-large')
+            axes[i+1].set_ylabel("Particles\nnumber", fontsize='x-large')
         elif type_graph == 'spinz':
             axes[i+1].set_ylabel(r"Spin-z", fontsize='x-large')
         elif type_graph == 'spin2':
             axes[i+1].set_ylabel(r"${S}^2$", fontsize='x-large')
+
+    plt.xlabel(r"$d$ $[\AA]$", fontsize='x-large')
+    axes[0].set_ylabel(r"Energy $[E_H]$", fontsize='x-large')
 
     if 'nolegend' in sys.argv:
         print(myLegend)
     else:
         axes[0].legend(loc='best',
                        ncol=1, fancybox=True, shadow=True)
+    if 'title' in sys.argv:
+        fig.suptitle(get_title(sys.argv), fontsize=20)
+
     mng = plt.get_current_fig_manager()
     mng.window.showMaximized()
     fig.tight_layout()

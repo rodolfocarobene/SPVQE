@@ -6,6 +6,10 @@
 
 This repository contains all the code written while looking for a better constrained VQE implementation
 
+## Warning
+
+confronta.py not updated with current true_vals workflow
+
 ## Usage
 
 * Download the repository;
@@ -13,7 +17,7 @@ This repository contains all the code written while looking for a better constra
 * Create logs directory: `mkdir logs`;
 * Run test.py: `python test.py` (follow section GUI for more info);
 * Write a simulation description: at the end of the simulation all the results are stored in a special JSON file that ends with this description. The JSON file will also write the current git commit 'name', remove that option in subroutineJSON.py if you are not in a git repository. 
-* Draw your result: simply with `python drawGraph.py data/exp...`
+* Draw your result: simply with `python drawGraph.py data/exp...` (you can set as argouments what auxiliary operator show on subplots and even a new graph title)
 
 ## GUI
 

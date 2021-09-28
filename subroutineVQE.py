@@ -534,7 +534,7 @@ def get_num_par(varform, mol_type):
         elif varform == 'UCCSD':
             num_pars = 16
         elif varform == 'EfficientSU(2)':
-            num_pars = 32
+            num_pars = 8
     elif 'H2O' in mol_type:
         if varform == 'TwoLocal':
             num_pars = 40

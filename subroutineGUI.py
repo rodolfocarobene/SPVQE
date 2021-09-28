@@ -409,7 +409,7 @@ def set_optimizers(values):
     optimizers = []
     for opt in values['optimizer']:
         if opt == 'CG':
-            optimizers.append((CG(maxiter=1000, eps=1e-5), 'CG'))
+            optimizers.append((CG(maxiter=100, eps=1e-5), 'CG'))
         elif opt == 'COBYLA':
             optimizers.append((COBYLA(), 'COBYLA'))
         elif opt == 'ADAM':
@@ -482,7 +482,7 @@ def set_dist_and_geometry(options):
     elif 'H2O' in mol_type:
         for single_dist in dist:
             alt = single_dist * np.cos(0.25)
-            lung = single_dist * np.sin(0.25)
+            lung = single_dist * np.sin(0.25) + 0.9584
             geom = "H .0 .0 .0; O .0 .0 0.9584; H .0 " + str(alt) + " " + str(lung)
             geometries.append(geom)
     elif 'H2' in mol_type:

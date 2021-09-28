@@ -1,0 +1,299 @@
+{
+    "commit": "1928006eb4b7656cb1c13fa719b5b99edff4ced2",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "5",
+            "max": "5.5",
+            "delta": "0.1"
+        },
+        "molecule": {
+            "molecule": "LiH",
+            "spin": 0,
+            "charge": 0,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "Li .0 .0 .0; H .0 .0 5.399999999999999"
+        },
+        "varforms": [
+            "EfficientSU(2)"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "CG"
+        ],
+        "lagrange": {
+            "active": [
+                "False",
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "number",
+                        2,
+                        0.2
+                    ]
+                ],
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                15
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            5.0,
+            5.1,
+            5.199999999999999,
+            5.299999999999999,
+            5.399999999999999
+        ],
+        "geometries": [
+            "Li .0 .0 .0; H .0 .0 5.0",
+            "Li .0 .0 .0; H .0 .0 5.1",
+            "Li .0 .0 .0; H .0 .0 5.199999999999999",
+            "Li .0 .0 .0; H .0 .0 5.299999999999999",
+            "Li .0 .0 .0; H .0 .0 5.399999999999999"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_CG": [
+            {
+                "energy": -8.115264127137449,
+                "auxiliary": {
+                    "particles": [
+                        2.0000000016682504
+                    ],
+                    "spin-z": [
+                        1.668473359472955e-09
+                    ],
+                    "spin-sq": [
+                        1.668473378e-09
+                    ]
+                }
+            },
+            {
+                "energy": -7.662320278920923,
+                "auxiliary": {
+                    "particles": [
+                        2.0000003598337943
+                    ],
+                    "spin-z": [
+                        0.61599094053071
+                    ],
+                    "spin-sq": [
+                        0.9954357793466189
+                    ]
+                }
+            },
+            {
+                "energy": -7.632019442355707,
+                "auxiliary": {
+                    "particles": [
+                        2.0294222764471623
+                    ],
+                    "spin-z": [
+                        0.9888150451566604
+                    ],
+                    "spin-sq": [
+                        1.9665702386848287
+                    ]
+                }
+            },
+            {
+                "energy": -7.6119566701389845,
+                "auxiliary": {
+                    "particles": [
+                        2.0353640485600857
+                    ],
+                    "spin-z": [
+                        0.44385029840227497
+                    ],
+                    "spin-sq": [
+                        0.6408533857940635
+                    ]
+                }
+            },
+            {
+                "energy": -7.787007331247161,
+                "auxiliary": {
+                    "particles": [
+                        2.0000000001515406
+                    ],
+                    "spin-z": [
+                        0.618033988715438
+                    ],
+                    "spin-sq": [
+                        0.9999999999229521
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_CG_LagSeries_number_15x0.2_": [
+            {
+                "energy": -7.870728251373886,
+                "auxiliary": {
+                    "particles": [
+                        2.000000521927721
+                    ],
+                    "spin-z": [
+                        0.6180339952601708
+                    ],
+                    "spin-sq": [
+                        1.0000000145574197
+                    ]
+                }
+            },
+            {
+                "energy": -7.604025802150688,
+                "auxiliary": {
+                    "particles": [
+                        2.0003182556742938
+                    ],
+                    "spin-z": [
+                        0.9996303680752723
+                    ],
+                    "spin-sq": [
+                        1.9988912408535764
+                    ]
+                }
+            },
+            {
+                "energy": -7.615648185901174,
+                "auxiliary": {
+                    "particles": [
+                        2.0003157272003804
+                    ],
+                    "spin-z": [
+                        0.999720751918838
+                    ],
+                    "spin-sq": [
+                        1.9991623337360047
+                    ]
+                }
+            },
+            {
+                "energy": -7.602786063512219,
+                "auxiliary": {
+                    "particles": [
+                        2.0003251976053917
+                    ],
+                    "spin-z": [
+                        0.9996207200087626
+                    ],
+                    "spin-sq": [
+                        1.9988623038795996
+                    ]
+                }
+            },
+            {
+                "energy": -7.829140883305173,
+                "auxiliary": {
+                    "particles": [
+                        2.00005427778937
+                    ],
+                    "spin-z": [
+                        0.6137416202816879
+                    ],
+                    "spin-sq": [
+                        0.9904203967476796
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_statevector_simulator_None_CG_LagSeries_spin-squared_15x0.2_": [
+            {
+                "energy": -7.86157671264685,
+                "auxiliary": {
+                    "particles": [
+                        2.0000369286218356
+                    ],
+                    "spin-z": [
+                        5.52162052691596e-05
+                    ],
+                    "spin-sq": [
+                        5.5219254098444e-05
+                    ]
+                }
+            },
+            {
+                "energy": -7.6585822609018495,
+                "auxiliary": {
+                    "particles": [
+                        2.0000000325993548
+                    ],
+                    "spin-z": [
+                        9.101041499781637e-05
+                    ],
+                    "spin-sq": [
+                        9.1018697893488e-05
+                    ]
+                }
+            },
+            {
+                "energy": -7.5605074043469,
+                "auxiliary": {
+                    "particles": [
+                        2.00021845662732
+                    ],
+                    "spin-z": [
+                        0.00030159172775645615
+                    ],
+                    "spin-sq": [
+                        0.000301682685326679
+                    ]
+                }
+            },
+            {
+                "energy": -7.654802154587101,
+                "auxiliary": {
+                    "particles": [
+                        2.000000030031726
+                    ],
+                    "spin-z": [
+                        8.382288640573776e-05
+                    ],
+                    "spin-sq": [
+                        8.382991268202e-05
+                    ]
+                }
+            },
+            {
+                "energy": -7.786671688687018,
+                "auxiliary": {
+                    "particles": [
+                        2.000010732650869
+                    ],
+                    "spin-z": [
+                        1.6098996761026996e-05
+                    ],
+                    "spin-sq": [
+                        1.6099255938719e-05
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "LiH ad alte distanze",
+    "varianti": [
+        "lagrange activity",
+        "lagrange operator"
+    ]
+}
