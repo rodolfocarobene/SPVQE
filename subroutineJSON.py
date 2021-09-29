@@ -1,4 +1,3 @@
-import logging
 import json
 import os
 from datetime import datetime
@@ -10,17 +9,7 @@ def get_date_time_string():
     now = datetime.now()
     return now.strftime("%d_%m_%H_%M")
 
-myLogger = logging.getLogger('myLoggerTwo')
-myLogger.setLevel(logging.DEBUG)
-ch = logging.FileHandler('./logs/results' + get_date_time_string() + '.log')
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-myLogger.addHandler(ch)
-
 def retrive_json_options(filename, options, results):
-    myLogger.info(results)
-
     JsonOptions = {
         'commit': None,
         'file': filename,

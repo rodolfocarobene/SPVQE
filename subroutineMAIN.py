@@ -35,7 +35,11 @@ def from_item_iter_to_option(options, item):
     option['optimizer'] = item[3][0]
 
     if item[4] == 'True' or item[4] == 'False':
-        option['lagrange']['active'] = item[4]
+        if item[4] == 'True':
+            lag_bool = True
+        else:
+            lag_bool = False
+        option['lagrange']['active'] = lag_bool
         option['lagrange']['series'] = False
         option['lagrange']['augmented'] = False
         option['init_point'] = [None]
@@ -47,6 +51,7 @@ def from_item_iter_to_option(options, item):
         option['lagrange']['active'] = True
         option['lagrange']['series'] = True
         option['lagrange']['augmented'] = True
+
 
     option['lagrange']['operators'] = item[5]
 

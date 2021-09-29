@@ -22,7 +22,7 @@ from qiskit_nature.problems.second_quantization.electronic import ElectronicStru
 from qiskit_nature.results import ElectronicStructureResult
 from qiskit_nature.mappers.second_quantization import ParityMapper, BravyiKitaevMapper
 from qiskit_nature.converters.second_quantization import QubitConverter
-from qiskit_nature.transformers.second_quantization.electronic import FreezeCoreTransformer
+from qiskit_nature.transformers.second_quantization.electronic import FreezeCoreTransformer, ActiveSpaceTransformer
 from qiskit_nature.circuit.library import HartreeFock, UCCSD
 from qiskit_nature.algorithms import VQEUCCFactory, GroundStateEigensolver
 from qiskit_nature.results import EigenstateResult
@@ -38,6 +38,8 @@ ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 myLogger.addHandler(ch)
+
+HYPERLOG_FILE = './logs/hyper_' + get_date_time_string() + '.log'
 
 def add_single_so4_gate(circuit,
                      qubit1,
@@ -156,7 +158,8 @@ def get_transformers_from_mol_type(mol_type):
     if mol_type == 'LiH':
         transf_list.append(FreezeCoreTransformer(True)) #, [2, 3, 4]))
     if mol_type == 'H2O':
-        transf_list.append(FreezeCoreTransformer(True))
+        transf_list.append(ActiveSpaceTransformer(num_electrons=4,
+                                                  num_molecular_orbitals=4))
 
     return transf_list
 
@@ -178,7 +181,7 @@ def get_num_particles(mol_type,
     if mol_type == 'LiH':
         return 1, 1, 10#4
     elif mol_type == 'H2O':
-        return 3, 3, 12
+        return 2, 2, 8
     else:
         return alpha, beta, num_spin_orbitals
 
@@ -254,6 +257,23 @@ def store_intermediate_result(count, par, energy, std):
     log_string = str(count) + ' ' + str(energy) + ' ' + str(std)
     myLogger.info(log_string)
 
+    file_object = open(HYPERLOG_FILE, 'a')
+    file_object.write(from_energy_pars_to_log_msg(par, energy))
+    file_object.close()
+
+def from_energy_pars_to_log_msg(pars, energy):
+    message = '['
+    for par in pars:
+        message += str(par).strip()
+        message += ','
+    message = message[:-1]
+    message += ']'
+
+    message += ' ; '
+    message += str(energy)
+    message += '\n'
+    return message
+
 def create_vqe_from_ansatz_type(var_form_type,
                             num_qubits,
                             init_state,
@@ -300,7 +320,7 @@ def create_vqe_from_ansatz_type(var_form_type,
                        num_spin_orbitals=num_spin_orbitals)
 
         if None in initial_point:
-            initial_point = np.random.rand(40)
+            initial_point = np.random.rand(24) #MUST BE SET HERE
 
         vqe_solver = VQE(quantum_instance=quantum_instance,
                          ansatz=ansatz._build(),
@@ -455,14 +475,17 @@ def calc_penalty(lag_op_list, result, threshold, tmp_mult):
     for operatore in lag_op_list:
         if operatore[0] == 'number':
             penalty += tmp_mult*((result.num_particles[0] - operatore[1])**2)
+            myLogger.info('penalty at number: %d', penalty)
             if abs(result.num_particles[0] - operatore[1]) > threshold:
                 accectable_result = False
         if operatore[0] == 'spin-squared':
             penalty += tmp_mult*((result.total_angular_momentum[0] - operatore[1])**2)
+            myLogger.info('penalty at spin2: %d', penalty)
             if abs(result.total_angular_momentum[0] - operatore[1]) > threshold:
                 accectable_result = False
         if operatore[0] == 'spin-z':
             penalty += tmp_mult*((result.magnetization[0] - operatore[1])**2)
+            myLogger.info('penalty at spinz: %d', penalty)
             if abs(result.magnetization[0] - operatore[1]) > threshold:
                     accectable_result = False
 
@@ -471,7 +494,7 @@ def calc_penalty(lag_op_list, result, threshold, tmp_mult):
 def solve_lag_series_vqe(options):
     iter_max = options['series']['itermax']
     step = options['series']['step']
-    par = np.zeros(get_num_par(options['var_form_type'], options['molecule']['molecule']))
+    par = np.random.rand(get_num_par(options['var_form_type'], options['molecule']['molecule']))
     mult = 0.01
     threshold = 0.6
 
@@ -537,9 +560,13 @@ def get_num_par(varform, mol_type):
             num_pars = 8
     elif 'H2O' in mol_type:
         if varform == 'TwoLocal':
-            num_pars = 40
+            num_pars = 24
         elif varform == 'EfficientSU(2)':
-            num_pars = 20
+            num_pars = 12
+        elif varform == 'SO(4)':
+            num_pars = 30
+        elif varform == 'UCCSD':
+            num_pars = 24
         else:
             raise Exception('varform not yet implemented for this mol')
     elif 'H2' in mol_type:
@@ -634,7 +661,7 @@ def solve_VQE(options):
 
     if not options['lagrange']['active']:
         vqe_result = solve_hamiltonian_vqe(options)
-    if not options['lagrange']['series']:
+    elif not options['lagrange']['series']:
         vqe_result = solve_lagrangian_vqe(options)
     else:
         if options['lagrange']['augmented']:
