@@ -3,3 +3,7 @@ logs
 notebooks
 
 note
+dummy_vqe.py
+hyper_graph.py
+
+images/*.png

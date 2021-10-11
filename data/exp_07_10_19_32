@@ -1,0 +1,89 @@
+{
+    "commit": "64683a07bb0d292cf25061a95dbc82936703d165",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "0.3",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "molecule": "H3+",
+            "spin": 0,
+            "charge": 1,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; H .0 .0 0.3; H .0 0.2598076211353316 0.15"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "qasm_simulator_None"
+        ],
+        "optimizer": [
+            "CG"
+        ],
+        "lagrange": {
+            "active": [
+                "False"
+            ],
+            "operators": [
+                [
+                    [
+                        "dummy",
+                        0,
+                        0
+                    ]
+                ],
+                [
+                    [
+                        "number",
+                        2,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            0.3
+        ],
+        "geometries": [
+            "H .0 .0 .0; H .0 .0 0.3; H .0 0.2598076211353316 0.15"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_qasm_simulator_None_CG": [
+            {
+                "energy": 3.7851860789567606,
+                "auxiliary": {
+                    "particles": [
+                        3.365234374999999
+                    ],
+                    "spin-z": [
+                        0.800907634384765
+                    ],
+                    "spin-sq": [
+                        1.4423606732005656
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "dummy",
+    "varianti": [
+        "lagrange operator"
+    ]
+}

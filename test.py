@@ -24,6 +24,7 @@ if __name__ == '__main__':
                      )
 
     results = {}
+    parameters = {}
     names = []
     newiteratore = []
 
@@ -32,8 +33,10 @@ if __name__ == '__main__':
         if name not in names:
             names.append(name)
             results[name] = []
+            parameters[name] = []
             newiteratore.append(item)
     iteratore = newiteratore
+
 
     for i, geometry in enumerate(options['geometries']):
         options['molecule']['geometry'] = geometry
@@ -42,7 +45,10 @@ if __name__ == '__main__':
             name = iterator_item_to_string(item)
             option = from_item_iter_to_option(options, item)
 
-            result_tot = solve_VQE(option)
+            if len(parameters[name]) > 0:
+                option['init_point'] = parameters[name]
+
+            result_tot, parameters[name] = solve_VQE(option)
             results[name].append(result_tot)
 
             energy = result_tot.total_energies[0]

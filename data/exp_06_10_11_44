@@ -1,0 +1,80 @@
+{
+    "commit": "64683a07bb0d292cf25061a95dbc82936703d165",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "2.9",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "molecule": "LiH",
+            "spin": 0,
+            "charge": 0,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "Li .0 .0 .0; H .0 .0 2.9"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "CG"
+        ],
+        "lagrange": {
+            "active": [
+                "True"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            2.9
+        ],
+        "geometries": [
+            "Li .0 .0 .0; H .0 .0 2.9"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_statevector_simulator_None_CG_Lag_spin-squared(0.2)": [
+            {
+                "energy": -7.811183721467378,
+                "auxiliary": {
+                    "particles": [
+                        2.0000182985530537
+                    ],
+                    "spin-z": [
+                        2.0195088787589022e-05
+                    ],
+                    "spin-sq": [
+                        2.0195496629216e-05
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "dummy",
+    "varianti": []
+}

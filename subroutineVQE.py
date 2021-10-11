@@ -262,13 +262,11 @@ def store_intermediate_result(count, par, energy, std):
     file_object.close()
 
 def from_energy_pars_to_log_msg(pars, energy):
-    message = '['
+    message = ''
     for par in pars:
         message += str(par).strip()
         message += ','
     message = message[:-1]
-    message += ']'
-
     message += ' ; '
     message += str(energy)
     message += '\n'
@@ -292,7 +290,7 @@ def create_vqe_from_ansatz_type(var_form_type,
                           initial_state=init_state,
                           entanglement='linear')
         if None in initial_point:
-            initial_point = np.random.rand(ansatz.num_parameters)
+            initial_point = np.zeros(ansatz.num_parameters)
         vqe_solver = VQE(ansatz=ansatz,
                          optimizer=optimizer,
                          initial_point=initial_point,
@@ -461,6 +459,7 @@ def find_best_result(partial_results):
     for result, penalty in partial_results:
         if penalty < penal_min:
             tmp_result = result
+            penal_min = penalty
 
        # if result.total_energies[0] < energy_min:
        #     energy_min = result.total_energies[0]
@@ -494,7 +493,13 @@ def calc_penalty(lag_op_list, result, threshold, tmp_mult):
 def solve_lag_series_vqe(options):
     iter_max = options['series']['itermax']
     step = options['series']['step']
-    par = np.random.rand(get_num_par(options['var_form_type'], options['molecule']['molecule']))
+
+    if 'init_point' not in options:
+        par = np.random.rand(get_num_par(options['var_form_type'],
+                                         options['molecule']['molecule']))
+    else:
+        par = options['init_point']
+
     mult = 0.01
     threshold = 0.6
 
@@ -536,7 +541,7 @@ def solve_lag_series_vqe(options):
 
         if accectable_result:
             partial_results.append((result, penalty/tmp_mult))
-        if accectable_result and penalty/tmp_mult < 1e-8:
+        if accectable_result and penalty/tmp_mult < 1e-8 and i > 4:
             #print('Ultima iterazione: ', i)
             break
         if not accectable_result and i == iter_max - 1:
@@ -594,7 +599,7 @@ def get_num_par(varform, mol_type):
             raise Exception('varform not yet implemented for this mol')
     elif 'LiH' == mol_type:
         if varform == 'TwoLocal':
-            num_pars = 8
+            num_pars = 32
         elif varform == 'EfficientSU(2)':
             num_pars = 16
         else:
@@ -606,7 +611,13 @@ def get_num_par(varform, mol_type):
 
 def solve_lag_aug_series_vqe(options):
     iter_max = options['series']['itermax']
-    par = np.zeros(get_num_par(options['var_form_type'], options['molecule']['molecule']))
+
+    if 'init_point' not in options:
+        par = np.random.rand(get_num_par(options['var_form_type'],
+                                         options['molecule']['molecule']))
+    else:
+        par = options['init_point']
+
     mult = 0.01
     step = options['series']['step']
 
@@ -617,42 +628,41 @@ def solve_lag_aug_series_vqe(options):
     for i in range(iter_max):
         tmp_mult = mult + step * i
 
-        lag_op_list = []
+    lag_op_list = []
 
-        for single_op in options['lagrange']['operators']:
-            operatore = (single_op[0],
-                         single_op[1],
-                         float(tmp_mult))
-            lag_op_list.append(operatore)
+    for single_op in options['lagrange']['operators']:
+        operatore = (single_op[0],
+                     single_op[1],
+                     float(tmp_mult))
+        lag_op_list.append(operatore)
 
-        options['lagrange']['operators'] = lag_op_list
+    options['lagrange']['operators'] = lag_op_list
 
-        options['init_point'] = par
+    options['init_point'] = par
 
-        result = solve_aug_lagrangian_vqe(options, lamb)
+    result = solve_aug_lagrangian_vqe(options, lamb)
 
-        penalty = tmp_mult*((result.num_particles[0] - operatore[1])**2)
-        penalty -= lamb * (result.num_particles[0] - operatore[1])
+    penalty = tmp_mult*((result.num_particles[0] - operatore[1])**2)
+    penalty -= lamb * (result.num_particles[0] - operatore[1])
 
-        log_str = "Iter " + str(i)
-        log_str += " mult " + str(np.round(tmp_mult, 2))
-        log_str += " lamb " + str(lamb)
-        log_str += "\tE = " + str(np.round(result.total_energies[0], 7))
-        log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty, 7))
-        myLogger.info(log_str)
+    log_str = "Iter " + str(i)
+    log_str += " mult " + str(np.round(tmp_mult, 2))
+    log_str += " lamb " + str(lamb)
+    log_str += "\tE = " + str(np.round(result.total_energies[0], 7))
+    log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty, 7))
+    myLogger.info(log_str)
 
-        par = PARAMETERS[len(PARAMETERS) - 1]
+    par = PARAMETERS[len(PARAMETERS) - 1]
 
-        for operatore in lag_op_list:
-            if operatore[0] == 'number':
-                lamb = lamb - tmp_mult*2*(result.num_particles[0] - operatore[1])
-            if operatore[0] == 'spin-squared':
-                lamb = lamb - tmp_mult*2*(result.total_angular_momentum[0] - operatore[1])
-            if operatore[0] == 'spin-z':
-                lamb = lamb - tmp_mult*2*(result.magnetization[0] - operatore[1])
+    for operatore in lag_op_list:
+        if operatore[0] == 'number':
+            lamb = lamb - tmp_mult*2*(result.num_particles[0] - operatore[1])
+        if operatore[0] == 'spin-squared':
+            lamb = lamb - tmp_mult*2*(result.total_angular_momentum[0] - operatore[1])
+        if operatore[0] == 'spin-z':
+            lamb = lamb - tmp_mult*2*(result.magnetization[0] - operatore[1])
 
-        #print(result.total_energies[0] - penalty, " ", penalty)
-
+    #print(result.total_energies[0] - penalty, " ", penalty)
     return result
 
 def solve_VQE(options):
@@ -669,5 +679,5 @@ def solve_VQE(options):
         else:
             vqe_result = solve_lag_series_vqe(options)
 
-    return vqe_result
+    return vqe_result, PARAMETERS[len(PARAMETERS)-1]
 

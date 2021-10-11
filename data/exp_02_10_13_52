@@ -1,0 +1,116 @@
+{
+    "commit": "64683a07bb0d292cf25061a95dbc82936703d165",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "1.5",
+            "max": "3.5",
+            "delta": "66"
+        },
+        "molecule": {
+            "molecule": "LiH",
+            "spin": 0,
+            "charge": 0,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "Li .0 .0 .0; H .0 .0 1.5"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "CG"
+        ],
+        "lagrange": {
+            "active": [
+                "True",
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2,
+                0.30000000000000004
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            1.5
+        ],
+        "geometries": [
+            "Li .0 .0 .0; H .0 .0 1.5"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_statevector_simulator_None_CG_Lag_spin-squared(0.2)": [
+            {
+                "energy": -7.954520822273152,
+                "auxiliary": {
+                    "particles": [
+                        2.000040141239249
+                    ],
+                    "spin-z": [
+                        0.0007899333745305936
+                    ],
+                    "spin-sq": [
+                        0.000790557369266751
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_CG_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": -7.953761160698638,
+                "auxiliary": {
+                    "particles": [
+                        2.0000001361505793
+                    ],
+                    "spin-z": [
+                        8.581055980361185e-05
+                    ],
+                    "spin-sq": [
+                        8.5817923255798e-05
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_CG_LagSeries_spin-squared_10x0.3_": [
+            {
+                "energy": -7.953984658830714,
+                "auxiliary": {
+                    "particles": [
+                        2.000000082811777
+                    ],
+                    "spin-z": [
+                        9.036023558406381e-05
+                    ],
+                    "spin-sq": [
+                        9.0368400556227e-05
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "dummy",
+    "varianti": [
+        "lagrange activity"
+    ]
+}

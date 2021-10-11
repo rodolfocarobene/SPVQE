@@ -21,12 +21,64 @@ def get_results_dists_moltype(file_name):
     return results, x, mol_type
 
 def from_item_to_label(item):
+    '''
     name = re.sub(r'sto-6g_', '', item)
     name = re.sub(r'EfficientSU\(2\)_|TwoLocal_|UCCSD_|SO(4)_', '', name)
     name = re.sub(r'\(.*\)', '', name)
     name = re.sub(r'_\d+x.+_$', '', name)
     name = re.sub(r'None_', '', name)
+    '''
+
+    if 'Series' in item:
+        name = 'Series of penalties'
+    elif 'Lag' in item:
+        name = 'Simple penalty'
+    else:
+        name = 'Standard VQE'
+
     return name
+
+def from_item_to_linestyle(item):
+    '''
+    if 'statevector_simulator' in item:
+        linestyle = 'dashed'
+    elif 'qasm_simulator' in item:
+        linestyle = 'dashdot'
+    else:
+        linestyle = None
+    '''
+
+    if 'Series' in item:
+        linestyle = '--'
+    elif 'Lag' in item:
+        linestyle = '--'
+    else:
+        linestyle = '-'
+
+    return linestyle
+
+def from_item_to_marker(item):
+    if 'Series' in item:
+        markerstyle = 'x'
+        size = 10
+    elif 'Lag' in item:
+        markerstyle = '+'
+        size = 10
+    else:
+        markerstyle = 'o'
+        size = 5
+
+    return markerstyle, size
+
+def from_item_to_color(item):
+    if 'Series' in item:
+        color = 'C2'
+    elif 'Lag' in item:
+        color = 'C0'
+    else:
+        color = 'C1'
+
+    return color
 
 def get_title(argv):
     index_title = argv.index('title')
@@ -84,37 +136,35 @@ if __name__ == '__main__':
             if 'spin2' in types_graph:
                 y_aux['spin2'].append(singleResult['auxiliary']['spin-sq'])
 
-        linestyle = 'None'
-        markerstyle = 'o'
-
-        if 'statevector_simulator' in item:
-            linestyle = 'dashed'
-            markerstyle = 'o'
-        elif 'qasm_simulator' in item:
-            linestyle = 'dashdot'
-            markerstyle = 'o'
+        linestyle = from_item_to_linestyle(item)
+        markerstyle, markersize = from_item_to_marker(item)
+        color = from_item_to_color(item)
 
         axes[0].plot(x, y_energy, label=from_item_to_label(item),
-                     linestyle=linestyle, marker=markerstyle)
+                     linestyle=linestyle, marker=markerstyle, markersize=markersize,
+                     mew=2, color=color)
 
         for i, type_graph in enumerate(types_graph):
             axes[i+1].plot(x, y_aux[type_graph], label=from_item_to_label(item),
-                           linestyle=linestyle, marker=markerstyle)
+                           linestyle=linestyle, marker=markerstyle, markersize=markersize,
+                           mew=2, color=color)
 
         myLegend.append(item)
 
     fig.subplots_adjust(right=0.936, top=0.8)
 
     if 'no-ref' not in sys.argv:
-        axes[0].plot(np.arange(0.3, 3.5, 0.1),
+        axes[0].plot(np.arange(0.3, 5, 0.2),
                      return_classical_results(mol_type).fci,
                      label='Full Configuration Interaction (FCI)',
-                     linestyle='dotted', marker='None')
+                     zorder=0, color='r',
+                     linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
 
-        axes[0].plot(np.arange(0.3, 3.5, 0.1),
+        axes[0].plot(np.arange(0.3, 5, 0.2),
                      return_classical_results(mol_type).hf,
                      label='Hartree Fock (HF)',
-                     linestyle='dotted', marker='None')
+                     zorder=0, color='m',
+                     linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
 
     for i, type_graph in enumerate(types_graph):
         if type_graph == 'number':

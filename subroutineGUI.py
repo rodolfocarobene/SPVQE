@@ -74,7 +74,8 @@ def get_layout():
     possible_lag_op = ['number', 'spin-squared', 'spin-z',
                      'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
     possible_backend = ['statevector_simulator', 'qasm_simulator',
-                        'qasm_simulator_online', 'hardware']
+                        'qasm_simulator_online', 'hardware',
+                        'qasm_gpu']
 
     layout = [[psg.Text('Molecola'),
                psg.Combo(possible_molecules, default_value='H3+',
@@ -124,7 +125,7 @@ def get_layout():
              psg.Input(default_text=20, size=(4, 10), key='series_itermax_step')],
 
             [psg.Text('LagSeries(step) MIN:'),
-             psg.Input(default_text=0.1, size=(4, 10), key='series_step_min'),
+             psg.Input(default_text=0.2, size=(4, 10), key='series_step_min'),
              psg.Text('MAX: '),
              psg.Input(default_text=1, size=(4, 10), key='series_step_max'),
              psg.Text('DELTA: '),
@@ -436,10 +437,22 @@ def set_backend_and_noise(values):
             noise = 'None'
         elif backend == 'qasm_simulator':
             quantum_instance = QuantumInstance(backend=Aer.get_backend('qasm_simulator'),
+                                               skip_qobj_validation=True,
+                                               shots=int(values['shots']))
+        elif backend == 'qasm_gpu':
+            quantum_instance = QuantumInstance(backend=Aer.get_backend('qasm_simulator'),
+                                               backend_options={'method': 'statevector_gpu'},
                                                shots=int(values['shots']))
         elif backend == 'qasm_simulator_online':
-            quantum_instance = QuantumInstance(backend=provider.get_backend('ibmq_qasm_simulator'), #QasmSimulator(method='statevector'),
+            quantum_instance = QuantumInstance(backend=provider.backend.ibmq_qasm_simulator,
+                                               #provider.get_backend('ibmq_qasm_simulator'), #QasmSimulator(method='statevector'),
                                                shots=int(values['shots']))
+
+        elif backend == 'hardware':
+            mybackend = provider.get_backend('ibmq_santiago')
+            quantum_instance = QuantumInstance(backend=mybackend,
+                                               shots=int(values['shots']))
+
         if backend == 'qasm_simulator' and noise != 'None':
             device = provider.get_backend(noise)
             coupling_map = device.configuration().coupling_map
@@ -451,8 +464,6 @@ def set_backend_and_noise(values):
             quantum_instance.noise_model = noise_model
 
 
-        if 'qasm_simulator' in backend:
-            backend = 'qasm_simulator'
         name = backend + '_' + noise
 
         if backend == 'qasm_simulator' and noise != 'None' and corr == 'True':
