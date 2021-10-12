@@ -457,9 +457,12 @@ def find_best_result(partial_results):
     tmp_result.extracted_transformer_energies = {'dummy': 0}
 
     for result, penalty in partial_results:
-        if penalty < penal_min:
+        if np.round(penalty, 2) < np.round(penal_min, 2):
             tmp_result = result
             penal_min = penalty
+        elif np.round(penalty, 2) == np.round(penal_min, 2):
+            if tmp_result.total_energies[0] > result.total_energies[0]:
+                tmp_result = result
 
        # if result.total_energies[0] < energy_min:
        #     energy_min = result.total_energies[0]
