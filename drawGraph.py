@@ -154,13 +154,13 @@ if __name__ == '__main__':
     fig.subplots_adjust(right=0.936, top=0.8)
 
     if 'no-ref' not in sys.argv:
-        axes[0].plot(np.arange(0.3, 5, 0.2),
+        axes[0].plot(np.arange(0.3, 4, 0.2),
                      return_classical_results(mol_type).fci,
                      label='Full Configuration Interaction (FCI)',
                      zorder=0, color='r',
                      linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
 
-        axes[0].plot(np.arange(0.3, 5, 0.2),
+        axes[0].plot(np.arange(0.3, 4, 0.2),
                      return_classical_results(mol_type).hf,
                      label='Hartree Fock (HF)',
                      zorder=0, color='m',

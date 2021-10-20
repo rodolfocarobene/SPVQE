@@ -54,6 +54,12 @@ if __name__ == '__main__':
             energy = result_tot.total_energies[0]
             print("\t", name, "\tE = ", energy)
 
+        #STO BARANDO ?!?
+       #for kind in parameters:
+       #       if len(parameters[kind]) == 0:
+       #           parameters[kind] = parameters[name]
+        #--------------------
+
     JsonOptions = retrive_json_options(__file__,
                                      options,
                                      results)

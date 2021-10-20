@@ -1,0 +1,132 @@
+{
+    "commit": "7b45d24570681c87f45bf6443a114b197419b777",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "1.1",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "molecule": "H3+",
+            "spin": 0,
+            "charge": 1,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; H .0 .0 1.1; H .0 0.9526279441628827 0.55"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "qasm_simulator_None",
+            "qasm_simulator_ibmq_santiago"
+        ],
+        "optimizer": [
+            "COBYLA"
+        ],
+        "lagrange": {
+            "active": [
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2,
+                0.30000000000000004
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            1.1
+        ],
+        "geometries": [
+            "H .0 .0 .0; H .0 .0 1.1; H .0 0.9526279441628827 0.55"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_qasm_simulator_None_COBYLA_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": -1.2398405952077147,
+                "auxiliary": {
+                    "particles": [
+                        2.005859374999999
+                    ],
+                    "spin-z": [
+                        0.015388203202207462
+                    ],
+                    "spin-sq": [
+                        0.015624999999999889
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_qasm_simulator_None_COBYLA_LagSeries_spin-squared_10x0.3_": [
+            {
+                "energy": -1.2274567902927678,
+                "auxiliary": {
+                    "particles": [
+                        2.0507812499999987
+                    ],
+                    "spin-z": [
+                        0.051341221007569104
+                    ],
+                    "spin-sq": [
+                        0.053977141982117116
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_qasm_simulator_ibmq_santiago_COBYLA_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": -1.2600883802372924,
+                "auxiliary": {
+                    "particles": [
+                        2.0175781249999996
+                    ],
+                    "spin-z": [
+                        0.021041625016658072
+                    ],
+                    "spin-sq": [
+                        0.021484374999999722
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_qasm_simulator_ibmq_santiago_COBYLA_LagSeries_spin-squared_10x0.3_": [
+            {
+                "energy": -1.3092394361700732,
+                "auxiliary": {
+                    "particles": [
+                        2.021484374999999
+                    ],
+                    "spin-z": [
+                        0.0219779090153146
+                    ],
+                    "spin-sq": [
+                        0.022460937500000056
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "dummy",
+    "varianti": [
+        "quantum_instance"
+    ]
+}

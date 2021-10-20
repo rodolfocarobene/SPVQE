@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 
+import math
 import numpy as np
 
 from qiskit import IBMQ
@@ -26,6 +27,9 @@ from qiskit_nature.transformers.second_quantization.electronic import FreezeCore
 from qiskit_nature.circuit.library import HartreeFock, UCCSD
 from qiskit_nature.algorithms import VQEUCCFactory, GroundStateEigensolver
 from qiskit_nature.results import EigenstateResult
+
+def order_of_magnitude(number):
+    return math.floor(math.log(number, 10))
 
 def get_date_time_string():
     now = datetime.now()
@@ -156,7 +160,9 @@ def create_lagrange_operator_aug(hamiltonian,
 def get_transformers_from_mol_type(mol_type):
     transf_list = []
     if mol_type == 'LiH':
-        transf_list.append(FreezeCoreTransformer(True)) #, [2, 3, 4]))
+        #transf_list.append(FreezeCoreTransformer(True)) #, [2, 3, 4]))
+        transf_list.append(ActiveSpaceTransformer(num_electrons=2,
+                                                  num_molecular_orbitals=3))
     if mol_type == 'H2O':
         transf_list.append(ActiveSpaceTransformer(num_electrons=4,
                                                   num_molecular_orbitals=4))
@@ -179,7 +185,7 @@ def get_num_particles(mol_type,
     num_spin_orbitals = particle_number.num_spin_orbitals
 
     if mol_type == 'LiH':
-        return 1, 1, 10#4
+        return 1, 1, 6 #10#4
     elif mol_type == 'H2O':
         return 2, 2, 8
     else:
@@ -457,12 +463,13 @@ def find_best_result(partial_results):
     tmp_result.extracted_transformer_energies = {'dummy': 0}
 
     for result, penalty in partial_results:
-        if np.round(penalty, 2) < np.round(penal_min, 2):
-            tmp_result = result
-            penal_min = penalty
-        elif np.round(penalty, 2) == np.round(penal_min, 2):
+        if abs(order_of_magnitude(penalty) - order_of_magnitude(penal_min)) < 2:
             if tmp_result.total_energies[0] > result.total_energies[0]:
                 tmp_result = result
+                penal_min = penalty
+        elif penalty < penal_min:
+            tmp_result = result
+            penal_min = penalty
 
        # if result.total_energies[0] < energy_min:
        #     energy_min = result.total_energies[0]
@@ -602,7 +609,7 @@ def get_num_par(varform, mol_type):
             raise Exception('varform not yet implemented for this mol')
     elif 'LiH' == mol_type:
         if varform == 'TwoLocal':
-            num_pars = 32
+            num_pars = 16
         elif varform == 'EfficientSU(2)':
             num_pars = 16
         else:

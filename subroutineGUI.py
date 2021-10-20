@@ -7,7 +7,7 @@ import PySimpleGUI as psg
 from qiskit import Aer
 from qiskit import IBMQ
 
-from qiskit.algorithms.optimizers import CG, COBYLA, SPSA, L_BFGS_B, ADAM
+from qiskit.algorithms.optimizers import CG, COBYLA, SPSA, L_BFGS_B, ADAM, NFT
 from qiskit.providers.aer.noise import NoiseModel
 from qiskit.utils import QuantumInstance
 from qiskit.ignis.mitigation import CompleteMeasFitter
@@ -70,7 +70,7 @@ def get_layout():
     possible_noise = ['None', 'ibmq_santiago']
     possible_bool = ['True', 'False']
     possible_lag = ['True', 'False', 'Series', 'AUGSeries']
-    possible_optim = ['COBYLA', 'CG', 'SPSA', 'L_BFGS_B', 'ADAM']
+    possible_optim = ['COBYLA', 'CG', 'SPSA', 'L_BFGS_B', 'ADAM', 'NFT']
     possible_lag_op = ['number', 'spin-squared', 'spin-z',
                      'num+spin2', 'spin2+spinz', 'num+spinz', 'num+spin2+spinz']
     possible_backend = ['statevector_simulator', 'qasm_simulator',
@@ -104,7 +104,7 @@ def get_layout():
 
             [psg.Text('Optimizer'),
              psg.Listbox(possible_optim, default_values=['COBYLA'],
-                         select_mode='extended', size=(8, 5), key='optimizer')],
+                         select_mode='extended', size=(8, 6), key='optimizer')],
 
             [psg.Text('Distanze: Min'),
              psg.Input(default_text=0.3, size=(4, 10), key='dist_min'),
@@ -410,15 +410,17 @@ def set_optimizers(values):
     optimizers = []
     for opt in values['optimizer']:
         if opt == 'CG':
-            optimizers.append((CG(maxiter=100, eps=1e-5), 'CG'))
+            optimizers.append((CG(maxiter=100), 'CG'))
         elif opt == 'COBYLA':
             optimizers.append((COBYLA(), 'COBYLA'))
         elif opt == 'ADAM':
-            optimizers.append((ADAM(maxiter=1000, eps=1e-5), 'ADAM'))
+            optimizers.append((ADAM(maxiter=100), 'ADAM'))
         elif opt == 'L_BFGS_B':
-            optimizers.append((L_BFGS_B(maxiter=1000, epsilon=1e-3), 'LBFGSB'))
+            optimizers.append((L_BFGS_B(maxiter=100), 'LBFGSB'))
         elif opt == 'SPSA':
-            optimizers.append((SPSA(maxiter=100), 'SPSA'))
+            optimizers.append((SPSA(maxiter=200), 'SPSA'))
+        elif opt == 'NFT':
+            optimizers.append((NFT(maxiter=20), 'NFT'))
     values['optimizer'] = optimizers
 
 def set_backend_and_noise(values):
