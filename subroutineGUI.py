@@ -420,7 +420,7 @@ def set_optimizers(values):
         elif opt == 'SPSA':
             optimizers.append((SPSA(maxiter=200), 'SPSA'))
         elif opt == 'NFT':
-            optimizers.append((NFT(maxiter=20), 'NFT'))
+            optimizers.append((NFT(maxiter=100), 'NFT'))
     values['optimizer'] = optimizers
 
 def set_backend_and_noise(values):

@@ -29,6 +29,8 @@ from qiskit_nature.algorithms import VQEUCCFactory, GroundStateEigensolver
 from qiskit_nature.results import EigenstateResult
 
 def order_of_magnitude(number):
+    if number == 0:
+        return -100
     return math.floor(math.log(number, 10))
 
 def get_date_time_string():
