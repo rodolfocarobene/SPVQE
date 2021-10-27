@@ -1,0 +1,105 @@
+{
+    "commit": "f551e95834b9d97544826ebf3e794062ce2e9ccc",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "4",
+            "max": "3",
+            "delta": "-10.1"
+        },
+        "molecule": {
+            "molecule": "H3+",
+            "spin": 0,
+            "charge": 1,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; H .0 .0 4.0; H .0 3.4641016151377544 2.0"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "qasm_simulator_None"
+        ],
+        "optimizer": [
+            "NFT"
+        ],
+        "lagrange": {
+            "active": [
+                "True"
+            ],
+            "operators": [
+                [
+                    [
+                        "number",
+                        2,
+                        0.2
+                    ]
+                ],
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.15
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            4.0
+        ],
+        "geometries": [
+            "H .0 .0 .0; H .0 .0 4.0; H .0 3.4641016151377544 2.0"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_qasm_simulator_None_NFT_Lag_number(0.2)": [
+            {
+                "energy": -0.9588000940903785,
+                "auxiliary": {
+                    "particles": [
+                        2.007812499999999
+                    ],
+                    "spin-z": [
+                        0.17422962134172781
+                    ],
+                    "spin-sq": [
+                        0.20458558229460963
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_qasm_simulator_None_NFT_Lag_spin-squared(0.15)": [
+            {
+                "energy": -0.9452487025951664,
+                "auxiliary": {
+                    "particles": [
+                        2.0019531249999987
+                    ],
+                    "spin-z": [
+                        0.002573073798279202
+                    ],
+                    "spin-sq": [
+                        0.002579694507050645
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "dummy",
+    "varianti": [
+        "lagrange operator"
+    ]
+}

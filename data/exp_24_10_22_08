@@ -1,0 +1,252 @@
+{
+    "commit": "f551e95834b9d97544826ebf3e794062ce2e9ccc",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "0.3",
+            "max": "0.5",
+            "delta": "0.1"
+        },
+        "molecule": {
+            "molecule": "H3+",
+            "spin": 0,
+            "charge": 1,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; H .0 .0 0.4; H .0 0.3464101615137755 0.2"
+        },
+        "varforms": [
+            "TwoLocal",
+            "EfficientSU(2)"
+        ],
+        "quantum_instance": [
+            "qasm_simulator_None"
+        ],
+        "optimizer": [
+            "COBYLA",
+            "SPSA",
+            "NFT"
+        ],
+        "lagrange": {
+            "active": [
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            0.3,
+            0.4
+        ],
+        "geometries": [
+            "H .0 .0 .0; H .0 .0 0.3; H .0 0.2598076211353316 0.15",
+            "H .0 .0 .0; H .0 .0 0.4; H .0 0.3464101615137755 0.2"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_qasm_simulator_None_COBYLA_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": 0.8116608289974829,
+                "auxiliary": {
+                    "particles": [
+                        2.005859374999999
+                    ],
+                    "spin-z": [
+                        0.007752400289747552
+                    ],
+                    "spin-sq": [
+                        0.00781250000000008
+                    ]
+                }
+            },
+            {
+                "energy": -0.21681144929407115,
+                "auxiliary": {
+                    "particles": [
+                        2.0078124999999987
+                    ],
+                    "spin-z": [
+                        0.015388203202207573
+                    ],
+                    "spin-sq": [
+                        0.01562499999999999
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_qasm_simulator_None_SPSA_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": 0.8064445495085923,
+                "auxiliary": {
+                    "particles": [
+                        1.9999999999999984
+                    ],
+                    "spin-z": [
+                        0.000975610683793704
+                    ],
+                    "spin-sq": [
+                        0.0009765625000000763
+                    ]
+                }
+            },
+            {
+                "energy": -0.19559676616359933,
+                "auxiliary": {
+                    "particles": [
+                        1.999999999999999
+                    ],
+                    "spin-z": [
+                        0.0
+                    ],
+                    "spin-sq": [
+                        0.0
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_qasm_simulator_None_NFT_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": 0.7981775582765351,
+                "auxiliary": {
+                    "particles": [
+                        1.9999999999999993
+                    ],
+                    "spin-z": [
+                        0.0
+                    ],
+                    "spin-sq": [
+                        0.0
+                    ]
+                }
+            },
+            {
+                "energy": -0.212443712314915,
+                "auxiliary": {
+                    "particles": [
+                        1.9999999999999993
+                    ],
+                    "spin-z": [
+                        0.0
+                    ],
+                    "spin-sq": [
+                        -0.0
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_qasm_simulator_None_COBYLA_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": 0.790441018215307,
+                "auxiliary": {
+                    "particles": [
+                        1.999999999999999
+                    ],
+                    "spin-z": [
+                        0.0
+                    ],
+                    "spin-sq": [
+                        0.0
+                    ]
+                }
+            },
+            {
+                "energy": -0.31221644345895516,
+                "auxiliary": {
+                    "particles": [
+                        1.9999999999999993
+                    ],
+                    "spin-z": [
+                        0.0
+                    ],
+                    "spin-sq": [
+                        0.0
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_qasm_simulator_None_SPSA_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": 0.7154725969276345,
+                "auxiliary": {
+                    "particles": [
+                        1.999999999999999
+                    ],
+                    "spin-z": [
+                        0.0
+                    ],
+                    "spin-sq": [
+                        0.0
+                    ]
+                }
+            },
+            {
+                "energy": -0.22971603311736644,
+                "auxiliary": {
+                    "particles": [
+                        1.9999999999999993
+                    ],
+                    "spin-z": [
+                        0.0
+                    ],
+                    "spin-sq": [
+                        0.0
+                    ]
+                }
+            }
+        ],
+        "sto-6g_EfficientSU(2)_qasm_simulator_None_NFT_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": 0.7724756795693883,
+                "auxiliary": {
+                    "particles": [
+                        1.9999999999999993
+                    ],
+                    "spin-z": [
+                        0.0
+                    ],
+                    "spin-sq": [
+                        0.0
+                    ]
+                }
+            },
+            {
+                "energy": -0.27972830821014494,
+                "auxiliary": {
+                    "particles": [
+                        1.9999999999999984
+                    ],
+                    "spin-z": [
+                        0.0
+                    ],
+                    "spin-sq": [
+                        0.0
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "test fra cobyla e nft per h3+",
+    "varianti": [
+        "varform",
+        "optimizer"
+    ]
+}
