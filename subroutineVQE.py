@@ -298,7 +298,7 @@ def create_vqe_from_ansatz_type(var_form_type,
                           initial_state=init_state,
                           entanglement='linear')
         if None in initial_point:
-            initial_point = np.zeros(ansatz.num_parameters)
+            initial_point = np.random.rand(ansatz.num_parameters)
         vqe_solver = VQE(ansatz=ansatz,
                          optimizer=optimizer,
                          initial_point=initial_point,
@@ -460,12 +460,16 @@ def find_best_result(partial_results):
     penal_min = 100
 
     tmp_result = ElectronicStructureResult()
-    tmp_result.nuclear_repulsion_energy5 = 50
+    tmp_result.nuclear_repulsion_energy = 50
     tmp_result.computed_energies = np.array([0])
     tmp_result.extracted_transformer_energies = {'dummy': 0}
 
     for result, penalty in partial_results:
-        if abs(order_of_magnitude(penalty) - order_of_magnitude(penal_min)) < 2:
+        myLogger.info('currE: %s', str(tmp_result.total_energies[0]))
+        myLogger.info('GUARDO: %s', str(penalty))
+        myLogger.info('CONFRONTO: %s', str(penal_min))
+
+        if abs(order_of_magnitude(penalty) - order_of_magnitude(penal_min)) < 1:
             if tmp_result.total_energies[0] > result.total_energies[0]:
                 tmp_result = result
                 penal_min = penalty
@@ -473,9 +477,7 @@ def find_best_result(partial_results):
             tmp_result = result
             penal_min = penalty
 
-       # if result.total_energies[0] < energy_min:
-       #     energy_min = result.total_energies[0]
-       #     tmp_result = result
+        myLogger.info('newE: %s', str(tmp_result.total_energies[0]))
 
     return tmp_result
 
@@ -486,17 +488,17 @@ def calc_penalty(lag_op_list, result, threshold, tmp_mult):
     for operatore in lag_op_list:
         if operatore[0] == 'number':
             penalty += tmp_mult*((result.num_particles[0] - operatore[1])**2)
-            myLogger.info('penalty at number: %d', penalty)
+            myLogger.info('penalty at number: %s', str(penalty))
             if abs(result.num_particles[0] - operatore[1]) > threshold:
                 accectable_result = False
         if operatore[0] == 'spin-squared':
             penalty += tmp_mult*((result.total_angular_momentum[0] - operatore[1])**2)
-            myLogger.info('penalty at spin2: %d', penalty)
+            myLogger.info('penalty at spin2: %s', str(penalty))
             if abs(result.total_angular_momentum[0] - operatore[1]) > threshold:
                 accectable_result = False
         if operatore[0] == 'spin-z':
             penalty += tmp_mult*((result.magnetization[0] - operatore[1])**2)
-            myLogger.info('penalty at spinz: %d', penalty)
+            myLogger.info('penalty at spinz: %s', str(penalty))
             if abs(result.magnetization[0] - operatore[1]) > threshold:
                     accectable_result = False
 
@@ -549,13 +551,13 @@ def solve_lag_series_vqe(options):
         log_str += "\tE-P = " + str(np.round(result.total_energies[0] - penalty, 7))
 
         myLogger.info(log_str)
-        #print(log_str)
 
         if accectable_result:
             partial_results.append((result, penalty/tmp_mult))
         if accectable_result and penalty/tmp_mult < 1e-8 and i > 4:
-            #print('Ultima iterazione: ', i)
             break
+
+
         if not accectable_result and i == iter_max - 1:
             partial_results.append((result, penalty/tmp_mult))
 

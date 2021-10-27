@@ -438,8 +438,7 @@ def set_backend_and_noise(values):
             quantum_instance = QuantumInstance(Aer.get_backend('statevector_simulator'))
             noise = 'None'
         elif backend == 'qasm_simulator':
-            quantum_instance = QuantumInstance(backend=Aer.get_backend('qasm_simulator'),
-                                               skip_qobj_validation=True,
+            quantum_instance = QuantumInstance(backend=QasmSimulator(), #Aer.get_backend('qasm_simulator'),
                                                shots=int(values['shots']))
         elif backend == 'qasm_gpu':
             quantum_instance = QuantumInstance(backend=Aer.get_backend('qasm_simulator'),
@@ -459,9 +458,6 @@ def set_backend_and_noise(values):
             device = provider.get_backend(noise)
             coupling_map = device.configuration().coupling_map
             noise_model = NoiseModel.from_backend(device)
-            seed = 150
-            quantum_instance.seed_simulator = seed
-            quantum_instance.seed_transpiler = seed
             quantum_instance.coupling_map = coupling_map
             quantum_instance.noise_model = noise_model
 

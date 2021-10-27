@@ -52,7 +52,10 @@ if __name__ == '__main__':
             results[name].append(result_tot)
 
             energy = result_tot.total_energies[0]
-            print("\t", name, "\tE = ", energy)
+            spin2 = result_tot.total_angular_momentum[0]
+            number = result_tot.num_particles[0]
+
+            print("\t", name, "\tE = ", energy, '\tS2 = ', spin2, '\tN = ', number)
 
         #STO BARANDO ?!?
        #for kind in parameters:
