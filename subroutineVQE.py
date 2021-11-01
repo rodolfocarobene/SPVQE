@@ -8,7 +8,7 @@ from qiskit import IBMQ
 from qiskit import Aer
 from qiskit import QuantumCircuit
 
-from qiskit.algorithms.optimizers import L_BFGS_B, CG
+from qiskit.algorithms.optimizers import L_BFGS_B, COBYLA
 from qiskit.algorithms import VQE
 from qiskit.circuit import QuantumRegister, Parameter
 from qiskit.circuit.library import TwoLocal, EfficientSU2
@@ -363,6 +363,7 @@ def solve_hamiltonian_vqe(options):
     result = calc.solve(problem)
 
     myLogger.info('Fine solve_hamiltonian_vqe')
+    myLogger.info(PARAMETERS[len(PARAMETERS)-1])
     myLogger.info('RESULT')
     myLogger.info(result)
 
@@ -458,13 +459,14 @@ def convert_list_op_ferm_to_qubit(old_aux_ops, converter, num_particles):
 
 def find_best_result(partial_results):
     penal_min = 100
+    optimal_par = []
 
     tmp_result = ElectronicStructureResult()
     tmp_result.nuclear_repulsion_energy = 50
     tmp_result.computed_energies = np.array([0])
     tmp_result.extracted_transformer_energies = {'dummy': 0}
 
-    for result, penalty in partial_results:
+    for result, penalty, par in partial_results:
         myLogger.info('currE: %s', str(tmp_result.total_energies[0]))
         myLogger.info('GUARDO: %s', str(penalty))
         myLogger.info('CONFRONTO: %s', str(penal_min))
@@ -473,13 +475,15 @@ def find_best_result(partial_results):
             if tmp_result.total_energies[0] > result.total_energies[0]:
                 tmp_result = result
                 penal_min = penalty
+                optimal_par = par
         elif penalty < penal_min:
             tmp_result = result
             penal_min = penalty
+            optimal_par = par
 
         myLogger.info('newE: %s', str(tmp_result.total_energies[0]))
 
-    return tmp_result
+    return tmp_result, optimal_par
 
 def calc_penalty(lag_op_list, result, threshold, tmp_mult):
     penalty = 0
@@ -553,17 +557,30 @@ def solve_lag_series_vqe(options):
         myLogger.info(log_str)
 
         if accectable_result:
-            partial_results.append((result, penalty/tmp_mult))
+            partial_results.append((result, penalty/tmp_mult, par))
         if accectable_result and penalty/tmp_mult < 1e-8 and i > 4:
             break
 
 
         if not accectable_result and i == iter_max - 1:
-            partial_results.append((result, penalty/tmp_mult))
+            partial_results.append((result, penalty/tmp_mult, par))
 
-    result = find_best_result(partial_results)
+    result, optimal_par = find_best_result(partial_results)
+
+    result = dummy_vqe(result, options, optimal_par)
 
     return result
+
+def dummy_vqe(old_result, options, optimal_par):
+    myLogger.info('inizio dummy_vqe')
+    options['optimizer'] = COBYLA(maxiter=0)
+    options['init_point'] = optimal_par
+
+    new_result = solve_hamiltonian_vqe(options)
+
+    myLogger.info('fine dummy_vqe')
+    return new_result
+
 
 def get_num_par(varform, mol_type):
     num_pars = 0
@@ -686,7 +703,9 @@ def solve_VQE(options):
     if not options['lagrange']['active']:
         vqe_result = solve_hamiltonian_vqe(options)
     elif not options['lagrange']['series']:
-        vqe_result = solve_lagrangian_vqe(options)
+        lag_result = solve_lagrangian_vqe(options)
+        optimal_par = PARAMETERS[len(PARAMETERS) - 1]
+        vqe_result = dummy_vqe(lag_result, options, optimal_par)
     else:
         if options['lagrange']['augmented']:
             vqe_result = solve_lag_aug_series_vqe(options)
