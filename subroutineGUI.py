@@ -206,6 +206,7 @@ def retrive_VQE_options(argv):
         },
         'varforms' : values['varforms'],
         'quantum_instance' : values['backend'],
+        'shots': int(values['shots']),
         'optimizer' : values['optimizer'],
         'converter' : QubitConverter(mapper=ParityMapper(),
                                      two_qubit_reduction=True),
@@ -420,7 +421,7 @@ def set_optimizers(values):
         elif opt == 'SPSA':
             optimizers.append((SPSA(maxiter=200), 'SPSA'))
         elif opt == 'NFT':
-            optimizers.append((NFT(maxiter=100), 'NFT'))
+            optimizers.append((NFT(maxiter=60), 'NFT'))
     values['optimizer'] = optimizers
 
 def set_backend_and_noise(values):
@@ -450,9 +451,8 @@ def set_backend_and_noise(values):
                                                shots=int(values['shots']))
 
         elif backend == 'hardware':
-            mybackend = provider.get_backend('ibmq_santiago')
-            quantum_instance = QuantumInstance(backend=mybackend,
-                                               shots=int(values['shots']))
+            mybackend = provider.get_backend('ibmq_bogota')
+            quantum_instance = mybackend
 
         if backend == 'qasm_simulator' and noise != 'None':
             device = provider.get_backend(noise)
