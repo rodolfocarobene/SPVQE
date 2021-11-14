@@ -21,28 +21,29 @@ warnings.simplefilter("ignore")
 def get_default_opt():
     print('Loading default values')
     values = {
+        'molecule' : 'H4',
         'spin' : 0,
-        'charge' : 1,
+        'charge' : 0,
         'basis' : ['sto-6g'],
         'varforms' : ['TwoLocal'],
         'backend' : ['statevector_simulator'],
         'noise' : ['None'],
         'shots' : 1024,
         'correction' : ['False'],
-        'optimizer' : ['COBYLA'],
-        'dist_min' : 0.3,
+        'optimizer' : ['NFT'],
+        'dist_min' : 0.2,
         'dist_max' : 3.5,
-        'dist_delta' : 11,
-        'lagrangiana' : ['False'],
-        'lag_op' : ['number'],
-        'lag_value_num' : 2,
-        'lag_mult_num_min' : 0.2,
-        'lag_mult_num_max' : 0.2,
-        'lag_mult_num_delta' : 0.1,
+        'dist_delta' : 1,
+        'lagrangiana' : ['True', 'False', 'Series'],
+        'lag_op' : ['spin-squared'],
+        'lag_value_num' : 4,
+        'lag_mult_num_min' : 1,
+        'lag_mult_num_max' : 4,
+        'lag_mult_num_delta' : 10,
         'lag_value_spin2' : 0,
-        'lag_mult_spin2_min' : 0.2,
-        'lag_mult_spin2_max' : 0.2,
-        'lag_mult_spin2_delta' : 0.1,
+        'lag_mult_spin2_min' : 1,
+        'lag_mult_spin2_max' : 4,
+        'lag_mult_spin2_delta' : 10,
         'lag_value_spinz' : 0,
         'lag_mult_spinz_min' : 0.2,
         'lag_mult_spinz_max' : 0.2,
@@ -52,9 +53,9 @@ def get_default_opt():
         'series_itermax_max' : 20,
         'series_itermax_step' : 15,
 
-        'series_step_min' : 0.1,
-        'series_step_max' : 1,
-        'series_step_step' : 10,
+        'series_step_min' : 1,
+        'series_step_max' : 21,
+        'series_step_step' : 9,
 
         'series_lamb_min' : 2,
         'series_lamb_max' : 6,
@@ -64,10 +65,10 @@ def get_default_opt():
 
 def get_layout():
     possible_molecules = ['H3+', 'H2', 'H2+', 'H2*', 'H4', 'H4*', 'Li2', 'Li2+',
-                          'LiH', 'H2O']
+                          'LiH', 'H2O', 'C2H4', 'N2', 'Li3+']
     possible_forms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
     possible_basis = ['sto-3g', 'sto-6g']
-    possible_noise = ['None', 'ibmq_santiago']
+    possible_noise = ['None', 'ibmq_santiago', 'ibmq_quito', 'ibmq_lima']
     possible_bool = ['True', 'False']
     possible_lag = ['True', 'False', 'Series', 'AUGSeries']
     possible_optim = ['COBYLA', 'CG', 'SPSA', 'L_BFGS_B', 'ADAM', 'NFT']
@@ -96,7 +97,7 @@ def get_layout():
 
             [psg.Text('Scegli l\'eventuale rumore'),
              psg.Listbox(possible_noise, default_values=['None'],
-                         select_mode='extended', size=(14, 2), key='noise')],
+                         select_mode='extended', size=(14, 4), key='noise')],
 
             [psg.Text('Correction'),
              psg.Listbox(possible_bool, default_values=['False'],
@@ -175,9 +176,8 @@ def get_layout():
 
 def retrive_VQE_options(argv):
 
-    if len(argv) > 1:
-        if argv[1] == 'fast':
-            values = get_default_opt()
+    if 'fast' in argv:
+        values = get_default_opt()
     else:
         layout = get_layout()
         win = psg.Window('Definisci opzioni per VQE',
@@ -420,7 +420,7 @@ def set_optimizers(values):
         elif opt == 'SPSA':
             optimizers.append((SPSA(maxiter=200), 'SPSA'))
         elif opt == 'NFT':
-            optimizers.append((NFT(maxiter=100), 'NFT'))
+            optimizers.append((NFT(maxiter=150), 'NFT'))
     values['optimizer'] = optimizers
 
 def set_backend_and_noise(values):
@@ -488,6 +488,25 @@ def set_dist_and_geometry(options):
         for i, single_dist in enumerate(dist):
             geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 " + str(alt[i]) + " " + str(single_dist/2)
             geometries.append(geom)
+    if mol_type == 'Li3+':
+        alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
+        for i, single_dist in enumerate(dist):
+            geom = "Li .0 .0 .0; Li .0 .0 " + str(single_dist) + "; Li .0 " + str(alt[i]) + " " + str(single_dist/2)
+            geometries.append(geom)
+    elif mol_type == 'C2H4':
+        bot_alt = np.sin(180 - 121.3) * 1.087
+        fixed_dist = np.cos(180 - 121.3) * 1.087
+        for i, single_dist in enumerate(dist):
+            top_alt = np.sin(180 - 121.3) * single_dist
+            geom1 = 'H ' + str(-fixed_dist) + ' ' + str(top_alt) + ' 0.0; '
+            geom2 = 'H ' + str(-fixed_dist) + ' ' + str(-bot_alt) + ' 0.0; '
+            geom3 = 'C 0.0 0.0 0.0; C ' + str(single_dist) + ' 0.0 0.0; '
+            geom4 = 'H ' + str(fixed_dist) + ' ' + str(top_alt) + ' 0.0; '
+            geom5 = 'H ' + str(fixed_dist) + ' ' + str(-bot_alt) + ' 0.0'
+            geom = geom1 + geom2 + geom3 + geom4 + geom5
+
+            geometries.append(geom)
+
     elif 'H2O' in mol_type:
         for single_dist in dist:
             alt = single_dist * np.cos(0.25)
@@ -497,6 +516,10 @@ def set_dist_and_geometry(options):
     elif 'H2' in mol_type:
         for single_dist in dist:
             geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
+            geometries.append(geom)
+    elif 'N2' in mol_type:
+        for single_dist in dist:
+            geom = "N .0 .0 .0; N .0 .0 " + str(single_dist)
             geometries.append(geom)
     elif 'H4' in mol_type:
         for single_dist in dist:
@@ -518,6 +541,8 @@ def get_spin(mol_opt):
     mol_type = mol_opt
     if mol_type == 'H3+':
         return 0
+    if mol_type == 'Li3+':
+        return 0
     elif mol_type == 'H2':
         return 0
     elif mol_type == 'H2*':
@@ -535,12 +560,18 @@ def get_spin(mol_opt):
     elif mol_type == 'H2O':
         return 0
     elif mol_type == 'LiH':
+        return 0
+    elif mol_type == 'C2H4':
+        return 0
+    elif mol_type == 'N2':
         return 0
 
 def get_charge(mol_opt):
     mol_type = mol_opt
     if mol_type == 'H3+':
         return 1
+    if mol_type == 'Li3+':
+        return 1
     elif mol_type == 'H2':
         return 0
     elif mol_type == 'H2*':
@@ -558,4 +589,8 @@ def get_charge(mol_opt):
     elif mol_type == 'LiH':
         return 0
     elif mol_type == 'H2O':
+        return 0
+    elif mol_type == 'C2H4':
+        return 0
+    elif mol_type == 'N2':
         return 0

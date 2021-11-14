@@ -167,8 +167,17 @@ def get_transformers_from_mol_type(mol_type):
                                                   num_molecular_orbitals=3))
     if mol_type == 'H2O':
         transf_list.append(ActiveSpaceTransformer(num_electrons=4,
-                                                  num_molecular_orbitals=4))
+                                                  num_molecular_orbitals=3))
 
+    if mol_type == 'C2H4':
+        transf_list.append(ActiveSpaceTransformer(num_electrons=2,
+                                                  num_molecular_orbitals=2))
+    if mol_type == 'N2':
+        transf_list.append(ActiveSpaceTransformer(num_electrons=6,
+                                                  num_molecular_orbitals=3))
+    if mol_type == 'Li3+':
+        transf_list.append(ActiveSpaceTransformer(num_electrons=2,
+                                                  num_molecular_orbitals=3))
     return transf_list
 
 def from_geometry_to_atoms(geometry):
@@ -188,8 +197,14 @@ def get_num_particles(mol_type,
 
     if mol_type == 'LiH':
         return 1, 1, 6 #10#4
+    if mol_type == 'Li3+':
+        return 1, 1, 6 #10#4
     elif mol_type == 'H2O':
-        return 2, 2, 8
+        return 2, 2, 6
+    elif mol_type == 'C2H4':
+        return 1, 1, 4
+    elif mol_type == 'N2':
+        return 3, 3, 6
     else:
         return alpha, beta, num_spin_orbitals
 
@@ -596,13 +611,18 @@ def get_num_par(varform, mol_type):
             num_pars = 8
     elif 'H2O' in mol_type:
         if varform == 'TwoLocal':
-            num_pars = 24
+            num_pars = 16
         elif varform == 'EfficientSU(2)':
-            num_pars = 12
+            num_pars = 8
         elif varform == 'SO(4)':
             num_pars = 30
         elif varform == 'UCCSD':
             num_pars = 24
+        else:
+            raise Exception('varform not yet implemented for this mol')
+    elif mol_type == 'C2H4':
+        if varform == 'TwoLocal':
+            num_pars = 8
         else:
             raise Exception('varform not yet implemented for this mol')
     elif 'H2' in mol_type:
@@ -632,7 +652,7 @@ def get_num_par(varform, mol_type):
         if varform == 'TwoLocal':
             num_pars = 16
         elif varform == 'EfficientSU(2)':
-            num_pars = 16
+            num_pars = 8
         else:
             raise Exception('varform not yet implemented for this mol')
     else:

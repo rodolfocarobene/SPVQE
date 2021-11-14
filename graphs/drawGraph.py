@@ -153,20 +153,6 @@ if __name__ == '__main__':
 
     fig.subplots_adjust(right=0.936, top=0.8)
 
-    if 'no-ref' not in sys.argv:
-        axes[0].plot(np.arange(0.2, 2.5, 0.1),
-                     return_classical_results(mol_type).fci,
-                     label='Full Configuration Interaction (FCI)',
-                     zorder=0, color='r',
-                     linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
-
-        axes[0].plot(np.arange(0.2, 2.5, 0.1),
-                     return_classical_results(mol_type).hf,
-                     label='Hartree Fock (HF)',
-                     zorder=0, color='m',
-                     linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
-
-
     for i, type_graph in enumerate(types_graph):
         if type_graph == 'number':
             axes[i+1].set_ylabel("Particles\nnumber", fontsize='x-large')
@@ -185,6 +171,42 @@ if __name__ == '__main__':
                        ncol=1, fancybox=True, shadow=True)
     if 'title' in sys.argv:
         fig.suptitle(get_title(sys.argv), fontsize=20)
+
+    if 'no-ref' not in sys.argv:
+        axes[0].plot(np.arange(0.2, 2.5, 0.1),
+                     return_classical_results(mol_type).fci,
+                     label='Full Configuration Interaction (FCI)',
+                     zorder=0, color='r',
+                     linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
+
+        axes[0].plot(np.arange(0.2, 2.5, 0.1),
+                     return_classical_results(mol_type).hf,
+                     label='Hartree Fock (HF)',
+                     zorder=0, color='m',
+                     linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
+
+        plot2 = plt.figure(2)
+        for  item in results:
+            y_energy = []
+            y_aux = {}
+
+            for singleResult in results[item]:
+                y_energy.append(singleResult['energy'])
+
+            linestyle = from_item_to_linestyle(item)
+            markerstyle, markersize = from_item_to_marker(item)
+            color = from_item_to_color(item)
+
+            y = []
+            fci = return_classical_results(mol_type).fci
+            for i, el in enumerate(y_energy):
+                y.append(el - fci[len(fci) - i-1])
+
+            plt.plot(x,y,
+                         label=from_item_to_label(item),
+                         linestyle='None', marker=markerstyle, markersize=markersize,
+                         mew=2, color=color)
+
 
     mng = plt.get_current_fig_manager()
     mng.window.showMaximized()

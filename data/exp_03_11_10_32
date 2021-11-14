@@ -1,0 +1,248 @@
+{
+    "commit": "eec10485c6d52005987b25f9d02317b9f2ee9aeb",
+    "file": "test.py",
+    "options": {
+        "dist": {
+            "min": "0.3",
+            "max": "3.5",
+            "delta": "1"
+        },
+        "molecule": {
+            "molecule": "H4",
+            "spin": 0,
+            "charge": 0,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; H .0 .0 3.3; H .0 .0 6.6; H .0 .0 9.899999999999999"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "optimizer": [
+            "NFT"
+        ],
+        "lagrange": {
+            "active": [
+                "True",
+                "False",
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            0.3,
+            1.3,
+            2.3,
+            3.3
+        ],
+        "geometries": [
+            "H .0 .0 .0; H .0 .0 0.3; H .0 .0 0.6; H .0 .0 0.8999999999999999",
+            "H .0 .0 .0; H .0 .0 1.3; H .0 .0 2.6; H .0 .0 3.9000000000000004",
+            "H .0 .0 .0; H .0 .0 2.3; H .0 .0 4.6; H .0 .0 6.8999999999999995",
+            "H .0 .0 .0; H .0 .0 3.3; H .0 .0 6.6; H .0 .0 9.899999999999999"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_Lag_spin-squared(0.2)": [
+            {
+                "energy": 0.3286471498923964,
+                "auxiliary": {
+                    "particles": [
+                        4.001890360090896
+                    ],
+                    "spin-z": [
+                        0.006538716376780385
+                    ],
+                    "spin-sq": [
+                        0.006581471188636314
+                    ]
+                }
+            },
+            {
+                "energy": -1.9617807831035565,
+                "auxiliary": {
+                    "particles": [
+                        4.000121664201803
+                    ],
+                    "spin-z": [
+                        0.0006725684873599702
+                    ],
+                    "spin-sq": [
+                        0.000673020835730098
+                    ]
+                }
+            },
+            {
+                "energy": -1.4853661977321817,
+                "auxiliary": {
+                    "particles": [
+                        4.000039589224798
+                    ],
+                    "spin-z": [
+                        0.0006789565615353821
+                    ],
+                    "spin-sq": [
+                        0.000679417543547851
+                    ]
+                }
+            },
+            {
+                "energy": -1.314946938577235,
+                "auxiliary": {
+                    "particles": [
+                        4.000289851248555
+                    ],
+                    "spin-z": [
+                        0.025857989723041097
+                    ],
+                    "spin-sq": [
+                        0.026526625355557915
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT": [
+            {
+                "energy": 0.3308844585069508,
+                "auxiliary": {
+                    "particles": [
+                        3.9998405107544386
+                    ],
+                    "spin-z": [
+                        0.006485900557935742
+                    ],
+                    "spin-sq": [
+                        0.006527967463983167
+                    ]
+                }
+            },
+            {
+                "energy": -1.9759681855307816,
+                "auxiliary": {
+                    "particles": [
+                        4.0002462219488715
+                    ],
+                    "spin-z": [
+                        0.02198121190846003
+                    ],
+                    "spin-sq": [
+                        0.0224643855854247
+                    ]
+                }
+            },
+            {
+                "energy": -1.8605238330060234,
+                "auxiliary": {
+                    "particles": [
+                        3.9998113790369283
+                    ],
+                    "spin-z": [
+                        1.010147446674791
+                    ],
+                    "spin-sq": [
+                        2.030545310698391
+                    ]
+                }
+            },
+            {
+                "energy": -1.8813959529687563,
+                "auxiliary": {
+                    "particles": [
+                        3.999958424131525
+                    ],
+                    "spin-z": [
+                        1.006465366416667
+                    ],
+                    "spin-sq": [
+                        2.0194379002129024
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_spin-squared_10x0.2_": [
+            {
+                "energy": 0.2980855810676264,
+                "auxiliary": {
+                    "particles": [
+                        3.999997811555383
+                    ],
+                    "spin-z": [
+                        5.349420389211268e-05
+                    ],
+                    "spin-sq": [
+                        5.3497065521975e-05
+                    ]
+                }
+            },
+            {
+                "energy": -1.9544088733837774,
+                "auxiliary": {
+                    "particles": [
+                        4.0000473552131695
+                    ],
+                    "spin-z": [
+                        0.0006407694346511894
+                    ],
+                    "spin-sq": [
+                        0.000641180020119573
+                    ]
+                }
+            },
+            {
+                "energy": -1.5447677343565362,
+                "auxiliary": {
+                    "particles": [
+                        4.000000075995504
+                    ],
+                    "spin-z": [
+                        0.0008525163536384772
+                    ],
+                    "spin-sq": [
+                        0.000853243137771713
+                    ]
+                }
+            },
+            {
+                "energy": -1.3365014204421768,
+                "auxiliary": {
+                    "particles": [
+                        3.999999672009867
+                    ],
+                    "spin-z": [
+                        0.00022285946336875195
+                    ],
+                    "spin-sq": [
+                        0.000222909129709197
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "dummy",
+    "varianti": [
+        "lagrange activity"
+    ]
+}
