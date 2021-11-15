@@ -419,7 +419,7 @@ def set_optimizers(values):
         elif opt == 'L_BFGS_B':
             optimizers.append((L_BFGS_B(maxiter=100), 'LBFGSB'))
         elif opt == 'SPSA':
-            optimizers.append((SPSA(maxiter=200), 'SPSA'))
+            optimizers.append((SPSA(maxiter=100), 'SPSA'))
         elif opt == 'NFT':
             optimizers.append((NFT(maxiter=60), 'NFT'))
     values['optimizer'] = optimizers
@@ -428,6 +428,7 @@ def set_backend_and_noise(values):
     quantum_instance_list = []
 
     provider = IBMQ.load_account()
+
 
     iteratore = list(itertools.product(values['backend'],
                                        values['noise'],

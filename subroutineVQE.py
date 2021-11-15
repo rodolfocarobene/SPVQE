@@ -375,7 +375,7 @@ def solve_hamiltonian_vqe(options):
 
 def get_runtime_vqe_program(options, num_qubits):
     #IBMQ.load_account()
-    provider = IBMQ.get_provider()
+    provider = IBMQ.get_provider(hub='ibm-q-research-2', group='uni-milano-bicoc-1', project='main')
 
     ansatz = get_ansatz(options['var_form_type'], num_qubits)
 
