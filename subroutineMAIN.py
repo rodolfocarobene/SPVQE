@@ -34,6 +34,11 @@ def from_item_iter_to_option(options, item):
     option['quantum_instance'] = item[2][0]
     option['optimizer'] = item[3][0]
 
+    if 'hardware' in item[2][1]:
+        option['hardware'] = True
+    else:
+        option['hardware'] = False
+
     if item[4] == 'True' or item[4] == 'False':
         if item[4] == 'True':
             lag_bool = True

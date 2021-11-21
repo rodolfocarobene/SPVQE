@@ -206,6 +206,7 @@ def retrive_VQE_options(argv):
         },
         'varforms' : values['varforms'],
         'quantum_instance' : values['backend'],
+        'shots': int(values['shots']),
         'optimizer' : values['optimizer'],
         'converter' : QubitConverter(mapper=ParityMapper(),
                                      two_qubit_reduction=True),
@@ -418,7 +419,7 @@ def set_optimizers(values):
         elif opt == 'L_BFGS_B':
             optimizers.append((L_BFGS_B(maxiter=100), 'LBFGSB'))
         elif opt == 'SPSA':
-            optimizers.append((SPSA(maxiter=200), 'SPSA'))
+            optimizers.append((SPSA(maxiter=100), 'SPSA'))
         elif opt == 'NFT':
             optimizers.append((NFT(maxiter=150), 'NFT'))
     values['optimizer'] = optimizers
@@ -427,6 +428,7 @@ def set_backend_and_noise(values):
     quantum_instance_list = []
 
     provider = IBMQ.load_account()
+
 
     iteratore = list(itertools.product(values['backend'],
                                        values['noise'],
@@ -450,9 +452,8 @@ def set_backend_and_noise(values):
                                                shots=int(values['shots']))
 
         elif backend == 'hardware':
-            mybackend = provider.get_backend('ibmq_santiago')
-            quantum_instance = QuantumInstance(backend=mybackend,
-                                               shots=int(values['shots']))
+            mybackend = provider.get_backend('ibmq_bogota')
+            quantum_instance = mybackend
 
         if backend == 'qasm_simulator' and noise != 'None':
             device = provider.get_backend(noise)

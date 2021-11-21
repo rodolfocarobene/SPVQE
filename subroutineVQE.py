@@ -27,6 +27,7 @@ from qiskit_nature.transformers.second_quantization.electronic import FreezeCore
 from qiskit_nature.circuit.library import HartreeFock, UCCSD
 from qiskit_nature.algorithms import VQEUCCFactory, GroundStateEigensolver
 from qiskit_nature.results import EigenstateResult
+from qiskit_nature.runtime import VQEProgram
 
 def order_of_magnitude(number):
     if number == 0:
@@ -295,6 +296,26 @@ def from_energy_pars_to_log_msg(pars, energy):
     message += '\n'
     return message
 
+def get_ansatz(var_form_type, num_qubits, init_state=None):
+    if var_form_type == 'TwoLocal':
+        ansatz = TwoLocal(num_qubits=num_qubits,
+                          rotation_blocks='ry',
+                          entanglement_blocks='cx',
+                          initial_state=init_state,
+                          entanglement='linear')
+
+    elif var_form_type == 'EfficientSU(2)':
+        ansatz = EfficientSU2(num_qubits=num_qubits,
+                              entanglement='linear',
+                              reps=1,
+                              skip_final_rotation_layer=True,
+                              initial_state=init_state)
+    else:
+        print('Ansatz non ancora implementato in get_ansatz()')
+
+    return ansatz
+
+
 def create_vqe_from_ansatz_type(var_form_type,
                             num_qubits,
                             init_state,
@@ -306,25 +327,8 @@ def create_vqe_from_ansatz_type(var_form_type,
                             initial_point):
     myLogger.info('Inizio create_vqe_from_ansatz_type')
 
-    if var_form_type == 'TwoLocal':
-        ansatz = TwoLocal(num_qubits=num_qubits,
-                          rotation_blocks='ry',
-                          entanglement_blocks='cx',
-                          initial_state=init_state,
-                          entanglement='linear')
-        if None in initial_point:
-            initial_point = np.random.rand(ansatz.num_parameters)
-        vqe_solver = VQE(ansatz=ansatz,
-                         optimizer=optimizer,
-                         initial_point=initial_point,
-                         callback=store_intermediate_result,
-                         quantum_instance=quantum_instance)
-    elif var_form_type == 'EfficientSU(2)':
-        ansatz = EfficientSU2(num_qubits=num_qubits,
-                              entanglement='linear',
-                              reps=1,
-                              skip_final_rotation_layer=True,
-                              initial_state=init_state)
+    if var_form_type == 'TwoLocal' or var_form_type == 'EfficientSU(2)':
+        ansatz = get_ansatz(var_form_type, num_qubits, init_state)
         if None in initial_point:
             initial_point = np.random.rand(ansatz.num_parameters)
         vqe_solver = VQE(ansatz=ansatz,
@@ -384,12 +388,39 @@ def solve_hamiltonian_vqe(options):
 
     return result
 
+def get_runtime_vqe_program(options, num_qubits):
+    #IBMQ.load_account()
+    provider = IBMQ.get_provider(hub='ibm-q-research-2', group='uni-milano-bicoc-1', project='main')
+
+    ansatz = get_ansatz(options['var_form_type'], num_qubits)
+
+    init_point = options['init_point']
+    if None in init_point:
+        init_point = np.random.rand(ansatz.num_parameters)
+
+
+    vqe_program = VQEProgram(
+        ansatz=ansatz,
+        optimizer=options['optimizer'],
+        initial_point=init_point,
+        provider=provider,
+        backend=options['quantum_instance'],
+        shots=options['shots'],
+        callback=store_intermediate_result,
+        store_intermediate=True
+    )
+
+    return vqe_program
+
 def solve_lagrangian_vqe(options):
     myLogger.info('Inizio solve_lagrangian_vqe')
     myLogger.info('OPTIONS')
     myLogger.info(options)
 
     converter, vqe_solver, problem, qubit_op = prepare_base_vqe(options)
+
+    if options['hardware'] == True:
+        vqe_solver = get_runtime_vqe_program(options, qubit_op.num_qubits)
 
     aux_ops_not_converted = problem.second_q_ops()[1:4]
     aux_ops = convert_list_op_ferm_to_qubit(aux_ops_not_converted,
