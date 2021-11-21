@@ -4,7 +4,7 @@ import re
 
 import matplotlib.pyplot as plt
 import numpy as np
-
+sys.path.append('/home/rodolfo/qiskit_nature_0.2.0/main/C-VQE/')
 from subroutineMAIN import return_classical_results
 
 def get_results_dists_moltype(file_name):
@@ -49,7 +49,7 @@ def from_item_to_linestyle(item):
     '''
 
     if 'Series' in item:
-        linestyle = '--'
+        linestyle = '-'
     elif 'Lag' in item:
         linestyle = '--'
     else:
@@ -107,6 +107,8 @@ def get_types(argv):
     return tmp_types, sizes
 
 if __name__ == '__main__':
+    plt.rcParams['axes.grid'] = True
+    plt.rcParams['grid.linestyle'] = '-.'
     if len(sys.argv) == 1:
         sys.exit()
 
@@ -142,12 +144,12 @@ if __name__ == '__main__':
 
         axes[0].plot(x, y_energy, label=from_item_to_label(item),
                      linestyle=linestyle, marker=markerstyle, markersize=markersize,
-                     mew=2, color=color)
+                     mew=2, color=color, linewidth=0.5)
 
         for i, type_graph in enumerate(types_graph):
             axes[i+1].plot(x, y_aux[type_graph], label=from_item_to_label(item),
                            linestyle=linestyle, marker=markerstyle, markersize=markersize,
-                           mew=2, color=color)
+                           mew=2, color=color, linewidth=0.5)
 
         myLegend.append(item)
 
@@ -161,8 +163,14 @@ if __name__ == '__main__':
         elif type_graph == 'spin2':
             axes[i+1].set_ylabel(r"${S}^2$", fontsize='x-large')
 
-    plt.xlabel(r"$d$ $[\AA]$", fontsize='x-large')
-    axes[0].set_ylabel(r"Energy $[E_H]$", fontsize='x-large')
+    fig.suptitle('LiH statevector simulation for different interatomic distances', fontsize='x-large')
+    plt.xlabel(r"$d$ $[\AA]$", fontsize='large')
+    axes[0].set_ylabel(r"Energy $[E_H]$", fontsize='large')
+
+    plt.xticks(np.arange(0.1, 6, 0.2))
+    axes[0].set_yticks(np.arange(-9, -6 , 0.1))
+    axes[1].set_yticks(np.arange(2, 2.002 , 0.0005))
+    axes[2].set_yticks(np.arange(0, 1 , 0.2))
 
     if 'nolegend' in sys.argv:
         print(myLegend)
@@ -173,17 +181,17 @@ if __name__ == '__main__':
         fig.suptitle(get_title(sys.argv), fontsize=20)
 
     if 'no-ref' not in sys.argv:
-        axes[0].plot(np.arange(0.2, 2.5, 0.1),
+        axes[0].plot(np.arange(0.3, 5, 0.2),
                      return_classical_results(mol_type).fci,
                      label='Full Configuration Interaction (FCI)',
                      zorder=0, color='r',
-                     linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
+                     linestyle=':', marker='None', linewidth=1.5)
 
-        axes[0].plot(np.arange(0.2, 2.5, 0.1),
+        axes[0].plot(np.arange(0.3, 5, 0.2),
                      return_classical_results(mol_type).hf,
                      label='Hartree Fock (HF)',
                      zorder=0, color='m',
-                     linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
+                     linestyle=':', marker='None', linewidth=1.5)
 
         plot2 = plt.figure(2)
         for  item in results:

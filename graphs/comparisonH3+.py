@@ -7,6 +7,30 @@ import numpy as np
 
 ITEMS = []
 
+fci = [-1.20, -1.20445857725434, -1.1772556560041039, -1.150295892256992, -1.1244398972305527, -1.100268958061616, -1.0781444800233178, -1.0582520399914663, -1.0406387409179958, -1.0252471289480645, -1.0119461452363505, -1.0005584080056462]
+
+hf = [-1.15, -1.1577140541119595, -1.1242888776973972, -1.0903826899967253, -1.0568801388727014, -1.0244247396564674, -0.9934786770804, -0.9643624774246218, -0.9372833074829038, -0.9123563277190744, -0.8896216436058548, -0.8690585548963081]
+
+
+def calc_diff_e(y_energy):
+    diff = 0
+    for idx, f in enumerate(fci):
+        if idx != 0:
+            diff += pow(abs(f - y_energy[idx]), 2)
+    diff = np.sqrt(diff / (len(fci) - 2))
+    return diff
+
+def calc_diff_s(y_energy):
+    diff = 0
+    for idx, f in enumerate(y_energy):
+        for k in f:
+            if idx != 0:
+                diff += pow(abs(k), 2)
+
+    diff = np.sqrt(diff / (len(fci) - 2))
+    return diff
+
+
 def get_results_dists_moltype(file_name):
     file = open(file_name)
     data = json.load(file)
@@ -20,23 +44,40 @@ def get_results_dists_moltype(file_name):
 
     return results, x, mol_type
 
+def get_second_graph(diff_E, diff_S):
+
+    mults = []
+
+    for item in diff_E:
+        mult = from_item_to_mult(item)
+        mults.append(mult)
+
+    y_e = [diff_E[x] for _, x in sorted(zip(mults, diff_E))]
+    y_s = [diff_S[x] for _, x in sorted(zip(mults, diff_S))]
+    mults.sort()
+
+    return mults, y_e, y_s
+
+def from_item_to_mult(name):
+    if "Series" in name:
+        mult = np.rint(0.5 / float(re.sub(r'.*(\d\.\d*)_$', r'\1', name)))
+    else:
+        mult = 1
+    return mult
+
 def from_item_to_label(name):
     if name not in ITEMS:
         ITEMS.append(name)
 
     if "Series" in name:
-        mult = 0.5 / float(re.sub(r'.*(\d\.\d*)_$', r'\1', name))
+        mult = np.rint(0.5 / float(re.sub(r'.*(\d\.\d*)_$', r'\1', name)))
         name = "Series (" + str(int(mult)) + " iters)"
-        #name = re.sub(r'.*(\d\.\d*)_$', r'Series (\1)', name)
     else:
         name = re.sub(r'.*\((\d\.\d*)\)$', r'Simple penalty (1 iter)', name)
-        #name = re.sub(r'.*\((\d\.\d*)\)$', r'Simple penalty (\1)', name)
-
 
     return name
 
 def from_item_to_linestyle(item):
-
     if 'Series' in item:
         linestyle = '--'
     elif 'Lag' in item:
@@ -61,7 +102,7 @@ def from_item_to_marker(item):
 
 def from_item_to_color(item):
     idx = ITEMS.index(item)
-    colors = ['C0', 'C1', 'C2', 'C3', 'C4', 'C5']
+    colors = ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12', 'C13']
     return colors[idx]
 
 def get_title(argv):
@@ -102,23 +143,20 @@ if __name__ == '__main__':
     plot2 = plt.figure(2)
 
     axes1 = plot1.subplots(len(types_graph)+1, 1, sharex=True,
-                                 gridspec_kw={'height_ratios': sizes})
+                           gridspec_kw={'height_ratios': sizes})
 
-    axes2 = plot2.subplots(len(types_graph)+1, 1, sharex=True,
-                                 gridspec_kw={'height_ratios': sizes})
-
-
-    axes1 = axes2
+    axes2 = plot2.subplots()
 
     myLegend = []
 
-    for  item in results:
-        label=from_item_to_label(item)
+    diff_E = {}
+    diff_S = {}
 
-        if "Series" in item:
-            axes = axes2
-        else:
-            axes = axes1
+    for  item in results:
+        diff_E[item] = []
+        diff_S[item] = []
+
+        label=from_item_to_label(item)
 
         y_energy = []
         y_aux = {}
@@ -137,20 +175,54 @@ if __name__ == '__main__':
         markerstyle, markersize = from_item_to_marker(item)
         color = from_item_to_color(item)
 
-        axes[0].plot(x, y_energy, label=from_item_to_label(item),
+        axes1[0].plot(x, y_energy, label=from_item_to_label(item),
                      linestyle=linestyle, marker=markerstyle, markersize=markersize,
                      mew=2, color=color)
 
         for i, type_graph in enumerate(types_graph):
-            if "Series" in item:
-                axes = axes2
-            else:
-                axes = axes1
-            axes[i+1].plot(x, y_aux[type_graph], label=from_item_to_label(item),
+            axes1[i+1].plot(x, y_aux[type_graph], label=from_item_to_label(item),
                            linestyle=linestyle, marker=markerstyle, markersize=markersize,
                            mew=2, color=color)
 
         myLegend.append(item)
+
+        #second graph
+
+        diff_E[item] = calc_diff_e(y_energy)
+        diff_S[item] = calc_diff_s(y_aux['spin2'])
+        print(item, ' ', diff_E[item], ' ', diff_S[item])
+
+    axes2.set_xlabel('Step number', fontsize=35)
+    axes2.set_ylabel('Standard deviation from FCI energy', fontsize=35, labelpad=15)
+    plt.grid(axis='both', linestyle='-.')
+    #plt.title('Decreasing errors with step number', fontsize='x-large')
+    axes_s = axes2.twinx()
+    axes_s.set_ylabel('Standard deviation from spin value', fontsize=35, labelpad=15)
+
+    x, y_e, y_s = get_second_graph(diff_E, diff_S)
+
+    axes2.plot(x, y_e, color='red', label='energy', markersize=15, marker='o', linewidth=1.5)
+    axes2.yaxis.label.set_color('red')
+    axes2.tick_params(axis='y', colors='red', labelsize=20)
+    axes2.tick_params(axis='x', labelsize=20)
+
+    axes_s.plot(x, y_s, color='green', label='spin2', markersize=15, marker='o', linewidth=1.5)
+    axes_s.yaxis.label.set_color('green')
+    axes_s.tick_params(axis='y', colors='green', labelsize=20)
+
+    axes_s.spines['left'].set_linewidth(2)
+    axes_s.spines['right'].set_linewidth(2)
+    axes_s.spines['left'].set_color('red')
+    axes_s.spines['right'].set_color('green')
+    axes_s.spines['top'].set_linewidth(2)
+    axes_s.spines['bottom'].set_linewidth(2)
+
+    axes2.spines['left'].set_linewidth(2)
+    axes2.spines['right'].set_linewidth(2)
+    axes2.spines['left'].set_color('red')
+    axes2.spines['right'].set_color('green')
+    axes2.spines['top'].set_linewidth(2)
+    axes2.spines['bottom'].set_linewidth(2)
 
     plot1.subplots_adjust(right=0.936, top=0.8)
     plot2.subplots_adjust(right=0.936, top=0.8)
@@ -158,60 +230,34 @@ if __name__ == '__main__':
     for i, type_graph in enumerate(types_graph):
         if type_graph == 'number':
             axes1[i+1].set_ylabel("Particles\nnumber", fontsize='x-large')
-            axes2[i+1].set_ylabel("Particles\nnumber", fontsize='x-large')
         elif type_graph == 'spinz':
             axes1[i+1].set_ylabel(r"Spin-z", fontsize='x-large')
-            axes2[i+1].set_ylabel(r"Spin-z", fontsize='x-large')
         elif type_graph == 'spin2':
             axes1[i+1].set_ylabel(r"${S}^2$", fontsize='x-large')
-            axes2[i+1].set_ylabel(r"${S}^2$", fontsize='x-large')
 
     plt.xlabel(r"$d$ $[\AA]$", fontsize='x-large')
     axes1[0].set_ylabel(r"Energy $[E_H]$", fontsize='x-large')
-    axes2[0].set_ylabel(r"Energy $[E_H]$", fontsize='x-large')
 
     if 'nolegend' in sys.argv:
         print(myLegend)
     else:
         axes1[0].legend(loc='best',
                        ncol=1, fancybox=True, shadow=True)
-        axes2[0].legend(loc='best',
-                       ncol=1, fancybox=True, shadow=True)
     if 'title' in sys.argv:
         fig.suptitle(get_title(sys.argv), fontsize=20)
 
-    fci = [-1.20445857725434, -1.1772556560041039, -1.150295892256992, -1.1244398972305527, -1.100268958061616, -1.0781444800233178, -1.0582520399914663, -1.0406387409179958, -1.0252471289480645, -1.0119461452363505, -1.0005584080056462]
 
-    hf = [-1.1577140541119595, -1.1242888776973972, -1.0903826899967253, -1.0568801388727014, -1.0244247396564674, -0.9934786770804, -0.9643624774246218, -0.9372833074829038, -0.9123563277190744, -0.8896216436058548, -0.8690585548963081]
-
-    axes1[0].plot(np.arange(1.4, 2.5, 0.1), fci,
+    axes1[0].plot(np.arange(1.3, 2.5, 0.1), fci,
                  label='Full Configuration Interaction (FCI)',
                  zorder=0, color='r',
                  linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
 
-    axes1[0].plot(np.arange(1.4, 2.5, 0.1), hf,
+    axes1[0].plot(np.arange(1.3, 2.5, 0.1), hf,
                  label='Hartree Fock (HF)',
                  zorder=0, color='m',
                  linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
-
-    '''
-    axes2[0].plot(np.arange(1.4, 2.5, 0.1), fci,
-                 label='Full Configuration Interaction (FCI)',
-                 zorder=0, color='r',
-                 linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
-
-    axes2[0].plot(np.arange(1.4, 2.5, 0.1), hf,
-                 label='Hartree Fock (HF)',
-                 zorder=0, color='m',
-                 linestyle=(0, (1, 1)), marker='None', linewidth=1.5)
-    '''
 
     for  item in results:
-
-        if "Series" in item:
-            axes = axes2
-        else:
-            axes = axes1
 
         y_energy = []
         y_aux = {}
@@ -223,21 +269,6 @@ if __name__ == '__main__':
         markerstyle, markersize = from_item_to_marker(item)
         color = from_item_to_color(item)
 
-        '''
-        y = []
-        fci = [-1.20445857725434, -1.1772556560041039, -1.150295892256992, -1.1244398972305527, -1.100268958061616, -1.0781444800233178, -1.0582520399914663, -1.0406387409179958, -1.0252471289480645, -1.0119461452363505, -1.0005584080056462]
-
-        for i, el in enumerate(y_energy):
-            y.append(el - fci[len(fci) - i-1])
-
-        plt.plot(x,y,
-                     label=from_item_to_label(item),
-                     linestyle='None', marker=markerstyle, markersize=markersize,
-                     mew=2, color=color)
-        '''
-
     mng = plt.get_current_fig_manager()
     mng.window.showMaximized()
-    plot1.tight_layout()
-    plot2.tight_layout()
     plt.show()

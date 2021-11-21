@@ -486,7 +486,7 @@ def find_best_result(partial_results):
         myLogger.info('GUARDO: %s', str(penalty))
         myLogger.info('CONFRONTO: %s', str(penal_min))
 
-        if abs(order_of_magnitude(penalty) - order_of_magnitude(penal_min)) < 1:
+        if abs(order_of_magnitude(penalty) - order_of_magnitude(penal_min)) == 0:
             if tmp_result.total_energies[0] > result.total_energies[0]:
                 tmp_result = result
                 penal_min = penalty

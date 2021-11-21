@@ -45,7 +45,7 @@ if __name__ == '__main__':
             name = iterator_item_to_string(item)
             option = from_item_iter_to_option(options, item)
 
-            if len(parameters[name]) > 0 and 'Series' not in name:
+            if len(parameters[name]) > 0:
                 option['init_point'] = parameters[name]
 
             result_tot, parameters[name] = solve_VQE(option)
