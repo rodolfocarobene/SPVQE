@@ -1,90 +1,121 @@
-appdirs==1.4.4
-attrs==21.2.0
-backcall==0.2.0
-blessed==1.18.1
-certifi==2021.5.30
-cffi==1.14.6
-charset-normalizer==2.0.4
-cryptography==3.4.7
-cycler==0.10.0
-decorator==5.0.9
-dill==0.3.4
-dlx==1.0.4
-docplex==2.21.207
-fastdtw==0.3.4
-fastjsonschema==2.15.1
-flyingcircus==0.1.4.0
-future==0.18.2
-gitdb==4.0.7
-GitPython==3.1.18
-h5py==3.2.1
-idna==3.2
-inflection==0.5.1
+gitpython==3.1.18
 ipdb==0.13.9
-ipython==7.26.0
-ipython-genutils==0.2.0
-jedi==0.18.0
-joblib==1.0.1
-jsonschema==3.2.0
-kiwisolver==1.3.1
-lxml==4.6.3
+ipywidgets==7.6.5
+llvmlite==0.37.0
 matplotlib==3.4.3
-matplotlib-inline==0.1.2
-more-itertools==8.8.0
-mpmath==1.2.1
-multitasking==0.0.9
-ntlm-auth==1.5.0
-numpy==1.21.1
-packaging==21.0
-pandas==1.3.1
-parso==0.8.2
-pexpect==4.8.0
-pickleshare==0.7.5
-Pillow==8.3.1
-ply==3.11
-prompt-toolkit==3.0.19
-psutil==5.8.0
-ptyprocess==0.7.0
-pybind11==2.7.0
-pycparser==2.20
-Pygments==2.9.0
-pyparsing==2.4.7
-PyQt5==5.15.4
-PyQt5-Qt5==5.15.2
-PyQt5-sip==12.9.0
-pyrsistent==0.18.0
+pip-chill==1.0.1
+pyqt5==5.15.4
 pyscf==1.7.6.post1
-PySimpleGUI==4.46.0
-python-constraint==1.4.0
-python-dateutil==2.8.2
+pysimplegui==4.46.0
 pytk==0.0.2.1
-pytz==2021.1
 qiskit==0.28.0
-qiskit-aer==0.8.2
-qiskit-aqua==0.9.4
-qiskit-ibmq-provider==0.18.0
-qiskit-ignis==0.6.0
+qiskit-aer-gpu==0.9.0
 qiskit-nature==0.2.0
-qiskit-terra==0.18.0
-Quandl==3.6.1
-requests==2.26.0
-requests-ntlm==1.1.0
-retworkx==0.9.0
-scikit-learn==0.24.2
-scipy==1.7.0
-setuptools-scm==6.3.1
-six==1.16.0
-smmap==4.0.0
-symengine==0.7.2
-sympy==1.8
-threadpoolctl==2.2.0
 tk==0.1.0
 tkintertable==1.3.3
-toml==0.10.2
-tomli==1.2.1
-traitlets==5.0.5
-tweedledum==1.1.0
-urllib3==1.26.6
-wcwidth==0.2.5
-websocket-client==1.1.0
-yfinance==0.1.62
+# appdirs==1.4.4 # Installed as dependency for flyingcircus
+# argon2-cffi==21.1.0 # Installed as dependency for notebook
+# attrs==21.2.0 # Installed as dependency for jsonschema
+# backcall==0.2.0 # Installed as dependency for ipython
+# bleach==4.1.0 # Installed as dependency for nbconvert
+# blessed==1.18.1 # Installed as dependency for flyingcircus
+# certifi==2021.5.30 # Installed as dependency for requests
+# cffi==1.14.6 # Installed as dependency for cryptography, argon2-cffi
+# charset-normalizer==2.0.4 # Installed as dependency for requests
+# cryptography==3.4.7 # Installed as dependency for requests-ntlm
+# cycler==0.10.0 # Installed as dependency for matplotlib
+# debugpy==1.4.3 # Installed as dependency for ipykernel
+# decorator==5.0.9 # Installed as dependency for ipython, ipdb
+# defusedxml==0.7.1 # Installed as dependency for nbconvert
+# dill==0.3.4 # Installed as dependency for qiskit-terra
+# dlx==1.0.4 # Installed as dependency for qiskit-aqua
+# docplex==2.21.207 # Installed as dependency for qiskit-aqua
+# entrypoints==0.3 # Installed as dependency for jupyter-client, nbconvert
+# fastdtw==0.3.4 # Installed as dependency for qiskit-aqua
+# fastjsonschema==2.15.1 # Installed as dependency for qiskit-terra
+# flyingcircus==0.1.4.0 # Installed as dependency for pytk
+# future==0.18.2 # Installed as dependency for tkintertable
+# gitdb==4.0.7 # Installed as dependency for gitpython
+# h5py==3.2.1 # Installed as dependency for qiskit-nature, pyscf, qiskit-aqua
+# idna==3.2 # Installed as dependency for requests
+# inflection==0.5.1 # Installed as dependency for quandl
+# ipykernel==6.4.1 # Installed as dependency for ipywidgets, notebook
+# ipython==7.26.0 # Installed as dependency for ipdb, ipykernel, ipywidgets
+# ipython-genutils==0.2.0 # Installed as dependency for ipykernel, nbformat, ipywidgets, notebook, traitlets
+# jedi==0.18.0 # Installed as dependency for ipython
+# jinja2==3.0.1 # Installed as dependency for nbconvert, notebook
+# joblib==1.0.1 # Installed as dependency for scikit-learn
+# jsonschema==3.2.0 # Installed as dependency for qiskit-terra, nbformat
+# jupyter-client==7.0.3 # Installed as dependency for ipykernel, notebook, nbclient
+# jupyter-core==4.8.1 # Installed as dependency for nbconvert, jupyter-client, notebook, nbformat
+# jupyterlab-pygments==0.1.2 # Installed as dependency for nbconvert
+# jupyterlab-widgets==1.0.2 # Installed as dependency for ipywidgets
+# kiwisolver==1.3.1 # Installed as dependency for matplotlib
+# lxml==4.6.3 # Installed as dependency for yfinance
+# markupsafe==2.0.1 # Installed as dependency for jinja2
+# matplotlib-inline==0.1.2 # Installed as dependency for ipython, ipykernel
+# mistune==0.8.4 # Installed as dependency for nbconvert
+# more-itertools==8.8.0 # Installed as dependency for quandl
+# mpmath==1.2.1 # Installed as dependency for sympy
+# multitasking==0.0.9 # Installed as dependency for yfinance
+# nbclient==0.5.4 # Installed as dependency for nbconvert
+# nbconvert==6.1.0 # Installed as dependency for notebook
+# nbformat==5.1.3 # Installed as dependency for nbconvert, ipywidgets, notebook, nbclient
+# nest-asyncio==1.5.1 # Installed as dependency for jupyter-client, nbclient
+# notebook==6.4.4 # Installed as dependency for widgetsnbextension
+# ntlm-auth==1.5.0 # Installed as dependency for requests-ntlm
+# numpy==1.20.3 # Installed as dependency for quandl, qiskit-aer, scikit-learn, qiskit-nature, qiskit-ignis, qiskit-aer-gpu, qiskit-terra, qiskit-aqua, scipy, pyscf, pandas, yfinance, fastdtw, retworkx, h5py, qiskit-ibmq-provider, matplotlib
+# packaging==21.0 # Installed as dependency for bleach, setuptools-scm
+# pandas==1.3.1 # Installed as dependency for yfinance, quandl, qiskit-aqua
+# pandocfilters==1.5.0 # Installed as dependency for nbconvert
+# parso==0.8.2 # Installed as dependency for jedi
+# pexpect==4.8.0 # Installed as dependency for ipython
+# pickleshare==0.7.5 # Installed as dependency for ipython
+# pillow==8.3.1 # Installed as dependency for matplotlib
+# ply==3.11 # Installed as dependency for qiskit-terra
+# prometheus-client==0.11.0 # Installed as dependency for notebook
+# prompt-toolkit==3.0.19 # Installed as dependency for ipython
+# psutil==5.8.0 # Installed as dependency for qiskit-nature, qiskit-terra, qiskit-aqua
+# ptyprocess==0.7.0 # Installed as dependency for terminado, pexpect
+# pybind11==2.7.0 # Installed as dependency for qiskit-aer, qiskit-aer-gpu
+# pycparser==2.20 # Installed as dependency for cffi
+# pygments==2.9.0 # Installed as dependency for ipython, nbconvert, jupyterlab-pygments
+# pyparsing==2.4.7 # Installed as dependency for packaging, matplotlib
+# pyqt5-qt5==5.15.2 # Installed as dependency for pyqt5
+# pyqt5-sip==12.9.0 # Installed as dependency for pyqt5
+# pyrsistent==0.18.0 # Installed as dependency for jsonschema
+# python-constraint==1.4.0 # Installed as dependency for qiskit-terra
+# python-dateutil==2.8.2 # Installed as dependency for quandl, qiskit-terra, pandas, qiskit-ibmq-provider, jupyter-client, matplotlib
+# pytz==2021.1 # Installed as dependency for pandas
+# pyzmq==22.3.0 # Installed as dependency for jupyter-client, notebook
+# qiskit-aer==0.8.2 # Installed as dependency for qiskit
+# qiskit-aqua==0.9.4 # Installed as dependency for qiskit
+# qiskit-ibmq-provider==0.18.0 # Installed as dependency for qiskit
+# qiskit-ignis==0.6.0 # Installed as dependency for qiskit, qiskit-aqua
+# qiskit-terra==0.18.0 # Installed as dependency for qiskit-aer, qiskit-nature, qiskit-ignis, qiskit-aer-gpu, qiskit-aqua, qiskit, qiskit-ibmq-provider
+# quandl==3.6.1 # Installed as dependency for qiskit-aqua
+# requests==2.26.0 # Installed as dependency for quandl, requests-ntlm, docplex, yfinance, qiskit-ibmq-provider
+# requests-ntlm==1.1.0 # Installed as dependency for qiskit-ibmq-provider
+# retworkx==0.9.0 # Installed as dependency for qiskit-ignis, qiskit-terra, qiskit-aqua
+# scikit-learn==0.24.2 # Installed as dependency for qiskit-nature, qiskit-aqua
+# scipy==1.7.0 # Installed as dependency for qiskit-aer, scikit-learn, qiskit-nature, qiskit-ignis, qiskit-aer-gpu, qiskit-terra, qiskit-aqua, pyscf
+# send2trash==1.8.0 # Installed as dependency for notebook
+# setuptools-scm==6.3.1 # Installed as dependency for flyingcircus
+# six==1.16.0 # Installed as dependency for quandl, blessed, bleach, jsonschema, docplex, cycler, python-dateutil
+# smmap==4.0.0 # Installed as dependency for gitdb
+# symengine==0.7.2 # Installed as dependency for qiskit-terra
+# sympy==1.8 # Installed as dependency for qiskit-terra, qiskit-aqua
+# terminado==0.12.1 # Installed as dependency for notebook
+# testpath==0.5.0 # Installed as dependency for nbconvert
+# threadpoolctl==2.2.0 # Installed as dependency for scikit-learn
+# toml==0.10.2 # Installed as dependency for ipdb
+# tomli==1.2.1 # Installed as dependency for setuptools-scm
+# tornado==6.1 # Installed as dependency for ipykernel, terminado, jupyter-client, notebook
+# traitlets==5.0.5 # Installed as dependency for jupyter-core, ipykernel, nbconvert, nbformat, matplotlib-inline, ipywidgets, notebook, nbclient, ipython, jupyter-client
+# tweedledum==1.1.0 # Installed as dependency for qiskit-terra
+# urllib3==1.26.6 # Installed as dependency for requests, qiskit-ibmq-provider
+# wcwidth==0.2.5 # Installed as dependency for prompt-toolkit, blessed
+# webencodings==0.5.1 # Installed as dependency for bleach
+# websocket-client==1.1.0 # Installed as dependency for qiskit-ibmq-provider
+# widgetsnbextension==3.5.1 # Installed as dependency for ipywidgets
+# yfinance==0.1.62 # Installed as dependency for qiskit-aqua
