@@ -21,27 +21,27 @@ warnings.simplefilter("ignore")
 def get_default_opt():
     print('Loading default values')
     values = {
-        'molecule' : 'H4',
+        'molecule' : 'H3+',
         'spin' : 0,
         'charge' : 0,
         'basis' : ['sto-6g'],
         'varforms' : ['TwoLocal'],
-        'backend' : ['statevector_simulator'],
+        'backend' : ['hardware'],
         'noise' : ['None'],
-        'shots' : 1024,
+        'shots' : 2048,
         'correction' : ['False'],
-        'optimizer' : ['NFT'],
-        'dist_min' : 0.2,
+        'optimizer' : ['SPSA'],
+        'dist_min' : 1.4,
         'dist_max' : 3.5,
-        'dist_delta' : 1,
-        'lagrangiana' : ['True', 'False', 'Series'],
+        'dist_delta' : 11,
+        'lagrangiana' : ['True', 'Series'],
         'lag_op' : ['spin-squared'],
-        'lag_value_num' : 4,
+        'lag_value_num' : 2,
         'lag_mult_num_min' : 1,
         'lag_mult_num_max' : 4,
         'lag_mult_num_delta' : 10,
         'lag_value_spin2' : 0,
-        'lag_mult_spin2_min' : 1,
+        'lag_mult_spin2_min' : 0.5,
         'lag_mult_spin2_max' : 4,
         'lag_mult_spin2_delta' : 10,
         'lag_value_spinz' : 0,
@@ -49,12 +49,12 @@ def get_default_opt():
         'lag_mult_spinz_max' : 0.2,
         'lag_mult_spinz_delta' : 0.1,
 
-        'series_itermax_min' : 10,
+        'series_itermax_min' : 5,
         'series_itermax_max' : 20,
-        'series_itermax_step' : 15,
+        'series_itermax_step' : 25,
 
-        'series_step_min' : 1,
-        'series_step_max' : 21,
+        'series_step_min' : 0.1,
+        'series_step_max' : 1,
         'series_step_step' : 9,
 
         'series_lamb_min' : 2,
@@ -452,7 +452,7 @@ def set_backend_and_noise(values):
                                                shots=int(values['shots']))
 
         elif backend == 'hardware':
-            mybackend = provider.get_backend('ibmq_bogota')
+            mybackend = provider.get_backend('ibmq_bogota') #just dummy, for hardware
             quantum_instance = mybackend
 
         if backend == 'qasm_simulator' and noise != 'None':

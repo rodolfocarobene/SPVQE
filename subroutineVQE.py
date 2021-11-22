@@ -15,6 +15,7 @@ from qiskit.circuit.library import TwoLocal, EfficientSU2
 from qiskit.utils import QuantumInstance
 from qiskit.opflow.primitive_ops import PauliOp
 from qiskit.quantum_info import Pauli
+from qiskit.providers.ibmq import least_busy
 
 from qiskit_nature.drivers import UnitsType, Molecule
 from qiskit_nature.drivers.second_quantization import PySCFDriver
@@ -393,6 +394,18 @@ def get_runtime_vqe_program(options, num_qubits):
     #IBMQ.load_account()
     provider = IBMQ.get_provider(hub='ibm-q-research-2', group='uni-milano-bicoc-1', project='main')
 
+    backend_list = []
+
+    backend_list.append(provider.get_backend('ibm_perth'))
+    backend_list.append(provider.get_backend('ibm_lagos'))
+    backend_list.append(provider.get_backend('ibmq_casablanca'))
+    backend_list.append(provider.get_backend('ibmq_bogota'))
+    backend_list.append(provider.get_backend('ibmq_manila'))
+
+    quantum_instance = least_busy(backend_list)
+
+    print('Run su backend: ', quantum_instance.backend_name)
+
     ansatz = get_ansatz(options['var_form_type'], num_qubits)
 
     init_point = options['init_point']
@@ -408,7 +421,7 @@ def get_runtime_vqe_program(options, num_qubits):
         optimizer=options['optimizer'],
         initial_point=init_point,
         provider=provider,
-        backend=options['quantum_instance'],
+        backend=quantum_instance,
         shots=options['shots'],
         callback=store_intermediate_result,
         store_intermediate=True
