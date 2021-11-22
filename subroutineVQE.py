@@ -48,6 +48,7 @@ myLogger.addHandler(ch)
 
 HYPERLOG_FILE = './logs/hyper_' + get_date_time_string() + '.log'
 
+
 def add_single_so4_gate(circuit,
                      qubit1,
                      qubit2,
@@ -398,6 +399,9 @@ def get_runtime_vqe_program(options, num_qubits):
     if None in init_point:
         init_point = np.random.rand(ansatz.num_parameters)
 
+    global LAST_OPTIMIZER_OPT
+    if LAST_OPTIMIZER_OPT != None:
+        options['optimizer'].set_options(LAST_OPTIMIZER_OPT)
 
     vqe_program = VQEProgram(
         ansatz=ansatz,
@@ -441,6 +445,11 @@ def solve_lagrangian_vqe(options):
     old_result = vqe_solver.compute_minimum_eigenvalue(operator=lagrange_op,
                                                        aux_operators=aux_ops)
 
+    global PARAMETERS
+    if options['hardware'] == True:
+        for l in old_result['optimizer_history']['params']:
+            PARAMETERS.append(list(l))
+
     myLogger.info('OLDRESULT:')
     myLogger.info(old_result)
     new_result = problem.interpret(old_result)
@@ -448,6 +457,12 @@ def solve_lagrangian_vqe(options):
     myLogger.info('Fine solve_lagrangian_vqe')
     myLogger.info('RESULT')
     myLogger.info(new_result)
+
+    if options['hardware'] == True:
+        LAST_OPTIMIZER_OPT = options['optimizer'].setting
+
+    myLogger.info('OPTIMIZER SETTINGS:')
+    myLogger.info(options['optimizer'].setting)
 
     return new_result
 
@@ -587,7 +602,9 @@ def solve_lag_series_vqe(options):
 
         options['init_point'] = par
         result = solve_lagrangian_vqe(options)
-        par = PARAMETERS[len(PARAMETERS) - 1]
+
+        if options['hardware'] != True:
+            par = PARAMETERS[len(PARAMETERS) - 1]
 
         penalty, accectable_result = calc_penalty(lag_op_list,
                                                   result,
@@ -750,6 +767,9 @@ def solve_lag_aug_series_vqe(options):
 def solve_VQE(options):
     global PARAMETERS
     PARAMETERS = []
+
+    global LAST_OPTIMIZER_OPT
+    LAST_OPTIMIZER_OPT = None
 
     if not options['lagrange']['active']:
         vqe_result = solve_hamiltonian_vqe(options)
