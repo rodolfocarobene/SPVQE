@@ -460,7 +460,7 @@ def solve_lagrangian_vqe(options):
 
     global PARAMETERS
     if options['hardware'] == True:
-        for l in old_result['optimizer_history']['params']:
+        for l in old_result.optimizer_history['params']:
             PARAMETERS.append(list(l))
 
     myLogger.info('OLDRESULT:')
