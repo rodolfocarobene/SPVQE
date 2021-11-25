@@ -1,6 +1,7 @@
 __pycache__
 logs
 notebooks
+spvqe.egg-info
 
 note
 dummy_vqe.py
