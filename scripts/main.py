@@ -3,10 +3,10 @@ import itertools
 
 import numpy as np
 
-from subroutineVQE import solve_VQE
-from subroutineGUI import retrive_VQE_options
-from subroutineJSON import retrive_json_options, write_json
-from subroutineMAIN import iterator_item_to_string, from_item_iter_to_option
+from spvqe.subroutines.subroutineVQE import solve_VQE
+from spvqe.subroutines.subroutineGUI import retrive_VQE_options
+from spvqe.subroutines.subroutineJSON import retrive_json_options, write_json
+from spvqe.subroutines.subroutineMAIN import iterator_item_to_string, from_item_iter_to_option
 
 if __name__ == '__main__':
     options = retrive_VQE_options(sys.argv)
