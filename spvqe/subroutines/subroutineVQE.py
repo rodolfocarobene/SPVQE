@@ -181,6 +181,8 @@ def get_transformers_from_mol_type(mol_type):
     if mol_type == 'Li3+':
         transf_list.append(ActiveSpaceTransformer(num_electrons=2,
                                                   num_molecular_orbitals=3))
+    if mol_type == 'Na+':
+        transf_list.append(FreezeCoreTransformer(True))
     return transf_list
 
 def from_geometry_to_atoms(geometry):
@@ -283,7 +285,7 @@ def store_intermediate_result(count, par, energy, std):
     log_string = str(count) + ' ' + str(energy) + ' ' + str(std)
     myLogger.info(log_string)
 
-    file_object = open(HYPERLOG_FILE, 'a')
+    file_object = open(HYPERLOG_FILE, 'a', encoding='UTF-8')
     file_object.write(from_energy_pars_to_log_msg(par, energy))
     file_object.close()
 
@@ -670,6 +672,11 @@ def get_num_par(varform, mol_type):
             num_pars = 16
         elif varform == 'EfficientSU(2)':
             num_pars = 8
+    if mol_type == 'Na+':
+        if varform == 'TwoLocal':
+            num_pars = 24
+        else:
+            raise Exception('varform not yet implemented for this mol')
     elif 'H2O' in mol_type:
         if varform == 'TwoLocal':
             num_pars = 16

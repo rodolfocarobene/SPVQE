@@ -8,7 +8,7 @@ sys.path.append('/home/rodolfo/qiskit_nature_0.2.0/main/C-VQE/')
 from subroutineMAIN import return_classical_results
 
 def get_results_dists_moltype(file_name):
-    file = open(file_name)
+    file = open(file_name, encoding='UTF-8')
     data = json.load(file)
     file.close()
 

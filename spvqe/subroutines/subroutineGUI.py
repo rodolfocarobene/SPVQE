@@ -65,7 +65,7 @@ def get_default_opt():
 
 def get_layout():
     possible_molecules = ['H3+', 'H2', 'H2+', 'H2*', 'H4', 'H4*', 'Li2', 'Li2+',
-                          'LiH', 'H2O', 'C2H4', 'N2', 'Li3+']
+                          'LiH', 'H2O', 'C2H4', 'N2', 'Li3+', 'Na-', 'HeH+']
     possible_forms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
     possible_basis = ['sto-3g', 'sto-6g']
     possible_noise = ['None', 'ibmq_santiago', 'ibmq_quito', 'ibmq_lima']
@@ -487,13 +487,26 @@ def set_dist_and_geometry(options):
     if mol_type == 'H3+':
         alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
         for i, single_dist in enumerate(dist):
-            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 " + str(alt[i]) + " " + str(single_dist/2)
+            geom = "H .0 .0 .0; H .0 .0 "
+                + str(single_dist) + "; H .0 "
+                + str(alt[i]) + " " + str(single_dist/2)
             geometries.append(geom)
-    if mol_type == 'Li3+':
+    elif mol_type == 'Na-':
+        geometries.append('Na .0 .0 .0')
+
+    elif mol_type == 'HeH+':
+        for i, single_dist in enumerate(dist):
+            geom = "He .0 .0 .0; H .0 .0 " + str(single_dist)
+            geometries.append(geom)
+
+    elif mol_type == 'Li3+':
         alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
         for i, single_dist in enumerate(dist):
-            geom = "Li .0 .0 .0; Li .0 .0 " + str(single_dist) + "; Li .0 " + str(alt[i]) + " " + str(single_dist/2)
+            geom = "Li .0 .0 .0; Li .0 .0 "
+                + str(single_dist) + "; Li .0 "
+                + str(alt[i]) + " " + str(single_dist/2)
             geometries.append(geom)
+
     elif mol_type == 'C2H4':
         bot_alt = np.sin(180 - 121.3) * 1.087
         fixed_dist = np.cos(180 - 121.3) * 1.087
@@ -512,24 +525,32 @@ def set_dist_and_geometry(options):
         for single_dist in dist:
             alt = single_dist * np.cos(0.25)
             lung = single_dist * np.sin(0.25) + 0.9584
-            geom = "H .0 .0 .0; O .0 .0 0.9584; H .0 " + str(alt) + " " + str(lung)
+            geom = "H .0 .0 .0; O .0 .0 0.9584; H .0 "
+                + str(alt) + " " + str(lung)
             geometries.append(geom)
+
     elif 'H2' in mol_type:
         for single_dist in dist:
             geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
             geometries.append(geom)
+
     elif 'N2' in mol_type:
         for single_dist in dist:
             geom = "N .0 .0 .0; N .0 .0 " + str(single_dist)
             geometries.append(geom)
+
     elif 'H4' in mol_type:
         for single_dist in dist:
-            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 .0 " + str(2*single_dist) + "; H .0 .0 " + str(3*single_dist)
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
+                + "; H .0 .0 " + str(2*single_dist)
+                + "; H .0 .0 " + str(3*single_dist)
             geometries.append(geom)
+
     elif 'Li2' in mol_type:
         for single_dist in dist:
             geom = "Li .0 .0 .0; Li .0 .0 " + str(single_dist)
             geometries.append(geom)
+
     elif 'LiH' in mol_type:
         for single_dist in dist:
             geom = "Li .0 .0 .0; H .0 .0 " + str(single_dist)
@@ -541,57 +562,67 @@ def set_dist_and_geometry(options):
 def get_spin(mol_opt):
     mol_type = mol_opt
     if mol_type == 'H3+':
-        return 0
+        spin = 0
     if mol_type == 'Li3+':
-        return 0
+        spin = 0
     elif mol_type == 'H2':
-        return 0
+        spin = 0
     elif mol_type == 'H2*':
-        return 2
+        spin = 2
     elif mol_type == 'H2+':
-        return 1
+        spin = 1
     elif mol_type == 'H4':
-        return 0
+        spin = 0
     elif mol_type == 'H4*':
-        return 2
+        spin = 2
     elif mol_type == 'Li2':
-        return 0
+        spin = 0
     elif mol_type == 'Li2+':
-        return 1
+        spin = 1
     elif mol_type == 'H2O':
-        return 0
+        spin = 0
     elif mol_type == 'LiH':
-        return 0
+        spin = 0
     elif mol_type == 'C2H4':
-        return 0
+        spin = 0
     elif mol_type == 'N2':
-        return 0
+        spin = 0
+    elif mol_type == 'Na-':
+        spin = 0
+    elif mol_type == 'HeH+':
+        spin = 0
+    return spin
 
 def get_charge(mol_opt):
     mol_type = mol_opt
     if mol_type == 'H3+':
-        return 1
+        charge = 1
     if mol_type == 'Li3+':
-        return 1
+        charge = 1
     elif mol_type == 'H2':
-        return 0
+        charge = 0
     elif mol_type == 'H2*':
-        return 0
+        charge = 0
     elif mol_type == 'H2+':
-        return 1
+        charge = 1
     elif mol_type == 'H4':
-        return 0
+        charge = 0
     elif mol_type == 'H4*':
-        return 0
+        charge = 0
     elif mol_type == 'Li2':
-        return 0
+        charge = 0
     elif mol_type == 'Li2+':
-        return 1
+        charge = 1
     elif mol_type == 'LiH':
-        return 0
+        charge = 0
     elif mol_type == 'H2O':
-        return 0
+        charge = 0
     elif mol_type == 'C2H4':
-        return 0
+        charge = 0
     elif mol_type == 'N2':
-        return 0
+        charge = 0
+    elif mol_type == 'Na-':
+        charge = -1
+    elif mol_type == 'HeH+':
+        charge = 1
+    return charge
