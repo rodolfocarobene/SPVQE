@@ -1,0 +1,225 @@
+{
+    "commit": "70dbdb65ec15991681e490ff91d26f836822e91c",
+    "file": "scripts/main.py",
+    "options": {
+        "dist": {
+            "min": "0.3",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "molecule": "Na-",
+            "spin": 0,
+            "charge": -1,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "Na .0 .0 .0"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "shots": 1024,
+        "optimizer": [
+            "NFT"
+        ],
+        "lagrange": {
+            "active": [
+                "True"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        1.0
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            0.3
+        ],
+        "geometries": [
+            "Na .0 .0 .0"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_Lag_spin-squared(1.0)": [
+            {
+                "energy": -159.60663667231166,
+                "auxiliary": {
+                    "particles": [
+                        2.2182298168419594
+                    ],
+                    "spin-z": [
+                        0.3120763689091175
+                    ],
+                    "spin-sq": [
+                        0.4094680289406172
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_spin-squared_2x0.5_": [
+            {
+                "energy": -159.64413194471464,
+                "auxiliary": {
+                    "particles": [
+                        2.004057927649452
+                    ],
+                    "spin-z": [
+                        0.37459748057154874
+                    ],
+                    "spin-sq": [
+                        0.3149207530221006
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_spin-squared_3x0.33_": [
+            {
+                "energy": -159.72684339024277,
+                "auxiliary": {
+                    "particles": [
+                        2.0051867878031144
+                    ],
+                    "spin-z": [
+                        0.0043912040523297335
+                    ],
+                    "spin-sq": [
+                        0.014410486725358888
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_spin-squared_4x0.25_": [
+            {
+                "energy": -159.84077360754284,
+                "auxiliary": {
+                    "particles": [
+                        2.0080641313773357
+                    ],
+                    "spin-z": [
+                        0.0070160278190086744
+                    ],
+                    "spin-sq": [
+                        0.007065252465365741
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_spin-squared_5x0.2_": [
+            {
+                "energy": -159.8487520901758,
+                "auxiliary": {
+                    "particles": [
+                        2.002374429215466
+                    ],
+                    "spin-z": [
+                        0.001906065377507482
+                    ],
+                    "spin-sq": [
+                        0.00190969846273081
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_spin-squared_6x0.17_": [
+            {
+                "energy": -159.8600386230134,
+                "auxiliary": {
+                    "particles": [
+                        2.0001694510069608
+                    ],
+                    "spin-z": [
+                        0.00010508689371047097
+                    ],
+                    "spin-sq": [
+                        0.000105097936965694
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_spin-squared_7x0.14_": [
+            {
+                "energy": -159.85418679443342,
+                "auxiliary": {
+                    "particles": [
+                        2.0000555395244413
+                    ],
+                    "spin-z": [
+                        6.920631373275032e-05
+                    ],
+                    "spin-sq": [
+                        6.9211103246586e-05
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_spin-squared_8x0.12_": [
+            {
+                "energy": -159.84500147102042,
+                "auxiliary": {
+                    "particles": [
+                        2.0000372359599723
+                    ],
+                    "spin-z": [
+                        4.384661834655468e-05
+                    ],
+                    "spin-sq": [
+                        4.3848540872493e-05
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_spin-squared_9x0.11_": [
+            {
+                "energy": -159.84002627254634,
+                "auxiliary": {
+                    "particles": [
+                        2.0000082202023486
+                    ],
+                    "spin-z": [
+                        9.702808178579936e-06
+                    ],
+                    "spin-sq": [
+                        9.70290232313e-06
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_spin-squared_10x0.1_": [
+            {
+                "energy": -159.84763416933368,
+                "auxiliary": {
+                    "particles": [
+                        2.0002700517173557
+                    ],
+                    "spin-z": [
+                        0.001697702701062176
+                    ],
+                    "spin-sq": [
+                        0.000682114895523324
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "Na- iteration 1",
+    "varianti": []
+}
