@@ -3,10 +3,10 @@ import itertools
 
 import numpy as np
 
-from spvqe.subroutines.subroutineVQE import solve_VQE
-from spvqe.subroutines.subroutineGUI import retrive_VQE_options
-from spvqe.subroutines.subroutineJSON import retrive_json_options, write_json
-from spvqe.subroutines.subroutineMAIN import iterator_item_to_string, from_item_iter_to_option
+from spvqe.vqes import solve_VQE
+from spvqe.gui import retrive_VQE_options
+from spvqe.json_handler import retrive_json_options, write_json
+from spvqe.iterator import iterator_item_to_string, from_item_iter_to_option
 
 if __name__ == '__main__':
     options = retrive_VQE_options(sys.argv)
@@ -45,8 +45,8 @@ if __name__ == '__main__':
             name = iterator_item_to_string(item)
             option = from_item_iter_to_option(options, item)
 
-            if len(parameters[name]) > 0:
-                option['init_point'] = parameters[name]
+            #if len(parameters[name]) > 0:
+            #    option['init_point'] = parameters[name]
 
             result_tot, parameters[name] = solve_VQE(option)
             results[name].append(result_tot)

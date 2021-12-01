@@ -5,7 +5,7 @@ import re
 import matplotlib.pyplot as plt
 import numpy as np
 sys.path.append('/home/rodolfo/qiskit_nature_0.2.0/main/C-VQE/')
-from subroutineMAIN import return_classical_results
+from spvqe.classical_values import return_classical_results
 
 def get_results_dists_moltype(file_name):
     file = open(file_name, encoding='UTF-8')

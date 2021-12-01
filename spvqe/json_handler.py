@@ -78,6 +78,9 @@ def check_varianti(opt):
 
 def write_json(JsonOptions):
     filename = "data/exp_"+get_date_time_string()
+
+    print('DATA: ', filename)
+
     repo = git.Repo(search_parent_directories=True)
     commit = repo.head.object.hexsha
     JsonOptions['commit'] = commit

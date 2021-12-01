@@ -192,6 +192,9 @@ def retrive_VQE_options(argv):
     set_backend_and_noise(values)
     lagops = set_lagrange_ops(values)
 
+    if values['dist_min'] >= values['dist_max']:
+        values['dist_max'] = values['dist_min'] + values['dist_delta']/2
+
     options = {
         'dist' : {
             'min' : values['dist_min'],
@@ -234,6 +237,7 @@ def retrive_VQE_options(argv):
     return options
 
 def set_ops_num_spin2(values, lagops_list):
+
     mults_num = np.arange(float(values['lag_mult_num_min']),
                           float(values['lag_mult_num_max']),
                           float(values['lag_mult_num_delta']))
@@ -352,6 +356,16 @@ def set_ops_spinz(values, lagops_list, op):
                              mult)])
 
 def set_lagrange_ops(values):
+
+    if float(values['lag_mult_num_min']) >= float(values['lag_mult_num_max']):
+        values['lag_mult_num_max'] = float(values['lag_mult_num_min']) + float(values['lag_mult_num_delta'])/2
+
+    if float(values['lag_mult_spin2_min']) >= float(values['lag_mult_spin2_max']):
+        values['lag_mult_spin2_max'] = float(values['lag_mult_spin2_min']) + float(values['lag_mult_spin2_delta'])/2
+
+    if float(values['lag_mult_spinz_min']) >= float(values['lag_mult_spinz_max']):
+        values['lag_mult_spinz_max'] = float(values['lag_mult_spinz_min']) + float(values['lag_mult_spinz_delta'])/2
+
     if values['lagrangiana'] == ['False']:
         lagops_list = [[('dummy', 0, 0)]]
     else:
@@ -421,7 +435,7 @@ def set_optimizers(values):
         elif opt == 'SPSA':
             optimizers.append((SPSA(maxiter=5), 'SPSA'))
         elif opt == 'NFT':
-            optimizers.append((NFT(maxiter=150), 'NFT'))
+            optimizers.append((NFT(maxiter=50), 'NFT'))
     values['optimizer'] = optimizers
 
 def set_backend_and_noise(values):
@@ -487,9 +501,7 @@ def set_dist_and_geometry(options):
     if mol_type == 'H3+':
         alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
         for i, single_dist in enumerate(dist):
-            geom = "H .0 .0 .0; H .0 .0 "
-                + str(single_dist) + "; H .0 "
-                + str(alt[i]) + " " + str(single_dist/2)
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 " + str(alt[i]) + " " + str(single_dist/2)
             geometries.append(geom)
     elif mol_type == 'Na-':
         geometries.append('Na .0 .0 .0')
@@ -502,9 +514,7 @@ def set_dist_and_geometry(options):
     elif mol_type == 'Li3+':
         alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
         for i, single_dist in enumerate(dist):
-            geom = "Li .0 .0 .0; Li .0 .0 "
-                + str(single_dist) + "; Li .0 "
-                + str(alt[i]) + " " + str(single_dist/2)
+            geom = "Li .0 .0 .0; Li .0 .0 " + str(single_dist) + "; Li .0 " + str(alt[i]) + " " + str(single_dist/2)
             geometries.append(geom)
 
     elif mol_type == 'C2H4':
@@ -525,8 +535,7 @@ def set_dist_and_geometry(options):
         for single_dist in dist:
             alt = single_dist * np.cos(0.25)
             lung = single_dist * np.sin(0.25) + 0.9584
-            geom = "H .0 .0 .0; O .0 .0 0.9584; H .0 "
-                + str(alt) + " " + str(lung)
+            geom = "H .0 .0 .0; O .0 .0 0.9584; H .0 " + str(alt) + " " + str(lung)
             geometries.append(geom)
 
     elif 'H2' in mol_type:
@@ -541,9 +550,7 @@ def set_dist_and_geometry(options):
 
     elif 'H4' in mol_type:
         for single_dist in dist:
-            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
-                + "; H .0 .0 " + str(2*single_dist)
-                + "; H .0 .0 " + str(3*single_dist)
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 .0 " + str(2*single_dist) + "; H .0 .0 " + str(3*single_dist)
             geometries.append(geom)
 
     elif 'Li2' in mol_type:

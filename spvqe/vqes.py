@@ -181,7 +181,7 @@ def get_transformers_from_mol_type(mol_type):
     if mol_type == 'Li3+':
         transf_list.append(ActiveSpaceTransformer(num_electrons=2,
                                                   num_molecular_orbitals=3))
-    if mol_type == 'Na+':
+    if mol_type == 'Na-':
         transf_list.append(FreezeCoreTransformer(True))
     return transf_list
 
@@ -672,7 +672,7 @@ def get_num_par(varform, mol_type):
             num_pars = 16
         elif varform == 'EfficientSU(2)':
             num_pars = 8
-    if mol_type == 'Na+':
+    elif mol_type == 'Na-':
         if varform == 'TwoLocal':
             num_pars = 24
         else:
