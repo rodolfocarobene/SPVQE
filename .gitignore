@@ -6,5 +6,8 @@ spvqe.egg-info
 note
 dummy_vqe.py
 hyper_graph.py
+comparisonH2O.py
+comparisonH2.py
+comparisonNa.py
 
 images/*.png
