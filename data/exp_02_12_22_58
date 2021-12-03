@@ -1,0 +1,81 @@
+{
+    "commit": "42b68e6d77e7972a78af288a722a8dc209deaa41",
+    "file": "scripts/main.py",
+    "options": {
+        "dist": {
+            "min": "0.3",
+            "max": "3.5",
+            "delta": "11"
+        },
+        "molecule": {
+            "molecule": "H3+",
+            "spin": 0,
+            "charge": 1,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; H .0 .0 0.3; H .0 0.2598076211353316 0.15"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "statevector_simulator_None"
+        ],
+        "shots": 1024,
+        "optimizer": [
+            "NFT"
+        ],
+        "lagrange": {
+            "active": [
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "number",
+                        2,
+                        0.2
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.2
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            0.3
+        ],
+        "geometries": [
+            "H .0 .0 .0; H .0 .0 0.3; H .0 0.2598076211353316 0.15"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_statevector_simulator_None_NFT_LagSeries_number_10x0.2_": [
+            {
+                "energy": 0.7992470045490654,
+                "auxiliary": {
+                    "particles": [
+                        2.0000749530279984
+                    ],
+                    "spin-z": [
+                        7.394836653829007e-05
+                    ],
+                    "spin-sq": [
+                        7.3953834899241e-05
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "dummy",
+    "varianti": []
+}
