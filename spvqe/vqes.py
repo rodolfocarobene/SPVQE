@@ -468,7 +468,13 @@ def solve_lagrangian_vqe(options):
 
     myLogger.info('OLDRESULT:')
     myLogger.info(old_result)
-    newLogger.info('%f, %f', old_result.aux_operator_eigenvalues[0], np.real(old_result.eigenvalue))
+
+
+    useless_result = dummy_vqe(old_result, options, old_result.optimal_point)
+    newLogger.info('%f, %f', useless_result.num_particles[0], np.real(useless_result.total_energies[0]))
+
+
+
     new_result = problem.interpret(old_result)
 
     myLogger.info('Fine solve_lagrangian_vqe')
