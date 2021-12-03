@@ -47,9 +47,6 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 myLogger.addHandler(ch)
 
-HYPERLOG_FILE = './logs/hyper_' + get_date_time_string() + '.log'
-
-
 def add_single_so4_gate(circuit,
                      qubit1,
                      qubit2,
@@ -284,10 +281,6 @@ def store_intermediate_result(count, par, energy, std):
     PARAMETERS.append(par)
     log_string = str(count) + ' ' + str(energy) + ' ' + str(std)
     myLogger.info(log_string)
-
-    file_object = open(HYPERLOG_FILE, 'a', encoding='UTF-8')
-    file_object.write(from_energy_pars_to_log_msg(par, energy))
-    file_object.close()
 
 def from_energy_pars_to_log_msg(pars, energy):
     message = ''
