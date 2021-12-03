@@ -47,8 +47,13 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 myLogger.addHandler(ch)
 
-HYPERLOG_FILE = './logs/hyper_' + get_date_time_string() + '.log'
-
+newLogger = logging.getLogger('newLogger')
+newLogger.setLevel(logging.DEBUG)
+ch = logging.FileHandler('./logs/new' + get_date_time_string() + '.log')
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(message)s')
+ch.setFormatter(formatter)
+newLogger.addHandler(ch)
 
 def add_single_so4_gate(circuit,
                      qubit1,
@@ -285,10 +290,6 @@ def store_intermediate_result(count, par, energy, std):
     log_string = str(count) + ' ' + str(energy) + ' ' + str(std)
     myLogger.info(log_string)
 
-    file_object = open(HYPERLOG_FILE, 'a', encoding='UTF-8')
-    file_object.write(from_energy_pars_to_log_msg(par, energy))
-    file_object.close()
-
 def from_energy_pars_to_log_msg(pars, energy):
     message = ''
     for par in pars:
@@ -467,6 +468,7 @@ def solve_lagrangian_vqe(options):
 
     myLogger.info('OLDRESULT:')
     myLogger.info(old_result)
+    newLogger.info('%f, %f', old_result.aux_operator_eigenvalues[0], np.real(old_result.eigenvalue))
     new_result = problem.interpret(old_result)
 
     myLogger.info('Fine solve_lagrangian_vqe')
@@ -637,7 +639,8 @@ def solve_lag_series_vqe(options):
         if accectable_result:
             partial_results.append((result, penalty/tmp_mult, par))
         if accectable_result and penalty/tmp_mult < 1e-8 and i > 4:
-            break
+            print('break avoided')
+            #break
 
 
         if not accectable_result and i == iter_max - 1:
