@@ -99,5 +99,5 @@ def write_json(JsonOptions):
         print('Esiste già un file con questo nome!!')
         filename = input('Inserisci un nuovo nome: ')
 
-    with open(filename, "w") as out:
+    with open(filename, "w", encoding='utf-8') as out:
         out.write(json_obj)

@@ -21,13 +21,6 @@ def get_results_dists_moltype(file_name):
     return results, x, mol_type
 
 def from_item_to_label(item):
-    '''
-    name = re.sub(r'sto-6g_', '', item)
-    name = re.sub(r'EfficientSU\(2\)_|TwoLocal_|UCCSD_|SO(4)_', '', name)
-    name = re.sub(r'\(.*\)', '', name)
-    name = re.sub(r'_\d+x.+_$', '', name)
-    name = re.sub(r'None_', '', name)
-    '''
 
     if 'Series' in item:
         name = 'Series of penalties'

@@ -10,7 +10,7 @@ if __name__ == '__main__':
         sys.exit()
 
     print('Leggo l\'esperimento: ', sys.argv[1])
-    file = open(sys.argv[1],)
+    file = open(sys.argv[1], encoding='utf-8')
     data = json.load(file)
     file.close()
 

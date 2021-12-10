@@ -21,7 +21,7 @@ def import_valori_veri(dists, mol_type):
     return riferimento_import
 
 def valori_da_confrontare(filename):
-    file = open(filename)
+    file = open(filename, encoding='utf-8')
     data = json.load(file)
     file.close()
 

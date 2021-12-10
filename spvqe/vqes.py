@@ -191,8 +191,7 @@ def from_geometry_to_atoms(geometry):
     return tot_atoms
 
 def get_num_particles(mol_type,
-                      particle_number,
-                      driver_result):
+                      particle_number):
 
     alpha, beta = particle_number.num_alpha, particle_number.num_beta
     num_spin_orbitals = particle_number.num_spin_orbitals
@@ -239,8 +238,7 @@ def prepare_base_vqe(options):
     particle_number = driver_result.get_property('ParticleNumber')
 
     alpha, beta, num_spin_orbitals = get_num_particles(options['molecule']['molecule'],
-                                                       particle_number,
-                                                       driver_result)
+                                                       particle_number)
 
 
     num_particles = (alpha, beta)
@@ -638,11 +636,11 @@ def solve_lag_series_vqe(options):
 
     result, optimal_par = find_best_result(partial_results)
 
-    result = dummy_vqe(result, options, optimal_par)
+    result = dummy_vqe(options, optimal_par)
 
     return result
 
-def dummy_vqe(old_result, options, optimal_par):
+def dummy_vqe(options, optimal_par):
     myLogger.info('inizio dummy_vqe')
     options['optimizer'] = COBYLA(maxiter=0)
     options['init_point'] = optimal_par
@@ -789,7 +787,7 @@ def solve_VQE(options):
     elif not options['lagrange']['series']:
         lag_result = solve_lagrangian_vqe(options)
         optimal_par = PARAMETERS[len(PARAMETERS) - 1]
-        vqe_result = dummy_vqe(lag_result, options, optimal_par)
+        vqe_result = dummy_vqe(options, optimal_par)
     else:
         if options['lagrange']['augmented']:
             vqe_result = solve_lag_aug_series_vqe(options)

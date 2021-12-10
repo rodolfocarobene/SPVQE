@@ -34,7 +34,7 @@ def calc_diff_s(y_energy):
 
 
 def get_results_dists_moltype(file_name):
-    file = open(file_name)
+    file = open(file_name, encoding='utf-8')
     data = json.load(file)
     file.close()
 
@@ -239,15 +239,6 @@ if __name__ == '__main__':
 
     plt.xlabel(r"$d$ $[\AA]$", fontsize='x-large')
     axes1[0].set_ylabel(r"Energy $[E_H]$", fontsize='x-large')
-
-    if 'nolegend' in sys.argv:
-        print(myLegend)
-    else:
-        axes1[0].legend(loc='best',
-                       ncol=1, fancybox=True, shadow=True)
-    if 'title' in sys.argv:
-        fig.suptitle(get_title(sys.argv), fontsize=20)
-
 
     axes1[0].plot(distances, fci,
                  label='Full Configuration Interaction (FCI)',
