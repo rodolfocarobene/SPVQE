@@ -4,7 +4,6 @@ import re
 
 import matplotlib.pyplot as plt
 import numpy as np
-sys.path.append('/home/rodolfo/qiskit_nature_0.2.0/main/C-VQE/')
 from spvqe.classical_values import return_classical_results
 
 def get_results_dists_moltype(file_name):
@@ -13,12 +12,12 @@ def get_results_dists_moltype(file_name):
     file.close()
 
     results = data['results_tot']
-    x = data['options']['dists']
+    dist_x = data['options']['dists']
     mol_type = data['options']['molecule']['molecule']
 
     print('DESCRIZIONE: ', data['description'])
 
-    return results, x, mol_type
+    return results, dist_x, mol_type
 
 def from_item_to_label(item):
 
@@ -32,15 +31,6 @@ def from_item_to_label(item):
     return name
 
 def from_item_to_linestyle(item):
-    '''
-    if 'statevector_simulator' in item:
-        linestyle = 'dashed'
-    elif 'qasm_simulator' in item:
-        linestyle = 'dashdot'
-    else:
-        linestyle = None
-    '''
-
     if 'Series' in item:
         linestyle = '-'
     elif 'Lag' in item:
@@ -77,9 +67,11 @@ def get_title(argv):
     index_title = argv.index('title')
 
     if len(argv) > index_title+1:
-        return argv[index_title+1]
+        title = argv[index_title+1]
     else:
-        return "none"
+        title = "none"
+
+    return title
 
 def get_types(argv):
     tmp_types = []
@@ -131,18 +123,18 @@ if __name__ == '__main__':
             if 'spin2' in types_graph:
                 y_aux['spin2'].append(singleResult['auxiliary']['spin-sq'])
 
-        linestyle = from_item_to_linestyle(item)
+        LINESTYLE = from_item_to_linestyle(item)
         markerstyle, markersize = from_item_to_marker(item)
-        color = from_item_to_color(item)
+        COLOR = from_item_to_color(item)
 
         axes[0].plot(x, y_energy, label=from_item_to_label(item),
-                     linestyle=linestyle, marker=markerstyle, markersize=markersize,
-                     mew=2, color=color, linewidth=0.5)
+                     linestyle=LINESTYLE, marker=markerstyle, markersize=markersize,
+                     mew=2, color=COLOR, linewidth=0.5)
 
         for i, type_graph in enumerate(types_graph):
             axes[i+1].plot(x, y_aux[type_graph], label=from_item_to_label(item),
-                           linestyle=linestyle, marker=markerstyle, markersize=markersize,
-                           mew=2, color=color, linewidth=0.5)
+                           linestyle=LINESTYLE, marker=markerstyle, markersize=markersize,
+                           mew=2, color=COLOR, linewidth=0.5)
 
         myLegend.append(item)
 
@@ -156,7 +148,9 @@ if __name__ == '__main__':
         elif type_graph == 'spin2':
             axes[i+1].set_ylabel(r"${S}^2$", fontsize='x-large')
 
-    fig.suptitle('LiH statevector simulation for different interatomic distances', fontsize='x-large')
+    suptitle = 'LiH statevector simulation for different interatomic distances'
+
+    fig.suptitle(suptitle, fontsize='x-large')
     plt.xlabel(r"$d$ $[\AA]$", fontsize='large')
     axes[0].set_ylabel(r"Energy $[E_H]$", fontsize='large')
 
@@ -194,9 +188,9 @@ if __name__ == '__main__':
             for singleResult in results[item]:
                 y_energy.append(singleResult['energy'])
 
-            linestyle = from_item_to_linestyle(item)
+            LINESTYLE = from_item_to_linestyle(item)
             markerstyle, markersize = from_item_to_marker(item)
-            color = from_item_to_color(item)
+            COLOR = from_item_to_color(item)
 
             y = []
             fci = return_classical_results(mol_type).fci
@@ -206,7 +200,7 @@ if __name__ == '__main__':
             plt.plot(x,y,
                          label=from_item_to_label(item),
                          linestyle='None', marker=markerstyle, markersize=markersize,
-                         mew=2, color=color)
+                         mew=2, color=COLOR)
 
 
     mng = plt.get_current_fig_manager()

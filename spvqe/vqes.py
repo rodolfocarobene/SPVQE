@@ -51,17 +51,17 @@ def add_single_so4_gate(circuit,
                      qubit1,
                      qubit2,
                      params,
-                     p0):
+                     par0):
     myLogger.info('Inizio di add_single_so4_gate')
 
     circuit.s(qubit1)
     circuit.s(qubit2)
     circuit.h(qubit2)
     circuit.cx(qubit2, qubit1)
-    circuit.u(params[p0], params[p0+1], params[p0+2], qubit1)
-    p0 += 3
-    circuit.u(params[p0], params[p0+1], params[p0+2], qubit2)
-    p0 += 3
+    circuit.u(params[par0], params[par0+1], params[par0+2], qubit1)
+    par0 += 3
+    circuit.u(params[par0], params[par0+1], params[par0+2], qubit2)
+    par0 += 3
     circuit.cx(qubit2, qubit1)
     circuit.h(qubit2)
     circuit.sdg(qubit1)
@@ -197,17 +197,17 @@ def get_num_particles(mol_type,
     num_spin_orbitals = particle_number.num_spin_orbitals
 
     if mol_type == 'LiH':
-        return 1, 1, 6 #10#4
+        a_b_spinorbs = 1, 1, 6 #10#4
     if mol_type == 'Li3+':
-        return 1, 1, 6 #10#4
+        a_b_spinorbs = 1, 1, 6 #10#4
     elif mol_type == 'H2O':
-        return 2, 2, 6
+        a_b_spinorbs = 2, 2, 6
     elif mol_type == 'C2H4':
-        return 1, 1, 4
+        a_b_spinorbs = 1, 1, 4
     elif mol_type == 'N2':
-        return 3, 3, 6
+        a_b_spinorbs = 3, 3, 6
     else:
-        return alpha, beta, num_spin_orbitals
+        return a_b_spinorbs
 
 def prepare_base_vqe(options):
     myLogger.info('Inizio di prepare_base_vqe')
@@ -322,7 +322,7 @@ def create_vqe_from_ansatz_type(var_form_type,
                             initial_point):
     myLogger.info('Inizio create_vqe_from_ansatz_type')
 
-    if var_form_type == 'TwoLocal' or var_form_type == 'EfficientSU(2)':
+    if var_form_type in ('TwoLocal', 'EfficientSU(2)'):
         ansatz = get_ansatz(var_form_type, num_qubits, init_state)
         if None in initial_point:
             initial_point = np.random.rand(ansatz.num_parameters)
@@ -406,7 +406,7 @@ def get_runtime_vqe_program(options, num_qubits):
         init_point = np.random.rand(ansatz.num_parameters)
 
     global LAST_OPTIMIZER_OPT
-    if LAST_OPTIMIZER_OPT != None:
+    if LAST_OPTIMIZER_OPT is not None:
         options['optimizer'].set_options(LAST_OPTIMIZER_OPT)
 
     vqe_program = VQEProgram(
@@ -429,7 +429,7 @@ def solve_lagrangian_vqe(options):
 
     converter, vqe_solver, problem, qubit_op = prepare_base_vqe(options)
 
-    if options['hardware'] == True:
+    if options['hardware'] is True:
         vqe_solver = get_runtime_vqe_program(options, qubit_op.num_qubits)
 
     aux_ops_not_converted = problem.second_q_ops()[1:4]
@@ -452,9 +452,9 @@ def solve_lagrangian_vqe(options):
                                                        aux_operators=aux_ops)
 
     global PARAMETERS
-    if options['hardware'] == True:
-        for l in old_result.optimizer_history['params']:
-            PARAMETERS.append(list(l))
+    if options['hardware'] is True:
+        for elem in old_result.optimizer_history['params']:
+            PARAMETERS.append(list(elem))
 
     myLogger.info('OLDRESULT:')
     myLogger.info(old_result)
@@ -464,7 +464,7 @@ def solve_lagrangian_vqe(options):
     myLogger.info('RESULT')
     myLogger.info(new_result)
 
-    if options['hardware'] == True:
+    if options['hardware'] is True:
         LAST_OPTIMIZER_OPT = options['optimizer'].setting
 
     myLogger.info('OPTIMIZER SETTINGS:')
@@ -609,7 +609,7 @@ def solve_lag_series_vqe(options):
         options['init_point'] = par
         result = solve_lagrangian_vqe(options)
 
-        if options['hardware'] != True:
+        if options['hardware'] is not True:
             par = PARAMETERS[len(PARAMETERS) - 1]
 
         penalty, accectable_result = calc_penalty(lag_op_list,
@@ -795,4 +795,3 @@ def solve_VQE(options):
             vqe_result = solve_lag_series_vqe(options)
 
     return vqe_result, PARAMETERS[len(PARAMETERS)-1]
-

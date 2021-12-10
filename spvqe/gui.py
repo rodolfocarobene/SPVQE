@@ -185,7 +185,7 @@ def retrive_VQE_options(argv):
                          resizable=True,
                          font='Lucida',
                          text_justification='left')
-        e, values = win.read()
+        e_useless, values = win.read()
         win.close()
 
     set_optimizers(values)
@@ -325,33 +325,33 @@ def set_ops_num_spin2_spinz(values, lagops_list):
                                  mult_num))
                 lagops_list.append(templist)
 
-def set_ops_num(values, lagops_list, op):
+def set_ops_num(values, lagops_list, operator):
     mults = np.arange(float(values['lag_mult_num_min']),
                       float(values['lag_mult_num_max']),
                       float(values['lag_mult_num_delta']))
     for mult in mults:
         mult = np.round(mult, 2)
-        lagops_list.append([(op,
+        lagops_list.append([(operator,
                              int(values['lag_value_num']),
                              mult)])
 
-def set_ops_spin2(values, lagops_list, op):
+def set_ops_spin2(values, lagops_list, operator):
     mults = np.arange(float(values['lag_mult_spin2_min']),
                       float(values['lag_mult_spin2_max']),
                       float(values['lag_mult_spin2_delta']))
     for mult in mults:
         mult = np.round(mult, 2)
-        lagops_list.append([(op,
+        lagops_list.append([(operator,
                              int(values['lag_value_spin2']),
                              mult)])
 
-def set_ops_spinz(values, lagops_list, op):
+def set_ops_spinz(values, lagops_list, operator):
     mults = np.arange(float(values['lag_mult_spinz_min']),
                       float(values['lag_mult_spinz_max']),
                       float(values['lag_mult_spinz_delta']))
     for mult in mults:
         mult = np.round(mult, 2)
-        lagops_list.append([(op,
+        lagops_list.append([(operator,
                              int(values['lag_value_spinz']),
                              mult)])
 
@@ -371,26 +371,26 @@ def set_lagrange_ops(values):
     else:
         lagops_list = []
 
-    for op in values['lag_op']:
-        if op == 'number':
-            set_ops_num(values, lagops_list, op)
+    for operator in values['lag_op']:
+        if operator == 'number':
+            set_ops_num(values, lagops_list, operator)
 
-        elif op == 'spin-squared':
-            set_ops_spin2(values, lagops_list, op)
+        elif operator == 'spin-squared':
+            set_ops_spin2(values, lagops_list, operator)
 
-        elif op == 'spin-z':
-            set_ops_spinz(values, lagops_list, op)
+        elif operator == 'spin-z':
+            set_ops_spinz(values, lagops_list, operator)
 
-        elif op == 'num+spin2':
+        elif operator == 'num+spin2':
             set_ops_num_spin2(values, lagops_list)
 
-        elif op == 'num+spinz':
+        elif operator == 'num+spinz':
             set_ops_num_spinz(values, lagops_list)
 
-        elif op == 'spin2+spinz':
+        elif operator == 'spin2+spinz':
             set_ops_spin2_spinz(values, lagops_list)
 
-        elif op == 'num+spin2+spinz':
+        elif operator == 'num+spin2+spinz':
             set_ops_num_spin2_spinz(values, lagops_list)
 
     return lagops_list
@@ -501,7 +501,8 @@ def set_dist_and_geometry(options):
     if mol_type == 'H3+':
         alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
         for i, single_dist in enumerate(dist):
-            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 " + str(alt[i]) + " " + str(single_dist/2)
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
+            geom += "; H .0 " + str(alt[i]) + " " + str(single_dist/2)
             geometries.append(geom)
     elif mol_type == 'Na-':
         geometries.append('Na .0 .0 .0')
@@ -514,7 +515,8 @@ def set_dist_and_geometry(options):
     elif mol_type == 'Li3+':
         alt = np.sqrt(dist**2 - (dist/2)**2, dtype='float64')
         for i, single_dist in enumerate(dist):
-            geom = "Li .0 .0 .0; Li .0 .0 " + str(single_dist) + "; Li .0 " + str(alt[i]) + " " + str(single_dist/2)
+            geom = "Li .0 .0 .0; Li .0 .0 " + str(single_dist)
+            geom += "; Li .0 " + str(alt[i]) + " " + str(single_dist/2)
             geometries.append(geom)
 
     elif mol_type == 'C2H4':
@@ -550,7 +552,8 @@ def set_dist_and_geometry(options):
 
     elif 'H4' in mol_type:
         for single_dist in dist:
-            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist) + "; H .0 .0 " + str(2*single_dist) + "; H .0 .0 " + str(3*single_dist)
+            geom = "H .0 .0 .0; H .0 .0 " + str(single_dist)
+            geom += "; H .0 .0 " + str(2*single_dist) + "; H .0 .0 " + str(3*single_dist)
             geometries.append(geom)
 
     elif 'Li2' in mol_type:

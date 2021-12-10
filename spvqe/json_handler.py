@@ -10,7 +10,7 @@ def get_date_time_string():
     return now.strftime("%d_%m_%H_%M")
 
 def retrive_json_options(filename, options, results):
-    JsonOptions = {
+    json_options = {
         'commit': None,
         'file': filename,
         'options': options,
@@ -21,36 +21,36 @@ def retrive_json_options(filename, options, results):
 
     instances = []
     optimizers = []
-    for item in JsonOptions['options']['quantum_instance']:
+    for item in json_options['options']['quantum_instance']:
         instances.append(item[1])
-    for item in JsonOptions['options']['optimizer']:
+    for item in json_options['options']['optimizer']:
         optimizers.append(item[1])
-    JsonOptions['options']['quantum_instance'] = instances
-    JsonOptions['options']['optimizer'] = optimizers
-    del JsonOptions['options']['converter']
-    JsonOptions['options']['dists'] = JsonOptions['options']['dists'].tolist()
-    JsonOptions['options']['series']['itermax'] = JsonOptions['options']['series']['itermax'].tolist()
-    JsonOptions['options']['series']['step'] = JsonOptions['options']['series']['step'].tolist()
-    JsonOptions['options']['series']['lamb'] = JsonOptions['options']['series']['lamb'].tolist()
+    json_options['options']['quantum_instance'] = instances
+    json_options['options']['optimizer'] = optimizers
+    del json_options['options']['converter']
+    json_options['options']['dists'] = json_options['options']['dists'].tolist()
+    json_options['options']['series']['itermax'] = json_options['options']['series']['itermax'].tolist()
+    json_options['options']['series']['step'] = json_options['options']['series']['step'].tolist()
+    json_options['options']['series']['lamb'] = json_options['options']['series']['lamb'].tolist()
 
     total_results = {}
-    for result_tot in JsonOptions['results_tot']:
+    for result_tot in json_options['results_tot']:
         results = []
-        for idx in range(len(JsonOptions['results_tot'][result_tot])):
-            single_res = from_electronic_res_to_dict(JsonOptions['results_tot'][result_tot][idx])
+        for idx in range(len(json_options['results_tot'][result_tot])):
+            single_res = from_electronic_res_to_dict(json_options['results_tot'][result_tot][idx])
             results.append(single_res)
         total_results[result_tot] = results
 
-    JsonOptions['results_tot'] = total_results
+    json_options['results_tot'] = total_results
 
-    return JsonOptions
+    return json_options
 
 def from_electronic_res_to_dict(result_old):
-    en = result_old.total_energies[0]
-    if np.iscomplexobj(en):
-        en = en.real
+    energy_val = result_old.total_energies[0]
+    if np.iscomplexobj(energy_val):
+        energy_val = energy_val.real
     result_new = {
-        'energy': float(en),
+        'energy': float(energy_val),
         'auxiliary': {
             'particles': result_old.num_particles,
             'spin-z': result_old.spin,
@@ -76,14 +76,14 @@ def check_varianti(opt):
         varianti.append('lagrange operator')
     return varianti
 
-def write_json(JsonOptions):
+def write_json(json_options):
     filename = "data/exp_"+get_date_time_string()
 
     print('DATA: ', filename)
 
     repo = git.Repo(search_parent_directories=True)
     commit = repo.head.object.hexsha
-    JsonOptions['commit'] = commit
+    json_options['commit'] = commit
 
     try:
         description = input("Inserisci una minima descrizione: ")
@@ -91,9 +91,9 @@ def write_json(JsonOptions):
         print('errore nella codifica della descrizione')
         description = "dummy"
 
-    JsonOptions['description'] = description
+    json_options['description'] = description
 
-    json_obj = json.dumps(JsonOptions, indent=4)
+    json_obj = json.dumps(json_options, indent=4)
 
     while os.path.exists(filename):
         print('Esiste già un file con questo nome!!')

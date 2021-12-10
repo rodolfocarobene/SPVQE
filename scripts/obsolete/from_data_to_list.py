@@ -1,9 +1,9 @@
 import json
 import sys
 
-import numpy as np
 from pprint import pprint
 
+import numpy as np
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
@@ -40,4 +40,3 @@ if __name__ == '__main__':
 
         print(item,"=")
         pprint(y)
-

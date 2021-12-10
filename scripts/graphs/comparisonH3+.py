@@ -111,9 +111,10 @@ def get_title(argv):
     index_title = argv.index('title')
 
     if len(argv) > index_title+1:
-        return argv[index_title+1]
+        title = argv[index_title+1]
     else:
-        return "none"
+        title = "none"
+    return title
 
 def get_types(argv):
     tmp_types = []
@@ -173,17 +174,17 @@ if __name__ == '__main__':
             if 'spin2' in types_graph:
                 y_aux['spin2'].append(singleResult['auxiliary']['spin-sq'])
 
-        linestyle = from_item_to_linestyle(item)
+        LINESTYLE = from_item_to_linestyle(item)
         markerstyle, markersize = from_item_to_marker(item)
         color = from_item_to_color(item)
 
         axes1[0].plot(x, y_energy, label=from_item_to_label(item),
-                     linestyle=linestyle, marker=markerstyle, markersize=markersize,
+                     linestyle=LINESTYLE, marker=markerstyle, markersize=markersize,
                      mew=2, color=color)
 
         for i, type_graph in enumerate(types_graph):
             axes1[i+1].plot(x, y_aux[type_graph], label=from_item_to_label(item),
-                           linestyle=linestyle, marker=markerstyle, markersize=markersize,
+                           linestyle=LINESTYLE, marker=markerstyle, markersize=markersize,
                            mew=2, color=color)
 
         myLegend.append(item)
@@ -258,7 +259,7 @@ if __name__ == '__main__':
         for singleResult in results[item]:
             y_energy.append(singleResult['energy'])
 
-        linestyle = from_item_to_linestyle(item)
+        LINESTYLE = from_item_to_linestyle(item)
         markerstyle, markersize = from_item_to_marker(item)
         color = from_item_to_color(item)
 
