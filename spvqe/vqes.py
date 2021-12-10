@@ -207,7 +207,9 @@ def get_num_particles(mol_type,
     elif mol_type == 'N2':
         a_b_spinorbs = 3, 3, 6
     else:
-        return a_b_spinorbs
+        a_b_spinorbs = alpha, beta, num_spin_orbitals
+
+    return a_b_spinorbs
 
 def prepare_base_vqe(options):
     myLogger.info('Inizio di prepare_base_vqe')

@@ -7,25 +7,44 @@ import numpy as np
 
 ITEMS = []
 
-fci =  [-1.2811879994251278, -1.272264770535545, -1.2541321018359204, -1.2306719129030723, -1.2044585772543408, -1.1772556560041043, -1.1502958922569917, -1.1244398972305527, -1.1002689580616158, -1.0781444800233184, -1.0582520399914652, -1.0406387409179956, -1.0252471289480645, -1.0119461452363503, -1.0005584080056469, -0.9908829093203828, -0.9827125641869102, -0.975846636630558, -0.9700986094113235, -0.9653003957808018]
-hf =  [-1.2526503411788525, -1.2400693045269735, -1.2177264183217718, -1.1894353848951131, -1.157714054111959, -1.1242888776973976, -1.0903826899967242, -1.0568801388727016, -1.024424739656467, -0.9934786770804004, -0.9643624774246208, -0.9372833074829039, -0.9123563277190744, -0.8896216436058548, -0.8690585548963082, -0.8505982043862208, -0.8341351712415769, -0.8195381100874415, -0.806659286252746, -0.7953427959887892]
+fci =  [-1.2811879994251278, -1.272264770535545,
+        -1.2541321018359204, -1.2306719129030723,
+        -1.2044585772543408, -1.1772556560041043,
+        -1.1502958922569917, -1.1244398972305527,
+        -1.1002689580616158, -1.0781444800233184,
+        -1.0582520399914652, -1.0406387409179956,
+        -1.0252471289480645, -1.0119461452363503,
+        -1.0005584080056469, -0.9908829093203828,
+        -0.9827125641869102, -0.975846636630558,
+        -0.9700986094113235, -0.9653003957808018]
+
+hf =  [-1.2526503411788525, -1.2400693045269735,
+       -1.2177264183217718, -1.1894353848951131,
+       -1.157714054111959, -1.1242888776973976,
+       -1.0903826899967242, -1.0568801388727016,
+       -1.024424739656467, -0.9934786770804004,
+       -0.9643624774246208, -0.9372833074829039,
+       -0.9123563277190744, -0.8896216436058548,
+       -0.8690585548963082, -0.8505982043862208,
+       -0.8341351712415769, -0.8195381100874415,
+       -0.806659286252746, -0.7953427959887892]
 
 distances = np.arange(1, 3, 0.1)
 
-full_mult = 1
+FULL_MULT = 1
 
 def calc_diff_e(y_energy):
     diff = 0
-    for idx, f in enumerate(fci):
+    for idx, single_fci in enumerate(fci):
         if idx != 0:
-            diff += pow(abs(f - y_energy[idx]), 2)
+            diff += pow(abs(single_fci - y_energy[idx]), 2)
     diff = np.sqrt(diff / (len(fci) - 2))
     return diff
 
 def calc_diff_s(y_energy):
     diff = 0
-    for idx, f in enumerate(y_energy):
-        for k in f:
+    for idx, single_fci in enumerate(y_energy):
+        for k in single_fci:
             if idx != 0:
                 diff += pow(abs(k), 2)
 
@@ -39,12 +58,12 @@ def get_results_dists_moltype(file_name):
     file.close()
 
     results = data['results_tot']
-    x = data['options']['dists']
+    dists_x = data['options']['dists']
     mol_type = data['options']['molecule']['molecule']
 
     print('DESCRIZIONE: ', data['description'])
 
-    return results, x, mol_type
+    return results, dists_x, mol_type
 
 def get_second_graph(diff_E, diff_S):
 
@@ -62,7 +81,7 @@ def get_second_graph(diff_E, diff_S):
 
 def from_item_to_mult(name):
     if "Series" in name:
-        mult = np.rint(full_mult / float(re.sub(r'.*(\d\.\d*)_$', r'\1', name)))
+        mult = np.rint(FULL_MULT / float(re.sub(r'.*(\d\.\d*)_$', r'\1', name)))
     else:
         mult = 1
     return mult
@@ -72,7 +91,7 @@ def from_item_to_label(name):
         ITEMS.append(name)
 
     if "Series" in name:
-        mult = np.rint(full_mult / float(re.sub(r'.*(\d\.\d*)_$', r'\1', name)))
+        mult = np.rint(FULL_MULT / float(re.sub(r'.*(\d\.\d*)_$', r'\1', name)))
         name = "Series (" + str(int(mult)) + " iters)"
     else:
         name = re.sub(r'.*\((\d\.\d*)\)$', r'Simple penalty (1 iter)', name)
@@ -104,7 +123,9 @@ def from_item_to_marker(item):
 
 def from_item_to_color(item):
     idx = ITEMS.index(item)
-    colors = ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12', 'C13']
+    colors = ['C0', 'C1', 'C2', 'C3', 'C4',
+              'C5', 'C6', 'C7', 'C8', 'C9',
+              'C10', 'C11', 'C12', 'C13']
     return colors[idx]
 
 def get_title(argv):
