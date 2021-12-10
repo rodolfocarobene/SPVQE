@@ -45,8 +45,8 @@ if __name__ == '__main__':
             name = iterator_item_to_string(item)
             option = from_item_iter_to_option(options, item)
 
-            #if len(parameters[name]) > 0:
-            #    option['init_point'] = parameters[name]
+            if len(parameters[name]) > 0:
+                option['init_point'] = parameters[name]
 
             result_tot, parameters[name] = solve_VQE(option)
             results[name].append(result_tot)
@@ -57,11 +57,6 @@ if __name__ == '__main__':
 
             print("\t", name, "\tE = ", energy, '\tS2 = ', spin2, '\tN = ', number)
 
-        #STO BARANDO ?!?
-       #for kind in parameters:
-       #       if len(parameters[kind]) == 0:
-       #           parameters[kind] = parameters[name]
-        #--------------------
 
     JsonOptions = retrive_json_options(__file__,
                                      options,
