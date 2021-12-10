@@ -11,7 +11,7 @@ setup(
     long_description = read('README.MD'),
     author           = 'Rodolfo Carobene',
     author_email     = 'r.carobene@campus.unimib.it',
-    url              = 'https://github.com/rodolfocarobene/spsvqe',
+    url              = 'https://github.com/rodolfocarobene/SPVQE',
     license          = read('LICENSE'),
     install_requires = read('requirements.txt').splitlines(),
     package_dir      = {'': '.'},
