@@ -342,7 +342,7 @@ def create_vqe_from_ansatz_type(var_form_type,
                        num_spin_orbitals=num_spin_orbitals)
 
         if None in initial_point:
-            initial_point = np.random.rand(24) #MUST BE SET HERE
+            initial_point = np.random.rand(8) #MUST BE SET HERE
 
         vqe_solver = VQE(quantum_instance=quantum_instance,
                          ansatz=ansatz._build(),
@@ -694,7 +694,7 @@ def get_num_par(varform, mol_type):
         elif varform == 'UCCSD':
             num_pars = 8
         elif varform == 'EfficientSU(2)':
-            num_pars = 16
+            num_pars = 4
     elif 'H4' in mol_type:
         if varform == 'TwoLocal':
             num_pars = 24

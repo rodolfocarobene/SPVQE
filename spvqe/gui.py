@@ -64,7 +64,8 @@ def get_default_opt():
     return values
 
 def get_layout():
-    possible_molecules = ['H3+', 'H2', 'H2+', 'H2*', 'H4', 'H4*', 'Li2', 'Li2+',
+    possible_molecules = ['H3+', 'H2', 'H2+', 'H2*', 'H2-', 'H2--',
+                          'H4', 'H4*', 'Li2', 'Li2+',
                           'LiH', 'H2O', 'C2H4', 'N2', 'Li3+', 'Na-', 'HeH+']
     possible_forms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
     possible_basis = ['sto-3g', 'sto-6g']
@@ -425,7 +426,7 @@ def set_optimizers(values):
     optimizers = []
     for opt in values['optimizer']:
         if opt == 'CG':
-            optimizers.append((CG(maxiter=100), 'CG'))
+            optimizers.append((CG(maxiter=50), 'CG'))
         elif opt == 'COBYLA':
             optimizers.append((COBYLA(), 'COBYLA'))
         elif opt == 'ADAM':
@@ -581,6 +582,10 @@ def get_spin(mol_opt):
         spin = 2
     elif mol_type == 'H2+':
         spin = 1
+    elif mol_type == 'H2-':
+        spin = 1
+    elif mol_type == 'H2--':
+        spin = 0
     elif mol_type == 'H4':
         spin = 0
     elif mol_type == 'H4*':
@@ -615,6 +620,10 @@ def get_charge(mol_opt):
         charge = 0
     elif mol_type == 'H2+':
         charge = 1
+    elif mol_type == 'H2-':
+        charge = -1
+    elif mol_type == 'H2--':
+        charge = -2
     elif mol_type == 'H4':
         charge = 0
     elif mol_type == 'H4*':
