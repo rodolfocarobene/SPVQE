@@ -638,8 +638,6 @@ def solve_lag_series_vqe(options):
 
     result, optimal_par = find_best_result(partial_results)
 
-    result = dummy_vqe(options, optimal_par)
-
     return result
 
 def dummy_vqe(options, optimal_par):
@@ -787,9 +785,8 @@ def solve_VQE(options):
     if not options['lagrange']['active']:
         vqe_result = solve_hamiltonian_vqe(options)
     elif not options['lagrange']['series']:
-        lag_result = solve_lagrangian_vqe(options)
+        vqe_result = solve_lagrangian_vqe(options)
         optimal_par = PARAMETERS[len(PARAMETERS) - 1]
-        vqe_result = dummy_vqe(options, optimal_par)
     else:
         if options['lagrange']['augmented']:
             vqe_result = solve_lag_aug_series_vqe(options)

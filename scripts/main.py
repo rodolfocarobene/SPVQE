@@ -1,4 +1,5 @@
 import sys
+import json
 import itertools
 
 import numpy as np
@@ -25,6 +26,9 @@ if __name__ == '__main__':
 
     results = {}
     parameters = {}
+    energies = {}
+    numbers = {}
+    spin = {}
     names = []
     newiteratore = []
 
@@ -33,33 +37,50 @@ if __name__ == '__main__':
         if name not in names:
             names.append(name)
             results[name] = []
+            energies[name] = []
+            numbers[name] = []
+            spin[name] = []
+
+            for k, geometry in enumerate(options['geometries']):
+                results[name].append([])
+                energies[name].append([])
+                numbers[name].append([])
+                spin[name].append([])
+
             parameters[name] = []
             newiteratore.append(item)
     iteratore = newiteratore
 
 
-    for i, geometry in enumerate(options['geometries']):
+    for k, geometry in enumerate(options['geometries']):
         options['molecule']['geometry'] = geometry
-        print("D = ", np.round(options['dists'][i], 2))
+        print("D = ", np.round(options['dists'][k], 2))
         for item in iteratore:
             name = iterator_item_to_string(item)
             option = from_item_iter_to_option(options, item)
 
-            if len(parameters[name]) > 0:
-                option['init_point'] = parameters[name]
+            for i in range(20):
 
-            result_tot, parameters[name] = solve_VQE(option)
-            results[name].append(result_tot)
+                result_tot, parameters[name] = solve_VQE(option)
+                results[name][k].append(result_tot)
 
-            energy = result_tot.total_energies[0]
-            spin2 = result_tot.total_angular_momentum[0]
-            number = result_tot.num_particles[0]
+                energy = result_tot.total_energies[0]
+                spin2 = result_tot.total_angular_momentum[0]
+                number = result_tot.num_particles[0]
 
-            print("\t", name, "\tE = ", energy, '\tS2 = ', spin2, '\tN = ', number)
+                energies[name][k].append(energy)
+                numbers[name][k].append(number)
+                spin[name][k].append(spin2)
+
+                print(i, "\t", name, "  E = ", energy, '  S2 = ', spin2, '  N = ', number)
 
 
-    JsonOptions = retrive_json_options(__file__,
-                                     options,
-                                     results)
+    print('Energies=', energies)
+    print('S2=', spin)
+    print('N=', numbers)
 
-    write_json(JsonOptions)
+    with open("starting-points.txt", "w") as f:
+        f.write(json.dumps(energies))
+        f.write(json.dumps(numbers))
+        f.write(json.dumps(spin))
+    f.close()
