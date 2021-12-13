@@ -69,7 +69,8 @@ def get_layout():
                           'LiH', 'H2O', 'C2H4', 'N2', 'Li3+', 'Na-', 'HeH+']
     possible_forms = ['TwoLocal', 'SO(4)', 'UCCSD', 'EfficientSU(2)']
     possible_basis = ['sto-3g', 'sto-6g']
-    possible_noise = ['None', 'ibmq_santiago', 'ibmq_bogota', 'ibmq_lima']
+    possible_noise = ['None', 'ibmq_santiago', 'ibmq_bogota',
+                      'ibm_perth', 'ibmq_lima']
     possible_bool = ['True', 'False']
     possible_lag = ['True', 'False', 'Series', 'AUGSeries']
     possible_optim = ['COBYLA', 'CG', 'SPSA', 'L_BFGS_B', 'ADAM', 'NFT']
@@ -98,7 +99,7 @@ def get_layout():
 
             [psg.Text('Scegli l\'eventuale rumore'),
              psg.Listbox(possible_noise, default_values=['None'],
-                         select_mode='extended', size=(14, 4), key='noise')],
+                         select_mode='extended', size=(14, 5), key='noise')],
 
             [psg.Text('Correction'),
              psg.Listbox(possible_bool, default_values=['False'],
