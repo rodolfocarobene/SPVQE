@@ -1,0 +1,160 @@
+{
+    "commit": "de573ad3a0129e6be60aaddd5ab6eb5997d529ed",
+    "file": "scripts/main.py",
+    "options": {
+        "dist": {
+            "min": "0.2",
+            "max": "0.7",
+            "delta": "0.2"
+        },
+        "molecule": {
+            "molecule": "H3+",
+            "spin": 0,
+            "charge": 1,
+            "basis": [
+                "sto-6g"
+            ],
+            "geometry": "H .0 .0 .0; H .0 .0 0.6000000000000001; H .0 0.5196152422706632 0.30000000000000004"
+        },
+        "varforms": [
+            "TwoLocal"
+        ],
+        "quantum_instance": [
+            "qasm_simulator_ibm_perth"
+        ],
+        "shots": 8000,
+        "optimizer": [
+            "NFT"
+        ],
+        "lagrange": {
+            "active": [
+                "True",
+                "Series"
+            ],
+            "operators": [
+                [
+                    [
+                        "spin-squared",
+                        0,
+                        1.0
+                    ]
+                ]
+            ]
+        },
+        "series": {
+            "itermax": [
+                10
+            ],
+            "step": [
+                0.1
+            ],
+            "lamb": [
+                2.0
+            ]
+        },
+        "dists": [
+            0.2,
+            0.4,
+            0.6000000000000001
+        ],
+        "geometries": [
+            "H .0 .0 .0; H .0 .0 0.2; H .0 0.17320508075688776 0.1",
+            "H .0 .0 .0; H .0 .0 0.4; H .0 0.3464101615137755 0.2",
+            "H .0 .0 .0; H .0 .0 0.6000000000000001; H .0 0.5196152422706632 0.30000000000000004"
+        ]
+    },
+    "results_tot": {
+        "sto-6g_TwoLocal_qasm_simulator_ibm_perth_NFT_Lag_spin-squared(1.0)": [
+            {
+                "energy": 3.157940246982249,
+                "auxiliary": {
+                    "particles": [
+                        1.9999999999999987
+                    ],
+                    "spin-z": [
+                        0.00024993753123025986
+                    ],
+                    "spin-sq": [
+                        0.00024999999999976603
+                    ]
+                }
+            },
+            {
+                "energy": -0.2298654733725911,
+                "auxiliary": {
+                    "particles": [
+                        2.000249999999999
+                    ],
+                    "spin-z": [
+                        0.000499750249687847
+                    ],
+                    "spin-sq": [
+                        0.0004999999999999276
+                    ]
+                }
+            },
+            {
+                "energy": -1.0149087812956283,
+                "auxiliary": {
+                    "particles": [
+                        2.000499999999999
+                    ],
+                    "spin-z": [
+                        0.000499750249687958
+                    ],
+                    "spin-sq": [
+                        0.0005000000000000664
+                    ]
+                }
+            }
+        ],
+        "sto-6g_TwoLocal_qasm_simulator_ibm_perth_NFT_LagSeries_spin-squared_10x0.1_": [
+            {
+                "energy": 3.15729475251905,
+                "auxiliary": {
+                    "particles": [
+                        2.000249999999999
+                    ],
+                    "spin-z": [
+                        0.0002499375312303709
+                    ],
+                    "spin-sq": [
+                        0.00024999999999986144
+                    ]
+                }
+            },
+            {
+                "energy": -0.23106771290481465,
+                "auxiliary": {
+                    "particles": [
+                        1.9999999999999993
+                    ],
+                    "spin-z": [
+                        0.0
+                    ],
+                    "spin-sq": [
+                        0.0
+                    ]
+                }
+            },
+            {
+                "energy": -1.0150897588899621,
+                "auxiliary": {
+                    "particles": [
+                        2.0002499999999985
+                    ],
+                    "spin-z": [
+                        0.00027137296611978723
+                    ],
+                    "spin-sq": [
+                        0.000271446609406506
+                    ]
+                }
+            }
+        ]
+    },
+    "description": "h3+ noisy",
+    "varianti": [
+        "lagrange activity"
+    ]
+}
