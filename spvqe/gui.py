@@ -436,7 +436,7 @@ def set_optimizers(values):
         elif opt == 'SPSA':
             optimizers.append((SPSA(maxiter=5), 'SPSA'))
         elif opt == 'NFT':
-            optimizers.append((NFT(maxiter=150), 'NFT'))
+            optimizers.append((NFT(maxiter=5), 'NFT'))
     values['optimizer'] = optimizers
 
 def set_backend_and_noise(values):
@@ -521,15 +521,15 @@ def set_dist_and_geometry(options):
             geometries.append(geom)
 
     elif mol_type == 'C2H4':
-        bot_alt = np.sin(180 - 121.3) * 1.087
-        fixed_dist = np.cos(180 - 121.3) * 1.087
+        alt = np.sin(180 - 121.3) * 1.087
+        fixed_dist = -np.cos(180 - 121.3) * 1.087
         for i, single_dist in enumerate(dist):
             top_alt = np.sin(180 - 121.3) * single_dist
-            geom1 = 'H ' + str(-fixed_dist) + ' ' + str(top_alt) + ' 0.0; '
-            geom2 = 'H ' + str(-fixed_dist) + ' ' + str(-bot_alt) + ' 0.0; '
+            geom1 = 'H ' + str(-fixed_dist) + ' ' + str(alt) + ' 0.0; '
+            geom2 = 'H ' + str(-fixed_dist) + ' ' + str(-alt) + ' 0.0; '
             geom3 = 'C 0.0 0.0 0.0; C ' + str(single_dist) + ' 0.0 0.0; '
-            geom4 = 'H ' + str(fixed_dist) + ' ' + str(top_alt) + ' 0.0; '
-            geom5 = 'H ' + str(fixed_dist) + ' ' + str(-bot_alt) + ' 0.0'
+            geom4 = 'H ' + str(fixed_dist+single_dist) + ' ' + str(alt) + ' 0.0; '
+            geom5 = 'H ' + str(fixed_dist+single_dist) + ' ' + str(-alt) + ' 0.0'
             geom = geom1 + geom2 + geom3 + geom4 + geom5
 
             geometries.append(geom)
