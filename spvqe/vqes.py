@@ -714,6 +714,9 @@ def get_num_par(varform, mol_type):
             num_pars = 8
         else:
             raise Exception('varform not yet implemented for this mol')
+    elif 'N2' == mol_type:
+        if varform == 'TwoLocal':
+            num_pars = 16
     else:
         raise Exception('mol_type not totally implemented')
 
