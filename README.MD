@@ -1,49 +1,60 @@
 [![Code Quality Score](https://api.codiga.io/project/29093/score/svg)](https://frontend.code-inspector.com/public/project/29093/C-VQE/dashboard)  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# Constrained Variational Quantum Eigensolver
+# Sequence of penalties method to study excited states using VQE
 
-## Description
+## Abstract
 
-This repository contains all the code written while looking for a better constrained VQE implementation
+We propose an extension of the Variational Quantum Eigensolver (VQE) that leads to more accurate energy estimations and can be used to study excited states.
+The method is based on the introduction of a sequence of increasing penalties in the cost function.
+This approach does not require circuit modifications and thus can be applied with no additional depth cost.
 
-## Warning
+Through numerical simulations, we show that we are able to produce variational states with desired physical properties, such as total spin and charge.
+We assess its performance both on classical simulators and on currently available quantum devices, calculating the potential energy curves of small molecular systems in different physical configurations.
+Finally, we compare our method to the original VQE and to another extension, obtaining a better agreement with exact simulations for both energy and targeted physical quantities.
 
-confronta.py not updated with current true_vals workflow
 
-## Usage
-
-* Download the repository;
-* Meet the requirements: the best way to do so is by [creating a python virtual environment](https://docs.python.org/3/library/venv.html). After sourcing it, you can use `pip install -r requirements.txt`;
-* Create logs directory: `mkdir logs`;
-* Run test.py: `python test.py` (follow section GUI for more info);
-* Write a simulation description: at the end of the simulation all the results are stored in a special JSON file that ends with this description. The JSON file will also write the current git commit 'name', remove that option in subroutineJSON.py if you are not in a git repository. 
-* Draw your result: simply with `python drawGraph.py data/exp...` (you can set as argouments what auxiliary operator show on subplots and even a new graph title)
-
+## Installation and usage
+Download the repository and install the requirements (better to do so in a python [virtual environment](https://docs.python.org/3/library/venv.html).
+```console
+foo@bar:~$ python -m venv spvqe && cd spvqe
+foo@bar:~$ source bin/activate
+foo@bar:~$ git clone https://github.com/rodolfocarobene/SPVQE.git && cd SPVQE
+foo@bar:~$ pip install .  # eventually, for developer mode, `pip install -e .`
+foo@bar:~$ python script/main.py  # execute main program 
+```
 ## GUI
 
 The main program controls the simulation using a graphical interface. 
-![GUI](https://github.com/rodolfocarobene/C-VQE/blob/master/images/GUI.png)
-It's possible to chose different options at the same time, the program will automatically simulate the current system with all the different options permutations. 
+
+<img src="https://github.com/rodolfocarobene/C-VQE/blob/master/images/GUI.png"  width="300" height="450">
+
+It's possible to chose different options at the same time, the program will automatically simulate the current system with all the different options permutations. The options include:
+* Molecule to simulate
+* Basis to use in simulation
+* Variational Ansatz
+* Backend
+* Number of shots
+* Noise model
+* Error correction mechanism
+* Optimizer
+* Bond distances to simulate
+* Addition of penalty terms or series of penalties
+* Details on the penalty terms to add, constrained operator, steps
+
 Each option will be given a unique 'name'.
-It's possible to bypass the GUI by calling the main program with `python test.py fast`: the default values (written in subroutineGUI.py) are loaded.
+It's possible to bypass the GUI by calling the main program with `python script/main.py fast`: the default values (written in src/spvqe/gui.py) will be loaded.
 
 ## Files
 
-* __classical.py__ : exact SCF simulation for different H3 configuration (H3, H3+, H3-, H3+*)
-* __confronta.py__ : takes a data file as input (Es: python confronta.py data/exp_21_10_10_54). Returns a list of all methods whose results are stored in the data file, ordered by the total squared distance from classical obtained values.
-* __drawGraph.py__ : takes a data file as input. Draws a mpl graph with all stored results + classical values. Can take another argoument "nolegend" (Es: python drawGraph.py data/exp_21_21_21_21 nolegend) to instruct the script to not draw the legend (in large data files can cover the actual graph)
-* __example.py__ : just a simple standalone VQE implementation with qiskit_nature 0.2.0.
-* __requirements.txt__ : every installed package.
-* __subroutineVQE.py__ : contains all the functions relevant to a VQE implementation (or variants).
-* __subroutineGUI.py__ : contains all the functions relevant to the GUI.
-* __subroutineMAIN.py__ : contains all the functions relevant to the main program (test.py). It's needed to pass from subroutineGUI to subroutineVQE.
-* __subroutineJSON.py__ : contains all the functions relevant to the Json dumping process (data files are json files).
-* __test.py__ : the main program.
-* __README.MD__ : ths file. Hi loop!
-* __data/__ : data folder.
-
-## Changes to downloaded libs
-
-* /lib/python3.8/site-packages/pyscf/lib/misc.py -> raw 46 -> default mode 'r'
-* some changes (I don't remember where, ups) to solve some bugs related to qiskit nature 0.2.0 property submodule
-  
+    . project folder
+    ├── src/spvqe             # Source files (alternatively `lib` or `app`)
+    ├── scripts
+    | ├── main                # Main script to launch gui and simulations
+    | └── graphs              # Routines to draw results of simulation
+    ├── notebooks             # Some Jupyter-Notebooks to use as examples
+    ├── data
+    ├── images
+    ├── LICENSE
+    ├── README.md
+    ├── requirements.txt
+    └── setup.py
