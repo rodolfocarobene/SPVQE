@@ -57,3 +57,24 @@ It's possible to bypass the GUI by calling the main program with `python script/
     ├── README.md
     ├── requirements.txt
     └── setup.py
+
+## Citation policy
+
+If you found SPVQE useful, please consider citing it in your publications, we appreciate it greatly:
+* [arxiv link]()
+* [journal link] ()
+
+R. Carobene, S. Barison, A. Giachero,  Sequence of penalties method to study excited states using VQE, Quantum Sci. Technol. X (2023) XXXXXX, http://dx.doi.org/XX.XXXX/X.XXXXXXX, arXiv:XXXX.XXXXX [quant-ph]
+
+```
+@article{spvqe,
+  author  = "Rodolfo Carobene and Stefano Barison and Andrea Giachero",
+  title   = "Sequence of penalties method to study excited states using VQE",
+  journal = "Quantum Science and Technology",
+  year    = 2023,
+  volume  = "",
+  number  = "",
+  pages   = "",
+  doi     = ""
+}
+```
