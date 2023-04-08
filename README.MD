@@ -20,11 +20,11 @@ foo@bar:~$ python -m venv spvqe && cd spvqe
 foo@bar:~$ source bin/activate
 foo@bar:~$ git clone https://github.com/rodolfocarobene/SPVQE.git && cd SPVQE
 foo@bar:~$ pip install .  # eventually, for developer mode, `pip install -e .`
-foo@bar:~$ python script/main.py  # execute main program 
+foo@bar:~$ python script/main.py  # execute main program
 ```
 ## GUI
 
-The main program controls the simulation using a graphical interface. 
+The main program controls the simulation using a graphical interface.
 
 <img src="https://github.com/rodolfocarobene/C-VQE/blob/master/images/GUI.png"  width="300" height="450">
 
@@ -53,7 +53,6 @@ It's possible to bypass the GUI by calling the main program with `python script/
     | └── graphs              # Routines to draw results of simulation
     ├── notebooks             # Some Jupyter-Notebooks to use as examples
     ├── data
-    ├── images
     ├── LICENSE
     ├── README.md
     ├── requirements.txt
