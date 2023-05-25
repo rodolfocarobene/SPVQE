@@ -61,10 +61,10 @@ It's possible to bypass the GUI by calling the main program with `python script/
 ## Citation policy
 
 If you found SPVQE useful, please consider citing it in your publications, we appreciate it greatly:
-* [arxiv link]()
-* [journal link] ()
+* [arxiv link](https://arxiv.org/abs/2304.05262)
+* [journal link] (https://iopscience.iop.org/article/10.1088/2058-9565/acd1a9)
 
-R. Carobene, S. Barison, A. Giachero,  Sequence of penalties method to study excited states using VQE, Quantum Sci. Technol. X (2023) XXXXXX, http://dx.doi.org/XX.XXXX/X.XXXXXXX, arXiv:XXXX.XXXXX [quant-ph]
+R. Carobene, S. Barison, A. Giachero,  Sequence of penalties method to study excited states using VQE, 2023 Quantum Sci. Technol. 8 035014,  https://dx.doi.org/10.1088/2058-9565/acd1a9 , arXiv:XXXX.XXXXX [quant-ph]
 
 ```
 @article{spvqe,
@@ -72,9 +72,11 @@ R. Carobene, S. Barison, A. Giachero,  Sequence of penalties method to study exc
   title   = "Sequence of penalties method to study excited states using VQE",
   journal = "Quantum Science and Technology",
   year    = 2023,
-  volume  = "",
-  number  = "",
-  pages   = "",
-  doi     = ""
+  doi = {10.1088/2058-9565/acd1a9},
+  url = {https://doi.org/10.1088/2058-9565/acd1a9},
+  publisher = {{IOP} Publishing},
+  volume = {8},
+  number = {3},
+  pages = {035014},
 }
 ```
